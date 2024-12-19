@@ -9,8 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Textures {
     
-    public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(3, 2);
+    public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
 
     public static final TextureRegion CHEST = SpriteSheet.BASIC_TILES.at(5, 5);
+
+    public static final TextureRegion INDESTRUCTIBLE_WALLS = SpriteSheet.BASIC_TILES.at(1, 1);
+
+    public static final TextureRegion DESTRUCTIBLE_WALLS = SpriteSheet.BASIC_TILES.at(3, 2);
+
+
     
 }

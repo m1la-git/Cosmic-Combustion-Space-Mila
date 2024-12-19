@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.map.DestructibleWalls;
 import de.tum.cit.ase.bomberquest.map.Flowers;
+import de.tum.cit.ase.bomberquest.map.IndestructibleWalls;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 
@@ -90,8 +92,8 @@ public class GameScreen implements Screen {
      */
     private void updateCamera() {
         mapCamera.setToOrtho(false);
-        mapCamera.position.x = 3.5f * TILE_SIZE_PX * SCALE;
-        mapCamera.position.y = 3.5f * TILE_SIZE_PX * SCALE;
+        mapCamera.position.x = 10.5f * TILE_SIZE_PX * SCALE;
+        mapCamera.position.y = 10.5f * TILE_SIZE_PX * SCALE;
         mapCamera.update(); // This is necessary to apply the changes
     }
     
@@ -105,8 +107,31 @@ public class GameScreen implements Screen {
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
         for (Flowers flowers : map.getFlowers()) {
-            draw(spriteBatch, flowers);
+            if (flowers != null) {
+                draw(spriteBatch, flowers);
+            }
         }
+        int[][] filledCells = map.getFilledCells();
+        for (int i = 0; i < filledCells.length; i++) {
+            for (int j = 0; j < filledCells[i].length; j++) {
+                if (filledCells[i][j] == 0) {
+                    draw(spriteBatch, new Flowers(i, j));
+                }
+            }
+        }
+
+        for (DestructibleWalls destructibleWalls : map.getDestructibleWalls()) {
+            if (destructibleWalls != null) {
+                draw(spriteBatch, destructibleWalls);
+            }
+        }
+        for (IndestructibleWalls indestructibleWalls: map.getIndestructibleWalls()) {
+            if (indestructibleWalls != null) {
+                draw(spriteBatch, indestructibleWalls);
+            }
+        }
+
+
         draw(spriteBatch, map.getChest());
         draw(spriteBatch, map.getPlayer());
         

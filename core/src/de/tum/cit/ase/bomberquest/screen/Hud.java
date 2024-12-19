@@ -34,7 +34,7 @@ public class Hud {
         // Start drawing
         spriteBatch.begin();
         // Draw the HUD elements
-        font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
+        font.draw(spriteBatch, "Press Esc to Pause!", 10, 40);
         // Finish drawing
         spriteBatch.end();
     }
