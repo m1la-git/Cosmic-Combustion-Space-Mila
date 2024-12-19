@@ -8,51 +8,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
-public class IndestructibleWalls implements Drawable {
+public class IndestructibleWalls extends StationaryObjects implements Drawable {
 
-    private final int x;
-    private final int y;
-
-    public IndestructibleWalls(World world, int x, int y) {
-        this.x = x;
-        this.y = y;
-        createHitbox(world);
-    }
-
-    private void createHitbox(World world) {
-        // BodyDef is like a blueprint for the movement properties of the body.
-        BodyDef bodyDef = new BodyDef();
-        // Static bodies never move, but static bodies can collide with them.
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        // Set the initial position of the body.
-        bodyDef.position.set(this.x, this.y);
-        // Create the body in the world using the body definition.
-        Body body = world.createBody(bodyDef);
-        // Now we need to give the body a shape so the physics engine knows how to collide with it.
-        // We'll use a polygon shape for the chest.
-        PolygonShape box = new PolygonShape();
-        // Make the polygon a square with a side length of 1 tile.
-        box.setAsBox(0.5f, 0.5f);
-        // Attach the shape to the body as a fixture.
-        body.createFixture(box, 1.0f);
-        // We're done with the shape, so we should dispose of it to free up memory.
-        box.dispose();
-        // Set the chest as the user data of the body so we can look up the chest from the body later.
-        body.setUserData(this);
+    public IndestructibleWalls(World world, float x, float y) {
+        super(world, x, y);
     }
 
     @Override
     public TextureRegion getCurrentAppearance() {
         return Textures.DESTRUCTIBLE_WALLS;
-    }
-
-    @Override
-    public float getX() {
-        return x;
-    }
-
-    @Override
-    public float getY() {
-        return y;
     }
 }
