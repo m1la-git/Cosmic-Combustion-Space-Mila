@@ -1,5 +1,9 @@
 package de.tum.cit.ase.bomberquest.map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -7,6 +11,10 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
+import de.tum.cit.ase.bomberquest.texture.SpriteSheet;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Represents the player character in the game.
@@ -19,6 +27,9 @@ public class Player implements Drawable {
     
     /** The Box2D hitbox of the player, used for position and collision detection. */
     private final Body hitbox;
+
+    /** double queue to manage character movement */
+    private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
     
     public Player(World world, float x, float y) {
         this.hitbox = createHitbox(world, x, y);
@@ -51,7 +62,7 @@ public class Player implements Drawable {
         body.createFixture(circle, 1.0f);
         // We're done with the shape, so we should dispose of it to free up memory.
         circle.dispose();
-        // Set the player as the user data of the body so we can look up the player from the body later.
+        // Set the player as the user data of the body, so we can look up the player from the body later.
         body.setUserData(this);
         return body;
     }
@@ -66,15 +77,65 @@ public class Player implements Drawable {
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
-        float xVelocity = (float) Math.sin(this.elapsedTime) * 2;
-        float yVelocity = (float) Math.cos(this.elapsedTime) * 2;
-        this.hitbox.setLinearVelocity(xVelocity, yVelocity);
+        handleInput();
+        if (!keyPressOrder.isEmpty()) {
+            switch (keyPressOrder.peekLast()) {
+                case Input.Keys.W, Input.Keys.UP: this.hitbox.setLinearVelocity(0, 3); break;
+                case Input.Keys.S, Input.Keys.DOWN: this.hitbox.setLinearVelocity(0, -3); break;
+                case Input.Keys.A, Input.Keys.LEFT: this.hitbox.setLinearVelocity(-3, 0); break;
+                case Input.Keys.D, Input.Keys.RIGHT: this.hitbox.setLinearVelocity(3, 0); break;
+            }
+        }
+        else {
+            this.hitbox.setLinearVelocity(0, 0);
+        }
     }
-    
+
+    /**
+     * TBA
+     */
+    private void handleInput() {
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Input.Keys.W) keyPressOrder.addLast(Input.Keys.W);
+                if (keycode == Input.Keys.S) keyPressOrder.addLast(Input.Keys.S);
+                if (keycode == Input.Keys.A) keyPressOrder.addLast(Input.Keys.A);
+                if (keycode == Input.Keys.D) keyPressOrder.addLast(Input.Keys.D);
+                if (keycode == Input.Keys.UP) keyPressOrder.addLast(Input.Keys.UP);
+                if (keycode == Input.Keys.DOWN) keyPressOrder.addLast(Input.Keys.DOWN);
+                if (keycode == Input.Keys.LEFT) keyPressOrder.addLast(Input.Keys.LEFT);
+                if (keycode == Input.Keys.RIGHT) keyPressOrder.addLast(Input.Keys.RIGHT);
+                return true; // Indicates the event was processed
+            }
+            @Override
+            public boolean keyUp(int keycode) {
+                if (keycode == Input.Keys.W) keyPressOrder.remove(Input.Keys.W);
+                if (keycode == Input.Keys.S) keyPressOrder.remove(Input.Keys.S);
+                if (keycode == Input.Keys.A) keyPressOrder.remove(Input.Keys.A);
+                if (keycode == Input.Keys.D) keyPressOrder.remove(Input.Keys.D);
+                if (keycode == Input.Keys.UP) keyPressOrder.remove(Input.Keys.UP);
+                if (keycode == Input.Keys.DOWN) keyPressOrder.remove(Input.Keys.DOWN);
+                if (keycode == Input.Keys.LEFT) keyPressOrder.remove(Input.Keys.LEFT);
+                if (keycode == Input.Keys.RIGHT) keyPressOrder.remove(Input.Keys.RIGHT);
+                return true;
+            }
+        });
+    }
+
+
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the frame of the walk down animation that corresponds to the current time.
-        return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
+        Vector2 velocity = hitbox.getLinearVelocity();
+        float x = velocity.x;
+        float y = velocity.y;
+        if (x == 0 && y > 0) {return Animations.CHARACTER_WALK_UP.getKeyFrame(this.elapsedTime, true);}
+        if (x == 0 && y < 0) {return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);}
+        if (x > 0 && y == 0) {return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);}
+        if (x < 0 && y == 0) {return Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);}
+
+        return SpriteSheet.CHARACTER.at(1, 1);
     }
     
     @Override

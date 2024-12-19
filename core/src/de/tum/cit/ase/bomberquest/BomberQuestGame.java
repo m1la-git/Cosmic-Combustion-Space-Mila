@@ -52,7 +52,7 @@ public class BomberQuestGame extends Game {
     /**
      * Called when the game is created. Initializes the SpriteBatch and Skin.
      * During the class constructor, libGDX is not fully initialized yet.
-     * Therefore this method serves as a second constructor for the game,
+     * Therefore, this method serves as a second constructor for the game,
      * and we can use libGDX resources here.
      */
     @Override
