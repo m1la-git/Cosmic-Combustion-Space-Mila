@@ -104,17 +104,15 @@ public class GameScreen implements Screen {
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
 
+
+
+        for (int i = 0; i < map.getMaxX(); i++) {
+            for (int j = 0; j < map.getMaxY(); j++) {
+                draw(spriteBatch, new Flowers(i, j));
+            }
+        }
         for (StationaryObject obj: map.getStationaryObjects().values()) {
             draw(spriteBatch, obj);
-        }
-
-        int[][] filledCells = map.getFilledCells();
-        for (int i = 0; i < filledCells.length; i++) {
-            for (int j = 0; j < filledCells[i].length; j++) {
-                if (filledCells[i][j] == 0) {
-                    draw(spriteBatch, new Flowers(i, j));
-                }
-            }
         }
 
         for (Bomb bomb: map.getBombs()) {

@@ -59,9 +59,11 @@ public class GameMap {
     private final int[] entrance;
     private final List<Bomb> bombs;
     // make sure that map won't have any empty spaces
-    private final int[][] filledCells;
 
     private final Map<String, StationaryObject> stationaryObjects;
+
+    private final int MAX_X;
+    private final int MAX_Y;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -75,13 +77,14 @@ public class GameMap {
         this.contactListener = new GameContactListener();
         this.world.setContactListener(contactListener);
         this.stationaryObjects = new HashMap<>();
-
-        this.filledCells = new int[21][21];
         this.entrance = new int[]{0, 0};
         this.bombs = new ArrayList<>();
 
-        loadMap("map.properties");
 
+
+        int[] temp = loadMap("map.properties");
+        this.MAX_X = temp[0];
+        this.MAX_Y = temp[1];
         // Create a player with initial position
         this.player = new Player(this.world, entrance[0], entrance[1]);
     }
@@ -97,7 +100,7 @@ public class GameMap {
      *                 2: entrance
      *                 3+: basic field
      */
-    public void loadMap(String filename) {
+    public int[] loadMap(String filename) {
         int maxX = 0;
         int maxY = 0;
 
@@ -131,12 +134,9 @@ public class GameMap {
                 switch (type) {
                     case 0:
                         stationaryObjects.put(x + "," + y, new IndestructibleWall(world, x, y));
-                        filledCells[x][y] = 1;
-                        System.out.println("meow");
                         break;
                     case 1:
                         stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y));
-                        filledCells[x][y] = 1;
                         break;
                     case 2:
                         entrance[0] = x;
@@ -148,9 +148,7 @@ public class GameMap {
         } catch (Exception e) {
             Gdx.app.error("GameMap", "Error reading map file: " + e.getMessage());
         }
-        for (String key : stationaryObjects.keySet()) {
-            System.out.println("StationaryObject: " + key + ": " + stationaryObjects.get(key));
-        }
+        return new int[]{maxX, maxY};
     }
 
 
@@ -224,11 +222,11 @@ public class GameMap {
         return bombs;
     }
 
-    /**
-     * Returns the list of cells on the map.
-     */
-    public int[][] getFilledCells() {
-        return filledCells;
+    public int getMaxX() {
+        return MAX_X;
+    }
+    public int getMaxY() {
+        return MAX_Y;
     }
 
 }
