@@ -1,11 +1,14 @@
 package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,34 +45,44 @@ public class GameMap {
     private final BomberQuestGame game;
     /** The Box2D world for physics simulation. */
     private final World world;
+    private final GameContactListener contactListener;
+
 
     private final int[][] filledCells;
 
     // Game objects
     private final Player player;
-    
-    private final Chest chest;
+
     
     private final Flowers[][] flowers;
 
-    private final DestructibleWalls[][] destructibleWalls;
+    private final DestructibleWall[][] destructibleWalls;
 
-    private final IndestructibleWalls[][] indestructibleWalls;
+    private final IndestructibleWall[][] indestructibleWalls;
+
+    private final int[] entrance;
+
+    private final List<Bomb> bombs;
 
     
     public GameMap(BomberQuestGame game) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
-        // Create a player with initial position (1, 3)
-        this.player = new Player(this.world, 1, 3);
-        // Create a chest in the middle of the map
-        this.chest = new Chest(world, 3, 3);
-        // Create flowers in a 7x7 grid
+        this.contactListener = new GameContactListener();
+        this.world.setContactListener(contactListener);
+
         this.flowers = new Flowers[21][21];
-        this.destructibleWalls = new DestructibleWalls[21][21];
-        this.indestructibleWalls = new IndestructibleWalls[21][21];
+        this.destructibleWalls = new DestructibleWall[21][21];
+        this.indestructibleWalls = new IndestructibleWall[21][21];
         this.filledCells = new int[21][21];
+        this.entrance = new int[] {-1, -1};
+        this.bombs = new ArrayList<>();
+
         loadMap("map.properties");
+
+        // Create a player with initial position
+        this.player = new Player(this.world, entrance[0], entrance[1]);
+        // Create a chest in the middle of the map
     }
     /**
      * TBA
@@ -96,16 +109,19 @@ public class GameMap {
                 int x = Integer.parseInt(coords[0]);
                 int y = Integer.parseInt(coords[1]);
                 switch (type) {
-                    case 0: indestructibleWalls[x][y] = new IndestructibleWalls(world, x, y); break;
-                    case 1: destructibleWalls[x][y] = new DestructibleWalls(x, y); break;
+                    case 0: indestructibleWalls[x][y] = new IndestructibleWall(world, x, y); break;
+                    case 1: destructibleWalls[x][y] = new DestructibleWall(world, x, y); break;
+                    case 2: entrance[0] = x; entrance[1] = y; flowers[x][y] = new Flowers(x, y); break;
                     default: flowers[x][y] = new Flowers(x, y); break;
                 }
                 filledCells[x][y] = 1;
-
-
             }
         } catch (Exception e) {
             Gdx.app.error("GameMap", "Error reading map file: " + e.getMessage());
+        }
+        if (entrance[0] == -1) {
+            entrance[0] = 0;
+            entrance[1] = 0;
         }
 
     }
@@ -118,9 +134,25 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            Bomb newBomb = new Bomb(world, Math.round(player.getX()), Math.round(player.getY()));
+            bombs.add(newBomb);
+            contactListener.addIgnoredBomb(newBomb.getHitbox());
+        }
+
+        for (Bomb bomb : bombs) {
+            if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
+                contactListener.addIgnoredBomb(bomb.getHitbox());
+            } else {
+                contactListener.removeIgnoredBomb(bomb.getHitbox());
+            }
+        }
+
+
         doPhysicsStep(frameTime);
+
     }
-    
+
     /**
      * Performs as many physics steps as necessary to catch up to the given frame time.
      * This will update the Box2D world by the given time step.
@@ -133,29 +165,33 @@ public class GameMap {
             this.physicsTime -= TIME_STEP;
         }
     }
+
+    private boolean isOverlapping(Body bodyA, Body bodyB) {
+        return bodyA.getPosition().dst(bodyB.getPosition()) < 0.6f; // Adjust threshold as needed
+    }
     
     /** Returns the player on the map. */
     public Player getPlayer() {
         return player;
     }
-    
-    /** Returns the chest on the map. */
-    public Chest getChest() {
-        return chest;
-    }
+
     
     /** Returns the flowers on the map. */
     public List<Flowers> getFlowers() {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
     }
 
-    public List<DestructibleWalls> getDestructibleWalls() {
+    public List<DestructibleWall> getDestructibleWalls() {
         return Arrays.stream(destructibleWalls).flatMap(Arrays::stream).toList();
     }
-    public List<IndestructibleWalls> getIndestructibleWalls() {
+    public List<IndestructibleWall> getIndestructibleWalls() {
         return Arrays.stream(indestructibleWalls).flatMap(Arrays::stream).toList();
+    }
+    public List<Bomb> getBombs() {
+        return bombs;
     }
     public int[][] getFilledCells() {
         return filledCells;
     }
+
 }

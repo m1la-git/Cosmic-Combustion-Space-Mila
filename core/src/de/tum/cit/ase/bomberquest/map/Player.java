@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.SpriteSheet;
@@ -63,7 +60,8 @@ public class Player implements Drawable {
         circle.setRadius(0.3f);
         // Attach the shape to the body as a fixture.
         // Bodies can have multiple fixtures, but we only need one for the player.
-        body.createFixture(circle, 1.0f);
+        Fixture fixture = body.createFixture(circle, 1.0f);
+        fixture.setFilterData(new Filter());
         // We're done with the shape, so we should dispose of it to free up memory.
         circle.dispose();
         // Set the player as the user data of the body, so we can look up the player from the body later.
@@ -136,6 +134,9 @@ public class Player implements Drawable {
         });
     }
 
+    public Body getHitbox() {
+        return hitbox;
+    }
 
     @Override
     public TextureRegion getCurrentAppearance() {
