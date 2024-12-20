@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GameContactListener implements ContactListener {
-    private Set<Body> ignoredBombs = new HashSet<>();
+    private final Set<Body> ignoredBombs = new HashSet<>();
 
     @Override
     public void beginContact(Contact contact) {
@@ -17,6 +17,7 @@ public class GameContactListener implements ContactListener {
     public void endContact(Contact contact) {
         // Not needed for this use case
     }
+
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
@@ -47,6 +48,7 @@ public class GameContactListener implements ContactListener {
         return body.getUserData() instanceof Bomb; // Replace with your bomb identification logic
     }
 
+    //Actual handling of the collision:
     private void handleBombCollision(Contact contact, Body bomb) {
         if (ignoredBombs.contains(bomb)) {
             // Disable collision while ignoring this bomb

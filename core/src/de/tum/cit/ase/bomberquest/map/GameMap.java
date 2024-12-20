@@ -40,19 +40,17 @@ public class GameMap {
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
      */
     private float physicsTime = 0;
-    
     /** The game, in case the map needs to access it. */
     private final BomberQuestGame game;
     /** The Box2D world for physics simulation. */
     private final World world;
+    /** ContactListener for handling the collisions of the player with new bombs */
     private final GameContactListener contactListener;
 
 
-    private final int[][] filledCells;
 
     // Game objects
     private final Player player;
-
     
     private final Flowers[][] flowers;
 
@@ -63,6 +61,9 @@ public class GameMap {
     private final int[] entrance;
 
     private final List<Bomb> bombs;
+
+    // make sure that map won't have any empty spaces
+    private final int[][] filledCells;
 
     
     public GameMap(BomberQuestGame game) {
@@ -82,10 +83,16 @@ public class GameMap {
 
         // Create a player with initial position
         this.player = new Player(this.world, entrance[0], entrance[1]);
-        // Create a chest in the middle of the map
     }
     /**
-     * TBA
+     * reads the map file line by line
+     * throws exceptions when the file is in the wrong format
+     * adds to the list with the respective types of the objects (walls, entrance, etc.)
+     * @param filename the name of the file with the map
+     * 0: indestructibleWalls
+     * 1: destructibleWalls
+     * 2: entrance
+     * 3+: basic field
      */
     public void loadMap(String filename) {
         FileHandle file = Gdx.files.internal("maps/" + filename);
@@ -108,6 +115,7 @@ public class GameMap {
                 }
                 int x = Integer.parseInt(coords[0]);
                 int y = Integer.parseInt(coords[1]);
+
                 switch (type) {
                     case 0: indestructibleWalls[x][y] = new IndestructibleWall(world, x, y); break;
                     case 1: destructibleWalls[x][y] = new DestructibleWall(world, x, y); break;
@@ -139,7 +147,7 @@ public class GameMap {
             bombs.add(newBomb);
             contactListener.addIgnoredBomb(newBomb.getHitbox());
         }
-
+        //handle bomb collisions
         for (Bomb bomb : bombs) {
             if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
                 contactListener.addIgnoredBomb(bomb.getHitbox());
@@ -147,8 +155,6 @@ public class GameMap {
                 contactListener.removeIgnoredBomb(bomb.getHitbox());
             }
         }
-
-
         doPhysicsStep(frameTime);
 
     }
@@ -165,9 +171,13 @@ public class GameMap {
             this.physicsTime -= TIME_STEP;
         }
     }
-
+    /**
+     * Checks whether the bomb and the player are overlapping
+     * @param bodyA: Player's hitbox
+     * @param bodyB: Bomb's hitbox
+     */
     private boolean isOverlapping(Body bodyA, Body bodyB) {
-        return bodyA.getPosition().dst(bodyB.getPosition()) < 0.6f; // Adjust threshold as needed
+        return bodyA.getPosition().dst(bodyB.getPosition()) < 0.8f; // Adjust threshold as needed
     }
     
     /** Returns the player on the map. */
@@ -180,16 +190,19 @@ public class GameMap {
     public List<Flowers> getFlowers() {
         return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
     }
-
+    /** Returns the destructibleWalls on the map. */
     public List<DestructibleWall> getDestructibleWalls() {
         return Arrays.stream(destructibleWalls).flatMap(Arrays::stream).toList();
     }
+    /** Returns the indestructibleWalls on the map. */
     public List<IndestructibleWall> getIndestructibleWalls() {
         return Arrays.stream(indestructibleWalls).flatMap(Arrays::stream).toList();
     }
+    /** Returns the bombs on the map. */
     public List<Bomb> getBombs() {
         return bombs;
     }
+    /** Returns the list of cells on the map. */
     public int[][] getFilledCells() {
         return filledCells;
     }
