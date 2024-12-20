@@ -64,6 +64,7 @@ public class GameMap {
 
     private final int MAX_X;
     private final int MAX_Y;
+    private int blastRadius;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -79,6 +80,7 @@ public class GameMap {
         this.stationaryObjects = new HashMap<>();
         this.entrance = new int[]{0, 0};
         this.bombs = new ArrayList<>();
+        this.blastRadius = 1;
 
 
 
@@ -161,17 +163,39 @@ public class GameMap {
     public void tick(float frameTime) {
         this.player.tick(frameTime);
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            Bomb newBomb = new Bomb(world, Math.round(player.getX()), Math.round(player.getY()));
-            bombs.add(newBomb);
-            contactListener.addIgnoredBomb(newBomb.getHitbox());
+            boolean spaceEmpty = true;
+            int x =Math.round(player.getX());
+            int y = Math.round(player.getY());
+            for (Bomb bomb: bombs) {
+                if (bomb.getX() == x && bomb.getY() == y) {
+                    spaceEmpty = false;
+                    break;
+                }
+            }
+            if (spaceEmpty) {
+                Bomb newBomb = new Bomb(world, x, y);
+                bombs.add(0, newBomb);
+                contactListener.addIgnoredBomb(newBomb.getHitbox());
+            }
         }
         //handle bomb collisions
-        for (Bomb bomb : bombs) {
+        for (int i = bombs.size() - 1; i >= 0; i--) {
+            Bomb bomb = bombs.get(i);
             bomb.tick(frameTime);
             if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
                 contactListener.addIgnoredBomb(bomb.getHitbox());
             } else {
                 contactListener.removeIgnoredBomb(bomb.getHitbox());
+            }
+            if (bomb.isExploded()) {
+                int x = Math.round(bomb.getX());
+                int y = Math.round(bomb.getY());
+                int blastUp = releaseBlast(x, y,0, 1);  // Up
+                int blastDown = releaseBlast(x, y,0, -1); // Down
+                int blastRight = releaseBlast(x, y,1, 0);  // Right
+                int blastLeft = releaseBlast(x, y,-1, 0); // Left
+                bomb.destroy(world);
+                bombs.remove(bomb);
             }
         }
         doPhysicsStep(frameTime);
@@ -200,6 +224,26 @@ public class GameMap {
      */
     private boolean isOverlapping(Body bodyA, Body bodyB) {
         return bodyA.getPosition().dst(bodyB.getPosition()) < 0.8f; // Adjust threshold as needed
+    }
+    /**
+     * Releasing the blast in 1 direction in a certain radius
+     * Until any stationaryObject is met on the way
+     */
+    private int releaseBlast(int x, int y, int dx, int dy) {
+        for (int i = 1; i <= blastRadius; i++) {
+            int currentX = x + i * dx;
+            int currentY = y + i * dy;
+            if (stationaryObjects.containsKey(currentX + "," + currentY)) {
+                StationaryObject obj = stationaryObjects.get(currentX + "," + currentY);
+                if (obj instanceof DestructibleWall) {
+                    obj.destroy(world);
+                    stationaryObjects.remove(currentX + "," + currentY);
+                    return i;
+                }
+                return i - 1;
+            }
+        }
+        return blastRadius;
     }
 
     /**

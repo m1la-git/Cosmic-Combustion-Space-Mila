@@ -23,16 +23,7 @@ public class DestructibleWall extends StationaryObject implements Drawable {
             isDestroyed = true;
         }
     }
-    /**
-     * Method to destroy the body.
-     * @param world The Box2D world to remove the body from
-     */
-    public void destroy(World world){
-        if(hitbox != null) {
-            world.destroyBody(hitbox);
-            hitbox = null; // Set the body to null
-        }
-    }
+
 
     @Override
     public TextureRegion getCurrentAppearance() {

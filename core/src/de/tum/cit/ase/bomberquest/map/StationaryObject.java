@@ -10,7 +10,7 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 public abstract class StationaryObject implements Drawable {
     protected final int x;
     protected final int y;
-    protected final Body hitbox;
+    protected Body hitbox;
 
     StationaryObject(World world, int x, int y) {
         this.x = x;
@@ -44,6 +44,16 @@ public abstract class StationaryObject implements Drawable {
         // Set the object as the user data of the body, so we can look up the object from the body later.
         body.setUserData(this);
         return body;
+    }
+    /**
+     * Method to destroy the body.
+     * @param world The Box2D world to remove the body from
+     */
+    public void destroy(World world){
+        if(hitbox != null) {
+            world.destroyBody(hitbox);
+            hitbox = null; // Set the body to null
+        }
     }
 
     @Override

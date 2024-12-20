@@ -84,16 +84,16 @@ public class Player implements Drawable {
         if (!keyPressOrder.isEmpty()) {
             switch (keyPressOrder.peekLast()) {
                 case Input.Keys.W, Input.Keys.UP:
-                    this.hitbox.setLinearVelocity(0, 3);
+                    this.hitbox.setLinearVelocity(0, 2);
                     break;
                 case Input.Keys.S, Input.Keys.DOWN:
-                    this.hitbox.setLinearVelocity(0, -3);
+                    this.hitbox.setLinearVelocity(0, -2);
                     break;
                 case Input.Keys.A, Input.Keys.LEFT:
-                    this.hitbox.setLinearVelocity(-3, 0);
+                    this.hitbox.setLinearVelocity(-2, 0);
                     break;
                 case Input.Keys.D, Input.Keys.RIGHT:
-                    this.hitbox.setLinearVelocity(3, 0);
+                    this.hitbox.setLinearVelocity(2, 0);
                     break;
             }
         } else {
