@@ -7,22 +7,23 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
-public abstract class ImmutableStationaryObject implements Drawable {
+public abstract class StationaryObject implements Drawable {
     protected final int x;
     protected final int y;
+    protected final Body hitbox;
 
-    ImmutableStationaryObject(World world, int x, int y) {
+    StationaryObject(World world, int x, int y) {
         this.x = x;
         this.y = y;
         // Since the hitbox never moves, and we never need to change it, we don't need to store a reference to it.
-        createHitbox(world);
+        hitbox = createHitbox(world);
     }
 
     /**
      * Create a Box2D body for the chest.
      * @param world The Box2D world to add the body to.
      */
-    private void createHitbox(World world) {
+    private Body createHitbox(World world) {
         // BodyDef is like a blueprint for the movement properties of the body.
         BodyDef bodyDef = new BodyDef();
         // Static bodies never move, but static bodies can collide with them.
@@ -40,8 +41,9 @@ public abstract class ImmutableStationaryObject implements Drawable {
         body.createFixture(box, 1.0f);
         // We're done with the shape, so we should dispose of it to free up memory.
         box.dispose();
-        // Set the chest as the user data of the body, so we can look up the chest from the body later.
+        // Set the object as the user data of the body, so we can look up the object from the body later.
         body.setUserData(this);
+        return body;
     }
 
     @Override

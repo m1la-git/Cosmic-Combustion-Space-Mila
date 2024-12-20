@@ -103,11 +103,11 @@ public class GameScreen implements Screen {
         
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
-        for (Flowers flowers : map.getFlowers()) {
-            if (flowers != null) {
-                draw(spriteBatch, flowers);
-            }
+
+        for (StationaryObject obj: map.getStationaryObjects().values()) {
+            draw(spriteBatch, obj);
         }
+
         int[][] filledCells = map.getFilledCells();
         for (int i = 0; i < filledCells.length; i++) {
             for (int j = 0; j < filledCells[i].length; j++) {
@@ -117,16 +117,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        for (DestructibleWall destructibleWall : map.getDestructibleWalls()) {
-            if (destructibleWall != null) {
-                draw(spriteBatch, destructibleWall);
-            }
-        }
-        for (IndestructibleWall indestructibleWall: map.getIndestructibleWalls()) {
-            if (indestructibleWall != null) {
-                draw(spriteBatch, indestructibleWall);
-            }
-        }
         for (Bomb bomb: map.getBombs()) {
             draw(spriteBatch, bomb);
         }
