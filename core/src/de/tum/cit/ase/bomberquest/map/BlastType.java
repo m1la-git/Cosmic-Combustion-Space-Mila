@@ -7,5 +7,6 @@ public enum BlastType {
     UP,
     LEFT,
     RIGHT,
-    DOWN
+    DOWN,
+    WALL
 }

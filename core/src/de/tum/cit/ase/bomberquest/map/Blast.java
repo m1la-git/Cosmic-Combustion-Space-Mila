@@ -11,18 +11,22 @@ public class Blast extends StationaryObject implements Drawable {
     private final BlastType type;
 
     public Blast(World world, int x, int y, BlastType type) {
-        super(world, x, y, false);
+        super(world, x, y, type == BlastType.WALL);
         this.type = type;
     }
 
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
-        if (this.elapsedTime >= 0.5f && !finished) {
+        if (this.elapsedTime >= 0.6f && !finished) {
             finished = true;
         }
     }
     public boolean isFinished() {
         return finished;
+    }
+
+    public BlastType getType() {
+        return type;
     }
 
     @Override
@@ -35,6 +39,7 @@ public class Blast extends StationaryObject implements Drawable {
             case DOWN -> Animations.BLAST_DOWN.getKeyFrame(this.elapsedTime, false);
             case LEFT -> Animations.BLAST_LEFT.getKeyFrame(this.elapsedTime, false);
             case RIGHT -> Animations.BLAST_RIGHT.getKeyFrame(this.elapsedTime, false);
+            case WALL -> Animations.BLAST_WALL.getKeyFrame(this.elapsedTime, false);
         };
 
     }

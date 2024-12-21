@@ -144,7 +144,10 @@ public class GameMap {
                         entrance[0] = x;
                         entrance[1] = y;
                         break;
-                    case 3, 4: // enemy and exit
+                    case 3: // enemy and exit
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.EXIT));
+                        break;
+                    case 4:
                         break;
                     case 5: // powerUp: bombs
                         stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBS_POWER_UP));
@@ -232,6 +235,9 @@ public class GameMap {
                 blast.tick(frameTime);
                 if (blast.isFinished()) {
                     blasts.remove(i);
+                    if (blast.getType() == BlastType.WALL) {
+                        blast.destroy(world);
+                    }
                 }
             }
         }
@@ -281,6 +287,10 @@ public class GameMap {
                     if (type != WallContentType.EMPTY && type != WallContentType.EXIT) {
                         stationaryObjects.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
                     }
+                    else if (type == WallContentType.EXIT) {
+                        stationaryObjects.put(currentX + "," + currentY, new Exit(world, currentX, currentY));
+                    }
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.WALL));
                     return i;
                 }
                 return i - 1;
