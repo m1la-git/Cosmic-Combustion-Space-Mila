@@ -14,10 +14,12 @@ public abstract class MobileObject implements Drawable {
      * Total time elapsed since the game started. We use this for calculating the player movement and animating it.
      */
     private float elapsedTime;
+    private DirectionType direction;
 
     public MobileObject(World world, float x, float y, int speed) {
         this.hitbox = createHitbox(world, x, y);
         this.speed = speed;
+        direction = DirectionType.NONE;
     }
 
     /**
@@ -64,9 +66,16 @@ public abstract class MobileObject implements Drawable {
     public int getSpeed() {
         return speed;
     }
-    public void speedPowerUp() {
-        speed += 1;
+    public DirectionType getDirection() {
+        return direction;
     }
+    public void setDirection(DirectionType direction) {
+        this.direction = direction;
+    }
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
     }

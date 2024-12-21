@@ -46,6 +46,22 @@ public class Animations {
             SpriteSheet.CHARACTER.at(4, 3),
             SpriteSheet.CHARACTER.at(4, 4)
     );
+
+
+    public static final Animation<TextureRegion> ENEMY_WALK_DOWN_OR_LEFT = new Animation<>(0.1f,
+            SpriteSheet.BOMBERMAN.at(16, 4),
+            SpriteSheet.BOMBERMAN.at(16, 5),
+            SpriteSheet.BOMBERMAN.at(16, 6),
+            SpriteSheet.BOMBERMAN.at(16, 5)
+    );
+    public static final Animation<TextureRegion> ENEMY_WALK_UP_OR_RIGHT = new Animation<>(0.1f,
+            SpriteSheet.BOMBERMAN.at(16, 1),
+            SpriteSheet.BOMBERMAN.at(16, 2),
+            SpriteSheet.BOMBERMAN.at(16, 3),
+            SpriteSheet.BOMBERMAN.at(16, 2)
+    );
+
+
     /**
      * The animation for the bomb.
      */

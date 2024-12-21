@@ -23,6 +23,8 @@ public class Player extends MobileObject implements Drawable {
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
 
 
+
+
     public Player(World world, float x, float y) {
         super(world, x, y, 2);
     }
@@ -41,23 +43,29 @@ public class Player extends MobileObject implements Drawable {
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
         handleInput();
+
         if (!keyPressOrder.isEmpty()) {
             switch (keyPressOrder.peekLast()) {
                 case Input.Keys.W, Input.Keys.UP:
                     getHitbox().setLinearVelocity(0, getSpeed());
+                    setDirection(DirectionType.UP);
                     break;
                 case Input.Keys.S, Input.Keys.DOWN:
                     getHitbox().setLinearVelocity(0, -(getSpeed()));
+                    setDirection(DirectionType.DOWN);
                     break;
                 case Input.Keys.A, Input.Keys.LEFT:
                     getHitbox().setLinearVelocity(-(getSpeed()), 0);
+                    setDirection(DirectionType.LEFT);
                     break;
                 case Input.Keys.D, Input.Keys.RIGHT:
                     getHitbox().setLinearVelocity(getSpeed(), 0);
+                    setDirection(DirectionType.RIGHT);
                     break;
             }
         } else {
             getHitbox().setLinearVelocity(0, 0);
+            setDirection(DirectionType.NONE);
         }
     }
 
@@ -68,27 +76,69 @@ public class Player extends MobileObject implements Drawable {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-                if (keycode == Input.Keys.W) keyPressOrder.addLast(Input.Keys.W);
-                if (keycode == Input.Keys.S) keyPressOrder.addLast(Input.Keys.S);
-                if (keycode == Input.Keys.A) keyPressOrder.addLast(Input.Keys.A);
-                if (keycode == Input.Keys.D) keyPressOrder.addLast(Input.Keys.D);
-                if (keycode == Input.Keys.UP) keyPressOrder.addLast(Input.Keys.UP);
-                if (keycode == Input.Keys.DOWN) keyPressOrder.addLast(Input.Keys.DOWN);
-                if (keycode == Input.Keys.LEFT) keyPressOrder.addLast(Input.Keys.LEFT);
-                if (keycode == Input.Keys.RIGHT) keyPressOrder.addLast(Input.Keys.RIGHT);
+                switch (keycode) {
+                    case Input.Keys.W:
+                        keyPressOrder.addLast(Input.Keys.W);
+                        break;
+                    case Input.Keys.S:
+                        keyPressOrder.addLast(Input.Keys.S);
+                        break;
+                    case Input.Keys.A:
+                        keyPressOrder.addLast(Input.Keys.A);
+                        break;
+                    case Input.Keys.D:
+                        keyPressOrder.addLast(Input.Keys.D);
+                        break;
+                    case Input.Keys.UP:
+                        keyPressOrder.addLast(Input.Keys.UP);
+                        break;
+                    case Input.Keys.DOWN:
+                        keyPressOrder.addLast(Input.Keys.DOWN);
+                        break;
+                    case Input.Keys.LEFT:
+                        keyPressOrder.addLast(Input.Keys.LEFT);
+                        break;
+                    case Input.Keys.RIGHT:
+                        keyPressOrder.addLast(Input.Keys.RIGHT);
+                        break;
+                    default:
+                        // Optionally handle other keys or do nothing.
+                        break;
+                }
                 return true; // Indicates the event was processed
             }
 
             @Override
             public boolean keyUp(int keycode) {
-                if (keycode == Input.Keys.W) keyPressOrder.remove(Input.Keys.W);
-                if (keycode == Input.Keys.S) keyPressOrder.remove(Input.Keys.S);
-                if (keycode == Input.Keys.A) keyPressOrder.remove(Input.Keys.A);
-                if (keycode == Input.Keys.D) keyPressOrder.remove(Input.Keys.D);
-                if (keycode == Input.Keys.UP) keyPressOrder.remove(Input.Keys.UP);
-                if (keycode == Input.Keys.DOWN) keyPressOrder.remove(Input.Keys.DOWN);
-                if (keycode == Input.Keys.LEFT) keyPressOrder.remove(Input.Keys.LEFT);
-                if (keycode == Input.Keys.RIGHT) keyPressOrder.remove(Input.Keys.RIGHT);
+                switch (keycode) {
+                    case Input.Keys.W:
+                        keyPressOrder.remove(Input.Keys.W);
+                        break;
+                    case Input.Keys.S:
+                        keyPressOrder.remove(Input.Keys.S);
+                        break;
+                    case Input.Keys.A:
+                        keyPressOrder.remove(Input.Keys.A);
+                        break;
+                    case Input.Keys.D:
+                        keyPressOrder.remove(Input.Keys.D);
+                        break;
+                    case Input.Keys.UP:
+                        keyPressOrder.remove(Input.Keys.UP);
+                        break;
+                    case Input.Keys.DOWN:
+                        keyPressOrder.remove(Input.Keys.DOWN);
+                        break;
+                    case Input.Keys.LEFT:
+                        keyPressOrder.remove(Input.Keys.LEFT);
+                        break;
+                    case Input.Keys.RIGHT:
+                        keyPressOrder.remove(Input.Keys.RIGHT);
+                        break;
+                    default:
+                        // Optional: Handle other keys if necessary
+                        break;
+                }
                 return true;
             }
         });
@@ -97,19 +147,14 @@ public class Player extends MobileObject implements Drawable {
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the frame of the walk down animation that corresponds to the current time.
-        if (!keyPressOrder.isEmpty()) {
-            switch (keyPressOrder.peekLast()) {
-                case Input.Keys.W, Input.Keys.UP:
-                    return Animations.CHARACTER_WALK_UP.getKeyFrame(getElapsedTime(), true);
-                case Input.Keys.S, Input.Keys.DOWN:
-                    return Animations.CHARACTER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
-                case Input.Keys.A, Input.Keys.LEFT:
-                    return Animations.CHARACTER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
-                case Input.Keys.D, Input.Keys.RIGHT:
-                    return Animations.CHARACTER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
-            }
-        }
-        return SpriteSheet.CHARACTER.at(1, 1);
+        return switch (getDirection()) {
+            case UP -> Animations.CHARACTER_WALK_UP.getKeyFrame(getElapsedTime(), true);
+            case DOWN -> Animations.CHARACTER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
+            case LEFT -> Animations.CHARACTER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
+            case RIGHT -> Animations.CHARACTER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
+            case NONE -> SpriteSheet.CHARACTER.at(1, 1);
+        };
+
     }
 
 
