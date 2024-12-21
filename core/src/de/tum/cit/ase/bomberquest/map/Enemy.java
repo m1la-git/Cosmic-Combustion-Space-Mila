@@ -17,6 +17,7 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
     private boolean reachedCell;
     private int targetCellX;
     private int targetCellY;
+    private DirectionType lastDirection = DirectionType.NONE;
 
     public Enemy(World world, float x, float y, GameMap map) {
         super(world, x, y, 2, 0.5f, BodyDef.BodyType.KinematicBody);
@@ -45,35 +46,47 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
         List<DirectionType> freeDirections = new ArrayList<>();
 
         for (DirectionType direction : directions) {
-            if (isDirectionFree(direction)) {
+            if (isDirectionFree(direction) && direction != DirectionType.getOppositeDirection(lastDirection)) {
                 freeDirections.add(direction);
             }
         }
 
-        // If there are free directions, pick one at random; otherwise, return NONE
+        // If there are free directions, pick one at random; otherwise, allow going in the opposite direction
         if (!freeDirections.isEmpty()) {
             DirectionType direction = freeDirections.get(random.nextInt(freeDirections.size()));
-            targetCellX = getCellX();
-            targetCellY = getCellY();
-            switch (direction) {
-                case UP:
-                    targetCellY += 1;
-                    break;
-                case DOWN:
-                    targetCellY -= 1;
-                    break;
-                case LEFT:
-                    targetCellX -= 1;
-                    break;
-                case RIGHT:
-                    targetCellX += 1;
-                    break;
-            }
-
+            updateTargetCell(direction);
+            lastDirection = direction;
             return direction;
         }
 
+        // If no alternative, choose the opposite direction as a fallback
+        DirectionType fallbackDirection = DirectionType.getOppositeDirection(lastDirection);
+        if (isDirectionFree(fallbackDirection)) {
+            updateTargetCell(fallbackDirection);
+            lastDirection = fallbackDirection;
+            return fallbackDirection;
+        }
+
         return DirectionType.NONE;
+    }
+
+    private void updateTargetCell(DirectionType direction) {
+        targetCellX = getCellX();
+        targetCellY = getCellY();
+        switch (direction) {
+            case UP:
+                targetCellY += 1;
+                break;
+            case DOWN:
+                targetCellY -= 1;
+                break;
+            case LEFT:
+                targetCellX -= 1;
+                break;
+            case RIGHT:
+                targetCellX += 1;
+                break;
+        }
     }
 
     private boolean isDirectionFree(DirectionType direction) {
