@@ -14,31 +14,36 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @see TextureRegion a part of an image
  */
 public enum SpriteSheet {
-    
-    /** The character spritesheet, which has a grid size of 16x32. */
+
+    /**
+     * The character spritesheet, which has a grid size of 16x32.
+     */
     CHARACTER("character.png", 16, 32),
-    /** The basic tiles spritesheet, which has a grid size of 16x16. */
+    /**
+     * The basic tiles spritesheet, which has a grid size of 16x16.
+     */
     BASIC_TILES("basictiles.png", 16, 16),
 
     BOMBERMAN("original-bomberman.png", 16, 16);
-    
+
     private final Texture spritesheet;
     private final int width;
     private final int height;
-    
+
     /**
      * Constructor for each variant of this enum.
      * Every SpriteSheet has a corresponding file, width, and height.
+     *
      * @param filename the filename of the spritesheet
-     * @param width the width of a single grid cell
-     * @param height the height of a single grid cell
+     * @param width    the width of a single grid cell
+     * @param height   the height of a single grid cell
      */
     SpriteSheet(String filename, int width, int height) {
         this.spritesheet = new Texture(Gdx.files.internal("texture/" + filename));
         this.width = width;
         this.height = height;
     }
-    
+
     /**
      * Returns the TextureRegion at the specified row and column (1-based coordinates)
      * according to the grid specified by {@code this.width} and {@code this.height}.
@@ -46,7 +51,7 @@ public enum SpriteSheet {
      * Keep in mind that since spritesheet textures typically start in the top-left corner,
      * the row index starts at 1 at the top and the column index starts at 1 on the left.
      *
-     * @param row the row of the texture to fetch, starting from 1 at the TOP of the spritesheet
+     * @param row    the row of the texture to fetch, starting from 1 at the TOP of the spritesheet
      * @param column the column of the texture to fetch, starting from 1 on the LEFT of the spritesheet
      * @return the texture
      */
@@ -59,5 +64,5 @@ public enum SpriteSheet {
                 this.height
         );
     }
-    
+
 }

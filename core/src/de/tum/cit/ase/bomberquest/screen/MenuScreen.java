@@ -52,10 +52,11 @@ public class MenuScreen implements Screen {
             }
         });
     }
-    
+
     /**
      * The render method is called every frame to render the menu screen.
      * It clears the screen and draws the stage.
+     *
      * @param deltaTime The time in seconds since the last render.
      */
     @Override
@@ -65,10 +66,11 @@ public class MenuScreen implements Screen {
         stage.act(frameTime); // Update the stage
         stage.draw(); // Draw the stage
     }
-    
+
     /**
      * Resize the stage when the screen is resized.
-     * @param width The new width of the screen.
+     *
+     * @param width  The new width of the screen.
      * @param height The new height of the screen.
      */
     @Override

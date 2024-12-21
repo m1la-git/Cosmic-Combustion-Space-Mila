@@ -18,21 +18,20 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 public class BomberQuestGame extends Game {
 
     /**
-     * Sprite Batch for rendering game elements.
-     * This eats a lot of memory, so we only want one of these.
-     */
-    private SpriteBatch spriteBatch;
-
-    /** The game's UI skin. This is used to style the game's UI elements. */
-    private Skin skin;
-    
-    /**
      * The file chooser for loading map files from the user's computer.
      * This will give you access to a {@link com.badlogic.gdx.files.FileHandle} object,
      * which you can use to read the contents of the map file as a String, and then parse it into a {@link GameMap}.
      */
     private final NativeFileChooser fileChooser;
-    
+    /**
+     * Sprite Batch for rendering game elements.
+     * This eats a lot of memory, so we only want one of these.
+     */
+    private SpriteBatch spriteBatch;
+    /**
+     * The game's UI skin. This is used to style the game's UI elements.
+     */
+    private Skin skin;
     /**
      * The map. This is where all the game objects are stored.
      * This is owned by {@link BomberQuestGame} and not by {@link GameScreen}
@@ -78,23 +77,30 @@ public class BomberQuestGame extends Game {
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
     }
 
-    /** Returns the skin for UI elements. */
+    /**
+     * Returns the skin for UI elements.
+     */
     public Skin getSkin() {
         return skin;
     }
 
-    /** Returns the main SpriteBatch for rendering. */
+    /**
+     * Returns the main SpriteBatch for rendering.
+     */
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
-    
-    /** Returns the current map, if there is one. */
+
+    /**
+     * Returns the current map, if there is one.
+     */
     public GameMap getMap() {
         return map;
     }
-    
+
     /**
      * Switches to the given screen and disposes of the previous screen.
+     *
      * @param screen the new screen
      */
     @Override
@@ -106,7 +112,9 @@ public class BomberQuestGame extends Game {
         }
     }
 
-    /** Cleans up resources when the game is disposed. */
+    /**
+     * Cleans up resources when the game is disposed.
+     */
     @Override
     public void dispose() {
         getScreen().hide(); // Hide the current screen

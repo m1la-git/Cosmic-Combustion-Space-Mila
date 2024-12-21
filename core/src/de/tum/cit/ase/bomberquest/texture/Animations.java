@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * These can be referenced anywhere they are needed.
  */
 public class Animations {
-    
+
     /**
      * The animation for the character walking down.
      */

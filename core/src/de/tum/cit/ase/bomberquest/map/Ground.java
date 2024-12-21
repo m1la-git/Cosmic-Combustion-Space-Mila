@@ -10,25 +10,25 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
  * They are purely decorative and serve as a nice floor decoration.
  */
 public class Ground implements Drawable {
-    
+
     private final int x;
     private final int y;
-    
+
     public Ground(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    
+
     @Override
     public TextureRegion getCurrentAppearance() {
         return Textures.FLOWERS;
     }
-    
+
     @Override
     public float getX() {
         return x;
     }
-    
+
     @Override
     public float getY() {
         return y;

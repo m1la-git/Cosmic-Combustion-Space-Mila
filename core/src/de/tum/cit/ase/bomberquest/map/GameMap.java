@@ -100,7 +100,6 @@ public class GameMap {
      * adds to the list with the respective types of the objects (walls, entrance, etc.)
      *
      * @param filename the name of the file with the map
-
      */
     public int[] loadMap(String filename) {
         int maxX = 0;
@@ -286,8 +285,7 @@ public class GameMap {
                     stationaryObjects.remove(currentX + "," + currentY);
                     if (type != WallContentType.EMPTY && type != WallContentType.EXIT) {
                         stationaryObjects.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
-                    }
-                    else if (type == WallContentType.EXIT) {
+                    } else if (type == WallContentType.EXIT) {
                         stationaryObjects.put(currentX + "," + currentY, new Exit(world, currentX, currentY));
                     }
                     blasts.add(new Blast(world, currentX, currentY, BlastType.WALL));
@@ -296,14 +294,21 @@ public class GameMap {
                 return i - 1;
             }
             if (i == blastRadius) {
-                if (dx == 0 && dy < 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.DOWN));}
-                else if (dx == 0 && dy > 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.UP));}
-                else if (dy == 0 && dx > 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.RIGHT));}
-                else {blasts.add(new Blast(world, currentX, currentY, BlastType.LEFT));}
-            }
-            else {
-                if (dx == 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.VERTICAL));}
-                else {blasts.add(new Blast(world, currentX, currentY, BlastType.HORIZONTAL));}
+                if (dx == 0 && dy < 0) {
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.DOWN));
+                } else if (dx == 0 && dy > 0) {
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.UP));
+                } else if (dy == 0 && dx > 0) {
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.RIGHT));
+                } else {
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.LEFT));
+                }
+            } else {
+                if (dx == 0) {
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.VERTICAL));
+                } else {
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.HORIZONTAL));
+                }
             }
 
         }

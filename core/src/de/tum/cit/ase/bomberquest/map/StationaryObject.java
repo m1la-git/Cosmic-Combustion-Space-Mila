@@ -23,6 +23,7 @@ public abstract class StationaryObject implements Drawable {
 
     /**
      * Create a Box2D body for the chest.
+     *
      * @param world The Box2D world to add the body to.
      */
     private Body createHitbox(World world) {
@@ -47,12 +48,14 @@ public abstract class StationaryObject implements Drawable {
         body.setUserData(this);
         return body;
     }
+
     /**
      * Method to destroy the body.
+     *
      * @param world The Box2D world to remove the body from
      */
-    public void destroy(World world){
-        if(hitbox != null) {
+    public void destroy(World world) {
+        if (hitbox != null) {
             world.destroyBody(hitbox);
             hitbox = null; // Set the body to null
         }

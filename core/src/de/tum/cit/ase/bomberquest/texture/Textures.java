@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * These can be referenced anywhere they are needed.
  */
 public class Textures {
-    
+
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
 
     public static final TextureRegion INDESTRUCTIBLE_WALL = SpriteSheet.BASIC_TILES.at(3, 2);
@@ -30,5 +30,4 @@ public class Textures {
     public static final TextureRegion MYSTERY_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 8);
 
 
-    
 }
