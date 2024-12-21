@@ -13,7 +13,7 @@ public class Animations {
     /**
      * The animation for the character walking down.
      */
-    public static final Animation<TextureRegion> CHARACTER_WALK_DOWN = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> PLAYER_WALK_DOWN = new Animation<>(0.1f,
             SpriteSheet.CHARACTER.at(1, 1),
             SpriteSheet.CHARACTER.at(1, 2),
             SpriteSheet.CHARACTER.at(1, 3),
@@ -22,7 +22,7 @@ public class Animations {
     /**
      * The animation for the character walking up.
      */
-    public static final Animation<TextureRegion> CHARACTER_WALK_UP = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> PLAYER_WALK_UP = new Animation<>(0.1f,
             SpriteSheet.CHARACTER.at(3, 1),
             SpriteSheet.CHARACTER.at(3, 2),
             SpriteSheet.CHARACTER.at(3, 3),
@@ -31,7 +31,7 @@ public class Animations {
     /**
      * The animation for the character walking right.
      */
-    public static final Animation<TextureRegion> CHARACTER_WALK_RIGHT = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> PLAYER_WALK_RIGHT = new Animation<>(0.1f,
             SpriteSheet.CHARACTER.at(2, 1),
             SpriteSheet.CHARACTER.at(2, 2),
             SpriteSheet.CHARACTER.at(2, 3),
@@ -40,13 +40,22 @@ public class Animations {
     /**
      * The animation for the character walking left.
      */
-    public static final Animation<TextureRegion> CHARACTER_WALK_LEFT = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> PLAYER_WALK_LEFT = new Animation<>(0.1f,
             SpriteSheet.CHARACTER.at(4, 1),
             SpriteSheet.CHARACTER.at(4, 2),
             SpriteSheet.CHARACTER.at(4, 3),
             SpriteSheet.CHARACTER.at(4, 4)
     );
 
+    public static final Animation<TextureRegion> PLAYER_DEATH = new Animation<>(0.15f,
+            SpriteSheet.BOMBERMAN.at(3, 1),
+            SpriteSheet.BOMBERMAN.at(3, 2),
+            SpriteSheet.BOMBERMAN.at(3, 3),
+            SpriteSheet.BOMBERMAN.at(3, 4),
+            SpriteSheet.BOMBERMAN.at(3, 5),
+            SpriteSheet.BOMBERMAN.at(3, 6),
+            SpriteSheet.BOMBERMAN.at(3, 7)
+    );
 
     public static final Animation<TextureRegion> ENEMY_WALK_DOWN_OR_LEFT = new Animation<>(0.1f,
             SpriteSheet.BOMBERMAN.at(16, 4),
@@ -60,7 +69,6 @@ public class Animations {
             SpriteSheet.BOMBERMAN.at(16, 3),
             SpriteSheet.BOMBERMAN.at(16, 2)
     );
-
 
     /**
      * The animation for the bomb.

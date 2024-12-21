@@ -21,11 +21,18 @@ public class Player extends MobileObject implements Drawable {
     /**
      * double queue to manage character movement
      */
+
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
+    private boolean alive;
+    private boolean dead;
+    private float deathX;
+    private float deathY;
 
 
     public Player(World world, float x, float y) {
         super(world, x, y, 2, 0.3f, BodyDef.BodyType.DynamicBody);
+        alive = true;
+        dead = false;
     }
 
 
@@ -41,31 +48,37 @@ public class Player extends MobileObject implements Drawable {
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
-        handleInput();
-
-        if (!keyPressOrder.isEmpty()) {
-            switch (keyPressOrder.peekLast()) {
-                case Input.Keys.W, Input.Keys.UP:
-                    getHitbox().setLinearVelocity(0, getSpeed());
-                    setDirection(DirectionType.UP);
-                    break;
-                case Input.Keys.S, Input.Keys.DOWN:
-                    getHitbox().setLinearVelocity(0, -getSpeed());
-                    setDirection(DirectionType.DOWN);
-                    break;
-                case Input.Keys.A, Input.Keys.LEFT:
-                    getHitbox().setLinearVelocity(-getSpeed(), 0);
-                    setDirection(DirectionType.LEFT);
-                    break;
-                case Input.Keys.D, Input.Keys.RIGHT:
-                    getHitbox().setLinearVelocity(getSpeed(), 0);
-                    setDirection(DirectionType.RIGHT);
-                    break;
+        if (alive) {
+            handleInput();
+            if (!keyPressOrder.isEmpty()) {
+                switch (keyPressOrder.peekLast()) {
+                    case Input.Keys.W, Input.Keys.UP:
+                        getHitbox().setLinearVelocity(0, getSpeed());
+                        setDirection(DirectionType.UP);
+                        break;
+                    case Input.Keys.S, Input.Keys.DOWN:
+                        getHitbox().setLinearVelocity(0, -getSpeed());
+                        setDirection(DirectionType.DOWN);
+                        break;
+                    case Input.Keys.A, Input.Keys.LEFT:
+                        getHitbox().setLinearVelocity(-getSpeed(), 0);
+                        setDirection(DirectionType.LEFT);
+                        break;
+                    case Input.Keys.D, Input.Keys.RIGHT:
+                        getHitbox().setLinearVelocity(getSpeed(), 0);
+                        setDirection(DirectionType.RIGHT);
+                        break;
+                }
+            } else {
+                getHitbox().setLinearVelocity(0, 0);
+                setDirection(DirectionType.NONE);
             }
         } else {
-            getHitbox().setLinearVelocity(0, 0);
-            setDirection(DirectionType.NONE);
+            if (getElapsedTime() >= 1.05f && !dead) {
+                dead = true;
+            }
         }
+
     }
 
     /**
@@ -143,17 +156,55 @@ public class Player extends MobileObject implements Drawable {
         });
     }
 
+    public void death(World world) {
+        deathX = getX();
+        deathY = getY();
+        alive = false;
+        System.out.println("death: " + deathX + "," + deathY);
+        destroy(world);
+        setElapsedTime(0);
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+
     @Override
     public TextureRegion getCurrentAppearance() {
-        // Get the frame of the walk down animation that corresponds to the current time.
-        return switch (getDirection()) {
-            case UP -> Animations.CHARACTER_WALK_UP.getKeyFrame(getElapsedTime(), true);
-            case DOWN -> Animations.CHARACTER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
-            case LEFT -> Animations.CHARACTER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
-            case RIGHT -> Animations.CHARACTER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
-            case NONE -> SpriteSheet.CHARACTER.at(1, 1);
-        };
+        if (alive) {
+            // Get the frame of the walk down animation that corresponds to the current time.
+            return switch (getDirection()) {
+                case UP -> Animations.PLAYER_WALK_UP.getKeyFrame(getElapsedTime(), true);
+                case DOWN -> Animations.PLAYER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
+                case LEFT -> Animations.PLAYER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
+                case RIGHT -> Animations.PLAYER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
+                case NONE -> SpriteSheet.CHARACTER.at(1, 1);
+            };
+        }
+        return Animations.PLAYER_DEATH.getKeyFrame(getElapsedTime(), false);
+    }
 
+    @Override
+    public float getX() {
+        // The x-coordinate of the player is the x-coordinate of the hitbox (this can change every frame).
+        if (alive) {
+            return super.getX();
+        }
+        return deathX;
+    }
+
+    @Override
+    public float getY() {
+        // The y-coordinate of the player is the y-coordinate of the hitbox (this can change every frame).
+        if (alive) {
+            return super.getY();
+        }
+        return deathY;
     }
 
 

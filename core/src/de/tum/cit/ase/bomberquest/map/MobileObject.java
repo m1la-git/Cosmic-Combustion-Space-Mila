@@ -8,7 +8,7 @@ public abstract class MobileObject implements Drawable {
     /**
      * The Box2D hitbox of the player, used for position and collision detection.
      */
-    private final Body hitbox;
+    private Body hitbox;
     private int speed;
     /**
      * Total time elapsed since the game started. We use this for calculating the player movement and animating it.
@@ -60,6 +60,13 @@ public abstract class MobileObject implements Drawable {
 
     public void increaseElapsedTime(float frameTime) {
         elapsedTime += frameTime;
+    }
+
+    public void destroy(World world) {
+        if (hitbox != null) {
+            world.destroyBody(hitbox);
+            hitbox = null; // Set the body to null
+        }
     }
 
     public float getElapsedTime() {

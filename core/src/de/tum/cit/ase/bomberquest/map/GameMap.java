@@ -243,6 +243,8 @@ public class GameMap {
             }
         }
 
+
+        List<int[]> blastInfo = new ArrayList<>();
         // bomb ticks and handling bomb collisions
         for (int i = bombs.size() - 1; i >= 0; i--) {
             Bomb bomb = bombs.get(i);
@@ -253,15 +255,16 @@ public class GameMap {
                 contactListener.removeIgnoredBomb(bomb.getHitbox());
             }
             if (bomb.isExploded()) {
-                int x = Math.round(bomb.getX());
-                int y = Math.round(bomb.getY());
-                int blastUp = releaseBlast(x, y, 0, 1);  // Up
-                int blastDown = releaseBlast(x, y, 0, -1); // Down
-                int blastRight = releaseBlast(x, y, 1, 0);  // Right
-                int blastLeft = releaseBlast(x, y, -1, 0); // Left
+                int bombX = Math.round(bomb.getX());
+                int bombY = Math.round(bomb.getY());
+                int blastUp = bombY + releaseBlast(bombX, bombY, 0, 1);  // Up
+                int blastDown = bombY - releaseBlast(bombX, bombY, 0, -1); // Down
+                int blastRight = bombX + releaseBlast(bombX, bombY, 1, 0);  // Right
+                int blastLeft = bombX - releaseBlast(bombX, bombY, -1, 0); // Left
+                blastInfo.add(new int[]{bombX, bombY, blastLeft, blastRight, blastDown, blastUp});
                 bomb.destroy(world);
                 bombs.remove(bomb);
-                blasts.add(new Blast(world, x, y, BlastType.CENTER));
+                blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER));
             }
         }
 
@@ -279,9 +282,20 @@ public class GameMap {
 
         //enemies ticks
         for (int i = enemies.size() - 1; i >= 0; i--) {
-            enemies.get(i).tick(frameTime);
+            Enemy enemy = enemies.get(i);
+            enemy.tick(frameTime);
+
         }
 
+        // deaths
+        for (int[] blast: blastInfo) {
+            if (player.isAlive()){
+                if (isBlasted(player, blast)) {
+                    player.death(world);
+                }
+            }
+        }
+        blastInfo.clear();
         doPhysicsStep(frameTime);
 
     }
@@ -300,6 +314,17 @@ public class GameMap {
         }
     }
 
+
+    private boolean isBlasted(MobileObject obj, int[] blast) {
+        if (obj.getCellX() == blast[0]) {
+            return blast[4] <= obj.getCellY() && obj.getCellY() <= blast[5];
+        }
+        else if (obj.getCellY() == blast[1]) {
+            return blast[2] <= obj.getCellY() && obj.getCellY() <= blast[3];
+        }
+        return false;
+    }
+
     /**
      * Checks whether the bomb and the player are overlapping
      *
@@ -307,7 +332,7 @@ public class GameMap {
      * @param bodyB: Bomb's hitbox
      */
     private boolean isOverlapping(Body bodyA, Body bodyB) {
-        return bodyA.getPosition().dst(bodyB.getPosition()) < 0.8f; // Adjust threshold as needed
+        return bodyA.getPosition().dst(bodyB.getPosition()) < 1f; // Adjust threshold as needed
     }
 
 
