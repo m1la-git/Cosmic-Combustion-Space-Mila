@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Represents the game map.
@@ -73,10 +74,12 @@ public class GameMap {
      */
     private float physicsTime = 0;
 
+    private boolean playerAlive;
 
     public GameMap(BomberQuestGame game) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
+        this.playerAlive = true;
         this.contactListener = new GameContactListener();
         this.world.setContactListener(contactListener);
         this.stationaryObjects = new HashMap<>();
@@ -104,7 +107,8 @@ public class GameMap {
     public int[] loadMap(String filename) {
         int maxX = 0;
         int maxY = 0;
-
+        boolean existsExit = false;
+        List<String> freeDestructibleWalls = new ArrayList<>();
         FileHandle file = Gdx.files.internal("maps/" + filename);
         try {
             for (String line : file.readString().split("\\r?\\n")) {
@@ -138,15 +142,19 @@ public class GameMap {
                         break;
                     case 1: // destructibleWall
                         stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y));
+                        freeDestructibleWalls.add(x + "," + y);
                         break;
                     case 2: // entrance
                         entrance[0] = x;
                         entrance[1] = y;
                         break;
-                    case 3: // enemy and exit
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.EXIT));
+                    case 3: // enemy
                         break;
-                    case 4:
+                    case 4: // exit
+                        if (!existsExit) {
+                            stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.EXIT));
+                            existsExit = true;
+                        }
                         break;
                     case 5: // powerUp: bombs
                         stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBS_POWER_UP));
@@ -172,9 +180,23 @@ public class GameMap {
                     case 12: // powerUp: mystery
                         stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.MYSTERY_POWER_UP));
                         break;
-
                 }
 
+            }
+            if (!existsExit) {
+                if (freeDestructibleWalls.isEmpty()) {
+                    Gdx.app.error("GameMap", "No place for an exit.");
+                }
+                else {
+                    Random random = new Random();
+                    int randomIndex = random.nextInt(freeDestructibleWalls.size());
+                    String[] randomCoords = freeDestructibleWalls.get(randomIndex).split(",");
+                    int randomX = Integer.parseInt(randomCoords[0]);
+                    int randomY = Integer.parseInt(randomCoords[1]);
+                    stationaryObjects.get(randomX + "," + randomY).destroy(world);
+                    stationaryObjects.replace(randomX + "," + randomY, new DestructibleWall(world, randomX, randomY, WallContentType.EXIT));
+                    System.out.println("Random exit coords: " + randomX + "," + randomY);
+                }
             }
         } catch (Exception e) {
             Gdx.app.error("GameMap", "Error reading map file: " + e.getMessage());
@@ -191,20 +213,31 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
+        int playerCellX = player.getCellX();
+        int playerCellY = player.getCellY();
+        if (stationaryObjects.containsKey(playerCellX + "," + playerCellY)) {
+            if (stationaryObjects.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
+                WallContentType type = powerUp.getType();
+                switch (type) {
+                    case BOMBS_POWER_UP: if (concurrentBombs < 8) concurrentBombs++;
+                    case FLAMES_POWER_UP: if(blastRadius < 8) blastRadius++;
+                }
+                stationaryObjects.remove(playerCellX + "," + playerCellY);
+            }
+        }
+
+        // place bomb if space is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < concurrentBombs) {
             boolean spaceEmpty = true;
-            int x = Math.round(player.getX());
-            int y = Math.round(player.getY());
             for (Bomb bomb : bombs) {
-                if (bomb.getX() == x && bomb.getY() == y) {
+                if (bomb.getX() == playerCellX && bomb.getY() == playerCellY) {
                     spaceEmpty = false;
                     break;
                 }
             }
             if (spaceEmpty) {
-                Bomb newBomb = new Bomb(world, x, y);
+                Bomb newBomb = new Bomb(world, playerCellX, playerCellY);
                 bombs.add(0, newBomb);
-                contactListener.addIgnoredBomb(newBomb.getHitbox());
             }
         }
         //handle bomb collisions
@@ -228,15 +261,15 @@ public class GameMap {
                 blasts.add(new Blast(world, x, y, BlastType.CENTER));
             }
         }
-        if (!blasts.isEmpty()) {
-            for (int i = blasts.size() - 1; i >= 0; i--) {
-                Blast blast = blasts.get(i);
-                blast.tick(frameTime);
-                if (blast.isFinished()) {
-                    blasts.remove(i);
-                    if (blast.getType() == BlastType.WALL) {
-                        blast.destroy(world);
-                    }
+
+        //blasts tick
+        for (int i = blasts.size() - 1; i >= 0; i--) {
+            Blast blast = blasts.get(i);
+            blast.tick(frameTime);
+            if (blast.isFinished()) {
+                blasts.remove(i);
+                if (blast.getType() == BlastType.WALL) {
+                    blast.destroy(world);
                 }
             }
         }
@@ -268,6 +301,7 @@ public class GameMap {
     private boolean isOverlapping(Body bodyA, Body bodyB) {
         return bodyA.getPosition().dst(bodyB.getPosition()) < 0.8f; // Adjust threshold as needed
     }
+
 
     /**
      * Releasing the blast in 1 direction in a certain radius

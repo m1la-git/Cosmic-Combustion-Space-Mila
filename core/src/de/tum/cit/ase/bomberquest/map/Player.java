@@ -157,6 +157,13 @@ public class Player implements Drawable {
         return SpriteSheet.CHARACTER.at(1, 1);
     }
 
+    public int getCellX() {
+        return Math.round(getX());
+    }
+    public int getCellY() {
+        return Math.round(getY());
+    }
+
     @Override
     public float getX() {
         // The x-coordinate of the player is the x-coordinate of the hitbox (this can change every frame).
