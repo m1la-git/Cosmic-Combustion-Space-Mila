@@ -55,5 +55,48 @@ public class Animations {
             SpriteSheet.BOMBERMAN.at(4, 3),
             SpriteSheet.BOMBERMAN.at(4, 2)
     );
-    
+
+    public static final Animation<TextureRegion> BLAST_CENTER = new Animation<>(0.125f,
+            SpriteSheet.BOMBERMAN.at(7, 3),
+            SpriteSheet.BOMBERMAN.at(7, 8),
+            SpriteSheet.BOMBERMAN.at(12, 3),
+            SpriteSheet.BOMBERMAN.at(12, 8)
+    );
+
+    public static final Animation<TextureRegion> BLAST_HORIZONTAL = new Animation<>(0.125f,
+            SpriteSheet.BOMBERMAN.at(7, 2),
+            SpriteSheet.BOMBERMAN.at(7, 7),
+            SpriteSheet.BOMBERMAN.at(12, 2),
+            SpriteSheet.BOMBERMAN.at(12, 7)
+    );
+    public static final Animation<TextureRegion> BLAST_VERTICAL = new Animation<>(0.125f,
+            SpriteSheet.BOMBERMAN.at(6, 3),
+            SpriteSheet.BOMBERMAN.at(6, 8),
+            SpriteSheet.BOMBERMAN.at(11, 3),
+            SpriteSheet.BOMBERMAN.at(11, 8)
+    );
+    public static final Animation<TextureRegion> BLAST_UP = new Animation<>(0.125f,
+            SpriteSheet.BOMBERMAN.at(5, 3),
+            SpriteSheet.BOMBERMAN.at(5, 8),
+            SpriteSheet.BOMBERMAN.at(10, 3),
+            SpriteSheet.BOMBERMAN.at(10, 8)
+    );
+    public static final Animation<TextureRegion> BLAST_DOWN = new Animation<>(0.125f,
+            SpriteSheet.BOMBERMAN.at(9, 3),
+            SpriteSheet.BOMBERMAN.at(9, 8),
+            SpriteSheet.BOMBERMAN.at(14, 3),
+            SpriteSheet.BOMBERMAN.at(14, 8)
+    );
+    public static final Animation<TextureRegion> BLAST_LEFT = new Animation<>(0.125f,
+            SpriteSheet.BOMBERMAN.at(7, 1),
+            SpriteSheet.BOMBERMAN.at(7, 6),
+            SpriteSheet.BOMBERMAN.at(12, 1),
+            SpriteSheet.BOMBERMAN.at(12, 6)
+    );
+    public static final Animation<TextureRegion> BLAST_RIGHT = new Animation<>(0.125f,
+            SpriteSheet.BOMBERMAN.at(7, 5),
+            SpriteSheet.BOMBERMAN.at(7, 10),
+            SpriteSheet.BOMBERMAN.at(12, 5),
+            SpriteSheet.BOMBERMAN.at(12, 10)
+    );
 }

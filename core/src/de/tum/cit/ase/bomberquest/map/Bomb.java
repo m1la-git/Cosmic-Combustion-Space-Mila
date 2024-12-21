@@ -7,7 +7,6 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 public class Bomb extends StationaryObject implements Drawable {
     private float elapsedTime;
-    private final float FUSE_TIME = 3.0f;
     private boolean exploded;
 
     public Bomb(World world, int x, int y) {
@@ -17,7 +16,7 @@ public class Bomb extends StationaryObject implements Drawable {
 
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
-        if (this.elapsedTime >= FUSE_TIME && !exploded) {
+        if (this.elapsedTime >= 3.0f && !exploded) {
             exploded = true;
         }
     }

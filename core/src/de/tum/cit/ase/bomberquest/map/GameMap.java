@@ -58,6 +58,7 @@ public class GameMap {
     private final Player player;
     private final int[] entrance;
     private final List<Bomb> bombs;
+    private final List<Blast> blasts;
     // make sure that map won't have any empty spaces
 
     private final Map<String, StationaryObject> stationaryObjects;
@@ -81,6 +82,7 @@ public class GameMap {
         this.stationaryObjects = new HashMap<>();
         this.entrance = new int[]{0, 0};
         this.bombs = new ArrayList<>();
+        this.blasts = new ArrayList<>();
         this.blastRadius = 1;
         this.concurrentBombs = 1;
 
@@ -98,10 +100,7 @@ public class GameMap {
      * adds to the list with the respective types of the objects (walls, entrance, etc.)
      *
      * @param filename the name of the file with the map
-     *                 0: indestructibleWalls
-     *                 1: destructibleWalls
-     *                 2: entrance
-     *                 3+: basic field
+
      */
     public int[] loadMap(String filename) {
         int maxX = 0;
@@ -224,8 +223,19 @@ public class GameMap {
                 int blastLeft = releaseBlast(x, y, -1, 0); // Left
                 bomb.destroy(world);
                 bombs.remove(bomb);
+                blasts.add(new Blast(world, x, y, BlastType.CENTER));
             }
         }
+        if (!blasts.isEmpty()) {
+            for (int i = blasts.size() - 1; i >= 0; i--) {
+                Blast blast = blasts.get(i);
+                blast.tick(frameTime);
+                if (blast.isFinished()) {
+                    blasts.remove(i);
+                }
+            }
+        }
+
         doPhysicsStep(frameTime);
 
     }
@@ -271,11 +281,21 @@ public class GameMap {
                     if (type != WallContentType.EMPTY && type != WallContentType.EXIT) {
                         stationaryObjects.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
                     }
-
                     return i;
                 }
                 return i - 1;
             }
+            if (i == blastRadius) {
+                if (dx == 0 && dy < 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.DOWN));}
+                else if (dx == 0 && dy > 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.UP));}
+                else if (dy == 0 && dx > 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.RIGHT));}
+                else {blasts.add(new Blast(world, currentX, currentY, BlastType.LEFT));}
+            }
+            else {
+                if (dx == 0) {blasts.add(new Blast(world, currentX, currentY, BlastType.VERTICAL));}
+                else {blasts.add(new Blast(world, currentX, currentY, BlastType.HORIZONTAL));}
+            }
+
         }
         return blastRadius;
     }
@@ -298,6 +318,10 @@ public class GameMap {
      */
     public List<Bomb> getBombs() {
         return bombs;
+    }
+
+    public List<Blast> getBlasts() {
+        return blasts;
     }
 
     public int getMaxX() {

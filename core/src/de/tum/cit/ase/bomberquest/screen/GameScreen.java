@@ -108,11 +108,14 @@ public class GameScreen implements Screen {
 
         for (int i = 0; i < map.getMaxX(); i++) {
             for (int j = 0; j < map.getMaxY(); j++) {
-                draw(spriteBatch, new Flowers(i, j));
+                draw(spriteBatch, new Ground(i, j));
             }
         }
         for (StationaryObject obj: map.getStationaryObjects().values()) {
             draw(spriteBatch, obj);
+        }
+        for (Blast blast: map.getBlasts()) {
+            draw(spriteBatch, blast);
         }
 
         for (Bomb bomb: map.getBombs()) {
