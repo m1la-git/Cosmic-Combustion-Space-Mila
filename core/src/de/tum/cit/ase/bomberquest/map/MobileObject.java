@@ -15,11 +15,17 @@ public abstract class MobileObject implements Drawable {
      */
     private float elapsedTime;
     private DirectionType direction;
+    private boolean alive;
+    private boolean dead;
+    private float deathX;
+    private float deathY;
 
     public MobileObject(World world, float x, float y, int speed, float radius, BodyDef.BodyType bodyType) {
         this.hitbox = createHitbox(world, x, y, radius, bodyType);
         this.speed = speed;
         direction = DirectionType.NONE;
+        alive = true;
+        dead = false;
     }
 
     /**
@@ -62,6 +68,15 @@ public abstract class MobileObject implements Drawable {
         elapsedTime += frameTime;
     }
 
+    public void death(World world) {
+        deathX = getX();
+        deathY = getY();
+        alive = false;
+        System.out.println("death: " + deathX + "," + deathY);
+        destroy(world);
+        setElapsedTime(0);
+    }
+
     public void destroy(World world) {
         if (hitbox != null) {
             world.destroyBody(hitbox);
@@ -69,10 +84,21 @@ public abstract class MobileObject implements Drawable {
         }
     }
 
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
     public float getElapsedTime() {
         return elapsedTime;
     }
-
 
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
@@ -112,13 +138,20 @@ public abstract class MobileObject implements Drawable {
     @Override
     public float getX() {
         // The x-coordinate of the player is the x-coordinate of the hitbox (this can change every frame).
-        return hitbox.getPosition().x;
+        if (alive) {
+            return hitbox.getPosition().x;
+        }
+        return deathX;
     }
 
     @Override
     public float getY() {
         // The y-coordinate of the player is the y-coordinate of the hitbox (this can change every frame).
-        return hitbox.getPosition().y;
+        if (alive) {
+            return hitbox.getPosition().y;
+        }
+        return deathY;
     }
+
 
 }

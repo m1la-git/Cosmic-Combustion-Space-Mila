@@ -28,15 +28,22 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
     @Override
     public void tick(float frameTime) {
         increaseElapsedTime(frameTime);
-        if (Math.abs(getX() - targetCellX) < 0.1 && Math.abs(getY() - targetCellY) < 0.1) {
-            reachedCell = true;
-            getHitbox().setTransform(getCellX(), getCellY(), getHitbox().getAngle());
+        if (isAlive()) {
+            if (Math.abs(getX() - targetCellX) < 0.1 && Math.abs(getY() - targetCellY) < 0.1) {
+                reachedCell = true;
+                getHitbox().setTransform(getCellX(), getCellY(), getHitbox().getAngle());
+            }
+            if (reachedCell) {
+                setDirection(selectFreeDirection());
+                reachedCell = false;
+            }
+            moveInDirection(getDirection(), frameTime);
+        } else {
+            if (getElapsedTime() >= 1.05f && !isDead()) {
+                setDead(true);
+            }
         }
-        if (reachedCell) {
-            setDirection(selectFreeDirection());
-            reachedCell = false;
-        }
-        moveInDirection(getDirection(), frameTime);
+
 
     }
 
@@ -139,10 +146,14 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        return switch (getDirection()) {
-            case UP, RIGHT -> Animations.ENEMY_WALK_UP_OR_RIGHT.getKeyFrame(getElapsedTime(), true);
-            case DOWN, LEFT -> Animations.ENEMY_WALK_DOWN_OR_LEFT.getKeyFrame(getElapsedTime(), true);
-            case NONE -> Textures.ENEMY;
-        };
+        if (isAlive()) {
+            return switch (getDirection()) {
+                case UP, RIGHT -> Animations.ENEMY_WALK_UP_OR_RIGHT.getKeyFrame(getElapsedTime(), true);
+                case DOWN, LEFT -> Animations.ENEMY_WALK_DOWN_OR_LEFT.getKeyFrame(getElapsedTime(), true);
+                case NONE -> Textures.ENEMY;
+            };
+        }
+        return Animations.ENEMY_DEATH.getKeyFrame(getElapsedTime(), false);
+
     }
 }

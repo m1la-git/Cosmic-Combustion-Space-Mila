@@ -23,16 +23,11 @@ public class Player extends MobileObject implements Drawable {
      */
 
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
-    private boolean alive;
-    private boolean dead;
-    private float deathX;
-    private float deathY;
 
 
     public Player(World world, float x, float y) {
         super(world, x, y, 2, 0.3f, BodyDef.BodyType.DynamicBody);
-        alive = true;
-        dead = false;
+
     }
 
 
@@ -48,7 +43,7 @@ public class Player extends MobileObject implements Drawable {
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
-        if (alive) {
+        if (isAlive()) {
             handleInput();
             if (!keyPressOrder.isEmpty()) {
                 switch (keyPressOrder.peekLast()) {
@@ -74,8 +69,8 @@ public class Player extends MobileObject implements Drawable {
                 setDirection(DirectionType.NONE);
             }
         } else {
-            if (getElapsedTime() >= 1.05f && !dead) {
-                dead = true;
+            if (getElapsedTime() >= 1.05f && !isDead()) {
+                setDead(true);
             }
         }
 
@@ -156,27 +151,10 @@ public class Player extends MobileObject implements Drawable {
         });
     }
 
-    public void death(World world) {
-        deathX = getX();
-        deathY = getY();
-        alive = false;
-        System.out.println("death: " + deathX + "," + deathY);
-        destroy(world);
-        setElapsedTime(0);
-    }
-
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public boolean isDead() {
-        return dead;
-    }
-
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        if (alive) {
+        if (isAlive()) {
             // Get the frame of the walk down animation that corresponds to the current time.
             return switch (getDirection()) {
                 case UP -> Animations.PLAYER_WALK_UP.getKeyFrame(getElapsedTime(), true);
@@ -187,24 +165,6 @@ public class Player extends MobileObject implements Drawable {
             };
         }
         return Animations.PLAYER_DEATH.getKeyFrame(getElapsedTime(), false);
-    }
-
-    @Override
-    public float getX() {
-        // The x-coordinate of the player is the x-coordinate of the hitbox (this can change every frame).
-        if (alive) {
-            return super.getX();
-        }
-        return deathX;
-    }
-
-    @Override
-    public float getY() {
-        // The y-coordinate of the player is the y-coordinate of the hitbox (this can change every frame).
-        if (alive) {
-            return super.getY();
-        }
-        return deathY;
     }
 
 

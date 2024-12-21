@@ -69,6 +69,13 @@ public class Animations {
             SpriteSheet.BOMBERMAN.at(16, 3),
             SpriteSheet.BOMBERMAN.at(16, 2)
     );
+    public static final Animation<TextureRegion> ENEMY_DEATH = new Animation<>(0.21f,
+            SpriteSheet.BOMBERMAN.at(16, 7),
+            SpriteSheet.BOMBERMAN.at(16, 8),
+            SpriteSheet.BOMBERMAN.at(16, 9),
+            SpriteSheet.BOMBERMAN.at(16, 10),
+            SpriteSheet.BOMBERMAN.at(16, 11)
+    );
 
     /**
      * The animation for the bomb.

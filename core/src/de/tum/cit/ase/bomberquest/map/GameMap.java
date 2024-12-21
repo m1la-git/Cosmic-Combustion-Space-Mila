@@ -284,12 +284,19 @@ public class GameMap {
         for (int i = enemies.size() - 1; i >= 0; i--) {
             Enemy enemy = enemies.get(i);
             enemy.tick(frameTime);
-
+            for (int[] blast : blastInfo) {
+                if (isBlasted(enemy, blast)) {
+                    enemy.death(world);
+                }
+            }
+            if (enemy.isDead()) {
+                enemies.remove(i);
+            }
         }
 
         // deaths
-        for (int[] blast: blastInfo) {
-            if (player.isAlive()){
+        for (int[] blast : blastInfo) {
+            if (player.isAlive()) {
                 if (isBlasted(player, blast)) {
                     player.death(world);
                 }
@@ -317,10 +324,9 @@ public class GameMap {
 
     private boolean isBlasted(MobileObject obj, int[] blast) {
         if (obj.getCellX() == blast[0]) {
-            return blast[4] <= obj.getCellY() && obj.getCellY() <= blast[5];
-        }
-        else if (obj.getCellY() == blast[1]) {
-            return blast[2] <= obj.getCellY() && obj.getCellY() <= blast[3];
+            return (blast[4] - 0.5) <= obj.getY() && obj.getY() <= (blast[5] + 0.5);
+        } else if (obj.getCellY() == blast[1]) {
+            return (blast[2] - 0.5) <= obj.getY() && obj.getY() <= (blast[3] + 0.5);
         }
         return false;
     }
