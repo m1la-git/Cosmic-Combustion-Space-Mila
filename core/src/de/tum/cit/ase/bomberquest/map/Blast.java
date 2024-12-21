@@ -6,9 +6,9 @@ import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 public class Blast extends StationaryObject implements Drawable {
+    private final BlastType type;
     private boolean finished = false;
     private float elapsedTime;
-    private final BlastType type;
 
     public Blast(World world, int x, int y, BlastType type) {
         super(world, x, y, type == BlastType.WALL);
@@ -21,6 +21,7 @@ public class Blast extends StationaryObject implements Drawable {
             finished = true;
         }
     }
+
     public boolean isFinished() {
         return finished;
     }

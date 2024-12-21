@@ -1,7 +1,8 @@
 package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
@@ -15,6 +16,7 @@ public class DestructibleWall extends StationaryObject implements Drawable {
         super(world, x, y, true);
         wallContentType = WallContentType.EMPTY;
     }
+
     public DestructibleWall(World world, int x, int y, WallContentType wallContentType) {
         super(world, x, y, true);
         this.wallContentType = wallContentType;

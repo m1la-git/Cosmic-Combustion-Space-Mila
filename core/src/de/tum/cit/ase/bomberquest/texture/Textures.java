@@ -23,6 +23,8 @@ public class Textures {
 
     public static final TextureRegion SPEED_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 3);
 
+    public static final TextureRegion ENEMY = SpriteSheet.BOMBERMAN.at(16, 7);
+
     public static final TextureRegion WALLPASS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 4);
     public static final TextureRegion DETONATOR_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 5);
     public static final TextureRegion BOMBPASS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 6);

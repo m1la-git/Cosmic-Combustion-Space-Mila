@@ -18,7 +18,6 @@ public abstract class StationaryObject implements Drawable {
         if (needsHitbox) {
             hitbox = createHitbox(world);
         }
-
     }
 
     /**

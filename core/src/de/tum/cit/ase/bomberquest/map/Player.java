@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.SpriteSheet;
@@ -23,8 +23,6 @@ public class Player extends MobileObject implements Drawable {
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
 
 
-
-
     public Player(World world, float x, float y) {
         super(world, x, y, 2);
     }
@@ -38,7 +36,7 @@ public class Player extends MobileObject implements Drawable {
      */
     @Override
     public void tick(float frameTime) {
-        setElapsedTime(getElapsedTime() + frameTime);
+        increaseElapsedTime(frameTime);
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input

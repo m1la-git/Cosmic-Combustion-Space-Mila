@@ -8,11 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Represents the game map.
@@ -58,6 +54,7 @@ public class GameMap {
     // Game objects
     private final Player player;
     private final int[] entrance;
+    private final List<Enemy> enemies;
     private final List<Bomb> bombs;
     private final List<Blast> blasts;
     // make sure that map won't have any empty spaces
@@ -86,6 +83,7 @@ public class GameMap {
         this.entrance = new int[]{0, 0};
         this.bombs = new ArrayList<>();
         this.blasts = new ArrayList<>();
+        this.enemies = new ArrayList<>();
         this.blastRadius = 1;
         this.concurrentBombs = 1;
 
@@ -149,6 +147,7 @@ public class GameMap {
                         entrance[1] = y;
                         break;
                     case 3: // enemy
+                        enemies.add(new Enemy(world, x, y));
                         break;
                     case 4: // exit
                         if (!existsExit) {
@@ -186,8 +185,7 @@ public class GameMap {
             if (!existsExit) {
                 if (freeDestructibleWalls.isEmpty()) {
                     Gdx.app.error("GameMap", "No place for an exit.");
-                }
-                else {
+                } else {
                     Random random = new Random();
                     int randomIndex = random.nextInt(freeDestructibleWalls.size());
                     String[] randomCoords = freeDestructibleWalls.get(randomIndex).split(",");
@@ -215,12 +213,16 @@ public class GameMap {
         this.player.tick(frameTime);
         int playerCellX = player.getCellX();
         int playerCellY = player.getCellY();
+
+        // power-ups
         if (stationaryObjects.containsKey(playerCellX + "," + playerCellY)) {
             if (stationaryObjects.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
                 WallContentType type = powerUp.getType();
                 switch (type) {
-                    case BOMBS_POWER_UP: if (concurrentBombs < 8) concurrentBombs++;
-                    case FLAMES_POWER_UP: if(blastRadius < 8) blastRadius++;
+                    case BOMBS_POWER_UP:
+                        if (concurrentBombs < 8) concurrentBombs++;
+                    case FLAMES_POWER_UP:
+                        if (blastRadius < 8) blastRadius++;
                 }
                 stationaryObjects.remove(playerCellX + "," + playerCellY);
             }
@@ -240,7 +242,8 @@ public class GameMap {
                 bombs.add(0, newBomb);
             }
         }
-        //handle bomb collisions
+
+        // bomb ticks and handling bomb collisions
         for (int i = bombs.size() - 1; i >= 0; i--) {
             Bomb bomb = bombs.get(i);
             bomb.tick(frameTime);
@@ -262,7 +265,7 @@ public class GameMap {
             }
         }
 
-        //blasts tick
+        //blasts ticks
         for (int i = blasts.size() - 1; i >= 0; i--) {
             Blast blast = blasts.get(i);
             blast.tick(frameTime);
@@ -272,6 +275,11 @@ public class GameMap {
                     blast.destroy(world);
                 }
             }
+        }
+
+        //enemies ticks
+        for (int i = enemies.size() - 1; i >= 0; i--) {
+            enemies.get(i).tick(frameTime);
         }
 
         doPhysicsStep(frameTime);
@@ -361,6 +369,9 @@ public class GameMap {
         return stationaryObjects;
     }
 
+    public List<Enemy> getEnemies() {
+        return enemies;
+    }
 
     /**
      * Returns the bombs on the map.

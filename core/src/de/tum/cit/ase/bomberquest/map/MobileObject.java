@@ -25,6 +25,7 @@ public abstract class MobileObject implements Drawable {
     /**
      * Creates a Box2D body for the player.
      * This is what the physics engine uses to move the player around and detect collisions with other bodies.
+     *
      * @param world  The Box2D world to add the body to.
      * @param startX The initial X position.
      * @param startY The initial Y position.
@@ -57,34 +58,47 @@ public abstract class MobileObject implements Drawable {
 
     public abstract void tick(float frameTime);
 
+    public void increaseElapsedTime(float frameTime) {
+        elapsedTime += frameTime;
+    }
+
     public float getElapsedTime() {
         return elapsedTime;
     }
-    public Body getHitbox() {
-        return hitbox;
-    }
-    public int getSpeed() {
-        return speed;
-    }
-    public DirectionType getDirection() {
-        return direction;
-    }
-    public void setDirection(DirectionType direction) {
-        this.direction = direction;
-    }
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
+
 
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
+
+    public Body getHitbox() {
+        return hitbox;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public DirectionType getDirection() {
+        return direction;
+    }
+
+    public void setDirection(DirectionType direction) {
+        this.direction = direction;
+    }
+
     public int getCellX() {
         return Math.round(getX());
     }
+
     public int getCellY() {
         return Math.round(getY());
     }
+
     @Override
     public abstract TextureRegion getCurrentAppearance();
 

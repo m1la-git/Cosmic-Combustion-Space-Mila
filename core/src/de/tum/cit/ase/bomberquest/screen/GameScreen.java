@@ -122,8 +122,6 @@ public class GameScreen implements Screen {
 
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
-
-
         for (int i = 0; i < map.getMaxX(); i++) {
             for (int j = 0; j < map.getMaxY(); j++) {
                 draw(spriteBatch, new Ground(i, j));
@@ -140,8 +138,10 @@ public class GameScreen implements Screen {
             draw(spriteBatch, bomb);
         }
 
-
         draw(spriteBatch, map.getPlayer());
+        for (Enemy enemy: map.getEnemies()) {
+            draw(spriteBatch, enemy);
+        }
 
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
