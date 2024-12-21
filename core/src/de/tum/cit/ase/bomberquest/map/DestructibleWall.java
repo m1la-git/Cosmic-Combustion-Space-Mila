@@ -8,28 +8,25 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 public class DestructibleWall extends StationaryObject implements Drawable {
     private boolean isDestroyed = false;
     private Body hitbox;
+    private WallContentType wallContentType;
+
 
     public DestructibleWall(World world, int x, int y) {
-        super(world, x, y);
+        super(world, x, y, true);
+        wallContentType = WallContentType.EMPTY;
+    }
+    public DestructibleWall(World world, int x, int y, WallContentType wallContentType) {
+        super(world, x, y, true);
+        this.wallContentType = wallContentType;
     }
 
-    /**
-     * Method to destroy the wall.
-     * @param world The Box2D world to remove the body from.
-     */
-    public void destroyWall(World world) {
-        if (!isDestroyed) {
-            destroy(world);
-            isDestroyed = true;
-        }
-    }
 
+    public WallContentType getWallContentType() {
+        return wallContentType;
+    }
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        if (!isDestroyed) {
-            return Textures.DESTRUCTIBLE_WALL;
-        }
-        return Textures.FLOWERS;
+        return Textures.DESTRUCTIBLE_WALL;
     }
 }

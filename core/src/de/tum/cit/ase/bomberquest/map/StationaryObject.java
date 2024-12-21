@@ -8,15 +8,17 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 public abstract class StationaryObject implements Drawable {
-    protected final int x;
-    protected final int y;
-    protected Body hitbox;
+    private final int x;
+    private final int y;
+    private Body hitbox;
 
-    StationaryObject(World world, int x, int y) {
+    public StationaryObject(World world, int x, int y, boolean needsHitbox) {
         this.x = x;
         this.y = y;
-        // Since the hitbox never moves, and we never need to change it, we don't need to store a reference to it.
-        hitbox = createHitbox(world);
+        if (needsHitbox) {
+            hitbox = createHitbox(world);
+        }
+
     }
 
     /**
@@ -54,6 +56,10 @@ public abstract class StationaryObject implements Drawable {
             world.destroyBody(hitbox);
             hitbox = null; // Set the body to null
         }
+    }
+
+    public Body getHitbox() {
+        return hitbox;
     }
 
     @Override

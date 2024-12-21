@@ -49,10 +49,11 @@ public class Animations {
     /**
      * The animation for the bomb.
      */
-    public static final Animation<TextureRegion> BOMB = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> BOMB = new Animation<>(0.15f,
             SpriteSheet.BOMBERMAN.at(4, 1),
             SpriteSheet.BOMBERMAN.at(4, 2),
-            SpriteSheet.BOMBERMAN.at(4, 3)
+            SpriteSheet.BOMBERMAN.at(4, 3),
+            SpriteSheet.BOMBERMAN.at(4, 2)
     );
     
 }

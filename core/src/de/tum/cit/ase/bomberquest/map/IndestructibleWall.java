@@ -8,7 +8,7 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 public class IndestructibleWall extends StationaryObject implements Drawable {
 
     public IndestructibleWall(World world, int x, int y) {
-        super(world, x, y);
+        super(world, x, y, true);
     }
 
     @Override

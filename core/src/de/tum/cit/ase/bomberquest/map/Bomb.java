@@ -11,7 +11,7 @@ public class Bomb extends StationaryObject implements Drawable {
     private boolean exploded;
 
     public Bomb(World world, int x, int y) {
-        super(world, x, y);
+        super(world, x, y, true);
         exploded = false;
     }
 
@@ -20,13 +20,10 @@ public class Bomb extends StationaryObject implements Drawable {
         if (this.elapsedTime >= FUSE_TIME && !exploded) {
             exploded = true;
         }
-
     }
 
 
-    public Body getHitbox() {
-        return hitbox;
-    }
+
 
     public boolean isExploded() {
         return exploded;
@@ -37,13 +34,4 @@ public class Bomb extends StationaryObject implements Drawable {
         return Animations.BOMB.getKeyFrame(this.elapsedTime, true);
     }
 
-    @Override
-    public float getX() {
-        return x;
-    }
-
-    @Override
-    public float getY() {
-        return y;
-    }
 }

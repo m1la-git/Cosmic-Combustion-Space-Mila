@@ -65,6 +65,7 @@ public class GameMap {
     private final int MAX_X;
     private final int MAX_Y;
     private int blastRadius;
+    private int concurrentBombs;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -81,7 +82,7 @@ public class GameMap {
         this.entrance = new int[]{0, 0};
         this.bombs = new ArrayList<>();
         this.blastRadius = 1;
-
+        this.concurrentBombs = 1;
 
 
         int[] temp = loadMap("map.properties");
@@ -134,16 +135,43 @@ public class GameMap {
                 }
 
                 switch (type) {
-                    case 0:
+                    case 0: // indestructibleWall
                         stationaryObjects.put(x + "," + y, new IndestructibleWall(world, x, y));
                         break;
-                    case 1:
+                    case 1: // destructibleWall
                         stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y));
                         break;
-                    case 2:
+                    case 2: // entrance
                         entrance[0] = x;
                         entrance[1] = y;
                         break;
+                    case 3, 4: // enemy and exit
+                        break;
+                    case 5: // powerUp: bombs
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBS_POWER_UP));
+                        break;
+                    case 6: // powerUp: flames
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMES_POWER_UP));
+                        break;
+                    case 7: // powerUp: speed
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.SPEED_POWER_UP));
+                        break;
+                    case 8: // powerUp: wallpass
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.WALLPASS_POWER_UP));
+                        break;
+                    case 9: // powerUp: wallpass
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.DETONATOR_POWER_UP));
+                        break;
+                    case 10: // powerUp: bombpass
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBPASS_POWER_UP));
+                        break;
+                    case 11: // powerUp: flamepass
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMEPASS_POWER_UP));
+                        break;
+                    case 12: // powerUp: mystery
+                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.MYSTERY_POWER_UP));
+                        break;
+
                 }
 
             }
@@ -162,11 +190,11 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < concurrentBombs) {
             boolean spaceEmpty = true;
-            int x =Math.round(player.getX());
+            int x = Math.round(player.getX());
             int y = Math.round(player.getY());
-            for (Bomb bomb: bombs) {
+            for (Bomb bomb : bombs) {
                 if (bomb.getX() == x && bomb.getY() == y) {
                     spaceEmpty = false;
                     break;
@@ -190,10 +218,10 @@ public class GameMap {
             if (bomb.isExploded()) {
                 int x = Math.round(bomb.getX());
                 int y = Math.round(bomb.getY());
-                int blastUp = releaseBlast(x, y,0, 1);  // Up
-                int blastDown = releaseBlast(x, y,0, -1); // Down
-                int blastRight = releaseBlast(x, y,1, 0);  // Right
-                int blastLeft = releaseBlast(x, y,-1, 0); // Left
+                int blastUp = releaseBlast(x, y, 0, 1);  // Up
+                int blastDown = releaseBlast(x, y, 0, -1); // Down
+                int blastRight = releaseBlast(x, y, 1, 0);  // Right
+                int blastLeft = releaseBlast(x, y, -1, 0); // Left
                 bomb.destroy(world);
                 bombs.remove(bomb);
             }
@@ -225,6 +253,7 @@ public class GameMap {
     private boolean isOverlapping(Body bodyA, Body bodyB) {
         return bodyA.getPosition().dst(bodyB.getPosition()) < 0.8f; // Adjust threshold as needed
     }
+
     /**
      * Releasing the blast in 1 direction in a certain radius
      * Until any stationaryObject is met on the way
@@ -235,9 +264,14 @@ public class GameMap {
             int currentY = y + i * dy;
             if (stationaryObjects.containsKey(currentX + "," + currentY)) {
                 StationaryObject obj = stationaryObjects.get(currentX + "," + currentY);
-                if (obj instanceof DestructibleWall) {
-                    obj.destroy(world);
+                if (obj instanceof DestructibleWall wall) {
+                    WallContentType type = wall.getWallContentType();
+                    wall.destroy(world);
                     stationaryObjects.remove(currentX + "," + currentY);
+                    if (type != WallContentType.EMPTY && type != WallContentType.EXIT) {
+                        stationaryObjects.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
+                    }
+
                     return i;
                 }
                 return i - 1;
@@ -269,6 +303,7 @@ public class GameMap {
     public int getMaxX() {
         return MAX_X;
     }
+
     public int getMaxY() {
         return MAX_Y;
     }
