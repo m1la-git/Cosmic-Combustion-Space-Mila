@@ -211,35 +211,38 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
-        int playerCellX = player.getCellX();
-        int playerCellY = player.getCellY();
+        if (player.isAlive()) {
+            int playerCellX = player.getCellX();
+            int playerCellY = player.getCellY();
 
-        // power-ups
-        if (walls.containsKey(playerCellX + "," + playerCellY)) {
-            if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
-                WallContentType type = powerUp.getType();
-                switch (type) {
-                    case BOMBS_POWER_UP:
-                        if (concurrentBombs < 8) concurrentBombs++;
-                    case FLAMES_POWER_UP:
-                        if (blastRadius < 8) blastRadius++;
-                }
-                walls.remove(playerCellX + "," + playerCellY);
-            }
-        }
-
-        // place bomb if space is pressed
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < concurrentBombs) {
-            boolean spaceEmpty = true;
-            for (Bomb bomb : bombs) {
-                if (bomb.getX() == playerCellX && bomb.getY() == playerCellY) {
-                    spaceEmpty = false;
-                    break;
+            // power-ups
+            if (walls.containsKey(playerCellX + "," + playerCellY)) {
+                if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
+                    WallContentType type = powerUp.getType();
+                    switch (type) {
+                        case BOMBS_POWER_UP:
+                            if (concurrentBombs < 8) concurrentBombs++;
+                            break;
+                        case FLAMES_POWER_UP:
+                            if (blastRadius < 8) blastRadius++;
+                            break;
+                    }
+                    walls.remove(playerCellX + "," + playerCellY);
                 }
             }
-            if (spaceEmpty) {
-                Bomb newBomb = new Bomb(world, playerCellX, playerCellY);
-                bombs.add(0, newBomb);
+            // place bomb if space is pressed
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < concurrentBombs) {
+                boolean spaceEmpty = true;
+                for (Bomb bomb : bombs) {
+                    if (bomb.getX() == playerCellX && bomb.getY() == playerCellY) {
+                        spaceEmpty = false;
+                        break;
+                    }
+                }
+                if (spaceEmpty) {
+                    Bomb newBomb = new Bomb(world, playerCellX, playerCellY);
+                    bombs.add(0, newBomb);
+                }
             }
         }
 
@@ -249,10 +252,12 @@ public class GameMap {
         for (int i = bombs.size() - 1; i >= 0; i--) {
             Bomb bomb = bombs.get(i);
             bomb.tick(frameTime);
-            if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
-                contactListener.addIgnoredBomb(bomb.getHitbox());
-            } else {
-                contactListener.removeIgnoredBomb(bomb.getHitbox());
+            if (player.isAlive()) {
+                if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
+                    contactListener.addIgnoredBomb(bomb.getHitbox());
+                } else {
+                    contactListener.removeIgnoredBomb(bomb.getHitbox());
+                }
             }
             if (bomb.isExploded()) {
                 int bombX = Math.round(bomb.getX());
