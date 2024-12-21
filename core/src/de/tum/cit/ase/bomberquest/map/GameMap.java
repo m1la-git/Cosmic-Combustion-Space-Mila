@@ -326,7 +326,7 @@ public class GameMap {
         if (obj.getCellX() == blast[0]) {
             return (blast[4] - 0.5) <= obj.getY() && obj.getY() <= (blast[5] + 0.5);
         } else if (obj.getCellY() == blast[1]) {
-            return (blast[2] - 0.5) <= obj.getY() && obj.getY() <= (blast[3] + 0.5);
+            return (blast[2] - 0.5) <= obj.getX() && obj.getX() <= (blast[3] + 0.5);
         }
         return false;
     }
