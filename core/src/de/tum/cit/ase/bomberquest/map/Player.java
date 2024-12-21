@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
@@ -24,7 +25,7 @@ public class Player extends MobileObject implements Drawable {
 
 
     public Player(World world, float x, float y) {
-        super(world, x, y, 2);
+        super(world, x, y, 2, 0.3f, BodyDef.BodyType.DynamicBody);
     }
 
 
@@ -49,11 +50,11 @@ public class Player extends MobileObject implements Drawable {
                     setDirection(DirectionType.UP);
                     break;
                 case Input.Keys.S, Input.Keys.DOWN:
-                    getHitbox().setLinearVelocity(0, -(getSpeed()));
+                    getHitbox().setLinearVelocity(0, -getSpeed());
                     setDirection(DirectionType.DOWN);
                     break;
                 case Input.Keys.A, Input.Keys.LEFT:
-                    getHitbox().setLinearVelocity(-(getSpeed()), 0);
+                    getHitbox().setLinearVelocity(-getSpeed(), 0);
                     setDirection(DirectionType.LEFT);
                     break;
                 case Input.Keys.D, Input.Keys.RIGHT:

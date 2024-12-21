@@ -59,7 +59,7 @@ public class GameMap {
     private final List<Blast> blasts;
     // make sure that map won't have any empty spaces
 
-    private final Map<String, StationaryObject> stationaryObjects;
+    private final Map<String, StationaryObject> walls;
 
     private final int MAX_X;
     private final int MAX_Y;
@@ -79,7 +79,7 @@ public class GameMap {
         this.playerAlive = true;
         this.contactListener = new GameContactListener();
         this.world.setContactListener(contactListener);
-        this.stationaryObjects = new HashMap<>();
+        this.walls = new HashMap<>();
         this.entrance = new int[]{0, 0};
         this.bombs = new ArrayList<>();
         this.blasts = new ArrayList<>();
@@ -136,10 +136,10 @@ public class GameMap {
 
                 switch (type) {
                     case 0: // indestructibleWall
-                        stationaryObjects.put(x + "," + y, new IndestructibleWall(world, x, y));
+                        walls.put(x + "," + y, new IndestructibleWall(world, x, y));
                         break;
                     case 1: // destructibleWall
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y));
                         freeDestructibleWalls.add(x + "," + y);
                         break;
                     case 2: // entrance
@@ -147,37 +147,37 @@ public class GameMap {
                         entrance[1] = y;
                         break;
                     case 3: // enemy
-                        enemies.add(new Enemy(world, x, y));
+                        enemies.add(new Enemy(world, x, y, this));
                         break;
                     case 4: // exit
                         if (!existsExit) {
-                            stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.EXIT));
+                            walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.EXIT));
                             existsExit = true;
                         }
                         break;
                     case 5: // powerUp: bombs
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBS_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBS_POWER_UP));
                         break;
                     case 6: // powerUp: flames
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMES_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMES_POWER_UP));
                         break;
                     case 7: // powerUp: speed
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.SPEED_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.SPEED_POWER_UP));
                         break;
                     case 8: // powerUp: wallpass
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.WALLPASS_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.WALLPASS_POWER_UP));
                         break;
                     case 9: // powerUp: wallpass
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.DETONATOR_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.DETONATOR_POWER_UP));
                         break;
                     case 10: // powerUp: bombpass
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBPASS_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBPASS_POWER_UP));
                         break;
                     case 11: // powerUp: flamepass
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMEPASS_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMEPASS_POWER_UP));
                         break;
                     case 12: // powerUp: mystery
-                        stationaryObjects.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.MYSTERY_POWER_UP));
+                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.MYSTERY_POWER_UP));
                         break;
                 }
 
@@ -191,8 +191,8 @@ public class GameMap {
                     String[] randomCoords = freeDestructibleWalls.get(randomIndex).split(",");
                     int randomX = Integer.parseInt(randomCoords[0]);
                     int randomY = Integer.parseInt(randomCoords[1]);
-                    stationaryObjects.get(randomX + "," + randomY).destroy(world);
-                    stationaryObjects.replace(randomX + "," + randomY, new DestructibleWall(world, randomX, randomY, WallContentType.EXIT));
+                    walls.get(randomX + "," + randomY).destroy(world);
+                    walls.replace(randomX + "," + randomY, new DestructibleWall(world, randomX, randomY, WallContentType.EXIT));
                     System.out.println("Random exit coords: " + randomX + "," + randomY);
                 }
             }
@@ -215,8 +215,8 @@ public class GameMap {
         int playerCellY = player.getCellY();
 
         // power-ups
-        if (stationaryObjects.containsKey(playerCellX + "," + playerCellY)) {
-            if (stationaryObjects.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
+        if (walls.containsKey(playerCellX + "," + playerCellY)) {
+            if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
                 WallContentType type = powerUp.getType();
                 switch (type) {
                     case BOMBS_POWER_UP:
@@ -224,7 +224,7 @@ public class GameMap {
                     case FLAMES_POWER_UP:
                         if (blastRadius < 8) blastRadius++;
                 }
-                stationaryObjects.remove(playerCellX + "," + playerCellY);
+                walls.remove(playerCellX + "," + playerCellY);
             }
         }
 
@@ -319,16 +319,16 @@ public class GameMap {
         for (int i = 1; i <= blastRadius; i++) {
             int currentX = x + i * dx;
             int currentY = y + i * dy;
-            if (stationaryObjects.containsKey(currentX + "," + currentY)) {
-                StationaryObject obj = stationaryObjects.get(currentX + "," + currentY);
+            if (walls.containsKey(currentX + "," + currentY)) {
+                StationaryObject obj = walls.get(currentX + "," + currentY);
                 if (obj instanceof DestructibleWall wall) {
                     WallContentType type = wall.getWallContentType();
                     wall.destroy(world);
-                    stationaryObjects.remove(currentX + "," + currentY);
+                    walls.remove(currentX + "," + currentY);
                     if (type != WallContentType.EMPTY && type != WallContentType.EXIT) {
-                        stationaryObjects.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
+                        walls.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
                     } else if (type == WallContentType.EXIT) {
-                        stationaryObjects.put(currentX + "," + currentY, new Exit(world, currentX, currentY));
+                        walls.put(currentX + "," + currentY, new Exit(world, currentX, currentY));
                     }
                     blasts.add(new Blast(world, currentX, currentY, BlastType.WALL));
                     return i;
@@ -360,13 +360,17 @@ public class GameMap {
     /**
      * Returns the player on the map.
      */
+    public boolean isCellFree(int x, int y) {
+        return !walls.containsKey(x + "," + y);
+    }
+
     public Player getPlayer() {
         return player;
     }
 
 
-    public Map<String, StationaryObject> getStationaryObjects() {
-        return stationaryObjects;
+    public Map<String, StationaryObject> getWalls() {
+        return walls;
     }
 
     public List<Enemy> getEnemies() {

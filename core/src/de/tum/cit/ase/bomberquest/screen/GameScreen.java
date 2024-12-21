@@ -127,7 +127,7 @@ public class GameScreen implements Screen {
                 draw(spriteBatch, new Ground(i, j));
             }
         }
-        for (StationaryObject obj : map.getStationaryObjects().values()) {
+        for (StationaryObject obj : map.getWalls().values()) {
             draw(spriteBatch, obj);
         }
         for (Blast blast : map.getBlasts()) {
@@ -138,10 +138,11 @@ public class GameScreen implements Screen {
             draw(spriteBatch, bomb);
         }
 
-        draw(spriteBatch, map.getPlayer());
+
         for (Enemy enemy: map.getEnemies()) {
             draw(spriteBatch, enemy);
         }
+        draw(spriteBatch, map.getPlayer());
 
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

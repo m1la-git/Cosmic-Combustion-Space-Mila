@@ -16,8 +16,8 @@ public abstract class MobileObject implements Drawable {
     private float elapsedTime;
     private DirectionType direction;
 
-    public MobileObject(World world, float x, float y, int speed) {
-        this.hitbox = createHitbox(world, x, y);
+    public MobileObject(World world, float x, float y, int speed, float radius, BodyDef.BodyType bodyType) {
+        this.hitbox = createHitbox(world, x, y, radius, bodyType);
         this.speed = speed;
         direction = DirectionType.NONE;
     }
@@ -31,11 +31,11 @@ public abstract class MobileObject implements Drawable {
      * @param startY The initial Y position.
      * @return The created body.
      */
-    private Body createHitbox(World world, float startX, float startY) {
+    private Body createHitbox(World world, float startX, float startY, float radius, BodyDef.BodyType bodyType) {
         // BodyDef is like a blueprint for the movement properties of the body.
         BodyDef bodyDef = new BodyDef();
         // Dynamic bodies are affected by forces and collisions.
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = bodyType;
         // Set the initial position of the body.
         bodyDef.position.set(startX, startY);
         // Create the body in the world using the body definition.
@@ -44,7 +44,7 @@ public abstract class MobileObject implements Drawable {
         // We'll use a circle shape for the player.
         CircleShape circle = new CircleShape();
         // Give the circle a radius of 0.3 tiles (the player is 0.6 tiles wide).
-        circle.setRadius(0.3f);
+        circle.setRadius(radius);
         // Attach the shape to the body as a fixture.
         // Bodies can have multiple fixtures, but we only need one for the player.
         Fixture fixture = body.createFixture(circle, 1.0f);
