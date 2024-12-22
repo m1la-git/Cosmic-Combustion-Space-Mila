@@ -71,12 +71,9 @@ public class GameMap {
      */
     private float physicsTime = 0;
 
-    private boolean playerAlive;
-
     public GameMap(BomberQuestGame game) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
-        this.playerAlive = true;
         this.contactListener = new GameContactListener();
         this.world.setContactListener(contactListener);
         this.walls = new HashMap<>();
@@ -211,6 +208,7 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
+        //power-ups
         if (player.isAlive()) {
             int playerCellX = player.getCellX();
             int playerCellY = player.getCellY();
@@ -245,9 +243,17 @@ public class GameMap {
                 }
             }
         }
+        //enemies ticks
+        for (int i = enemies.size() - 1; i >= 0; i--) {
+            Enemy enemy = enemies.get(i);
+            enemy.tick(frameTime);
+            if (enemy.isDead()) {
+                enemies.remove(i);
+            }
+
+        }
 
 
-        List<int[]> blastInfo = new ArrayList<>();
         // bomb ticks and handling bomb collisions
         for (int i = bombs.size() - 1; i >= 0; i--) {
             Bomb bomb = bombs.get(i);
@@ -262,11 +268,10 @@ public class GameMap {
             if (bomb.isExploded()) {
                 int bombX = Math.round(bomb.getX());
                 int bombY = Math.round(bomb.getY());
-                int blastUp = bombY + releaseBlast(bombX, bombY, 0, 1);  // Up
-                int blastDown = bombY - releaseBlast(bombX, bombY, 0, -1); // Down
-                int blastRight = bombX + releaseBlast(bombX, bombY, 1, 0);  // Right
-                int blastLeft = bombX - releaseBlast(bombX, bombY, -1, 0); // Left
-                blastInfo.add(new int[]{bombX, bombY, blastLeft, blastRight, blastDown, blastUp});
+                releaseBlast(bombX, bombY, 0, 1);  // Up
+                releaseBlast(bombX, bombY, 0, -1); // Down
+                releaseBlast(bombX, bombY, 1, 0);  // Right
+                releaseBlast(bombX, bombY, -1, 0); // Left
                 bomb.destroy(world);
                 bombs.remove(bomb);
                 blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER));
@@ -283,31 +288,25 @@ public class GameMap {
                     blast.destroy(world);
                 }
             }
-        }
-
-        //enemies ticks
-        for (int i = enemies.size() - 1; i >= 0; i--) {
-            Enemy enemy = enemies.get(i);
-            enemy.tick(frameTime);
-            for (int[] blast : blastInfo) {
+            // enemies' death
+            for (Enemy enemy : enemies) {
+                if (!enemy.isAlive()) {
+                    continue;
+                }
                 if (isBlasted(enemy, blast)) {
                     enemy.death(world);
                 }
             }
-            if (enemy.isDead()) {
-                enemies.remove(i);
-            }
-        }
-
-        // deaths
-        for (int[] blast : blastInfo) {
+            //player's death
             if (player.isAlive()) {
                 if (isBlasted(player, blast)) {
                     player.death(world);
                 }
             }
+
         }
-        blastInfo.clear();
+
+
         doPhysicsStep(frameTime);
 
     }
@@ -327,13 +326,8 @@ public class GameMap {
     }
 
 
-    private boolean isBlasted(MobileObject obj, int[] blast) {
-        if (obj.getCellX() == blast[0]) {
-            return (blast[4] - 0.5) <= obj.getY() && obj.getY() <= (blast[5] + 0.5);
-        } else if (obj.getCellY() == blast[1]) {
-            return (blast[2] - 0.5) <= obj.getX() && obj.getX() <= (blast[3] + 0.5);
-        }
-        return false;
+    private boolean isBlasted(MobileObject obj, Blast blast) {
+        return obj.getCellX() == blast.getX() && obj.getCellY() == blast.getY();
     }
 
     /**
@@ -351,7 +345,7 @@ public class GameMap {
      * Releasing the blast in 1 direction in a certain radius
      * Until any stationaryObject is met on the way
      */
-    private int releaseBlast(int x, int y, int dx, int dy) {
+    private void releaseBlast(int x, int y, int dx, int dy) {
         for (int i = 1; i <= blastRadius; i++) {
             int currentX = x + i * dx;
             int currentY = y + i * dy;
@@ -367,9 +361,9 @@ public class GameMap {
                         walls.put(currentX + "," + currentY, new Exit(world, currentX, currentY));
                     }
                     blasts.add(new Blast(world, currentX, currentY, BlastType.WALL));
-                    return i;
+                    break;
                 }
-                return i - 1;
+                break;
             }
             if (i == blastRadius) {
                 if (dx == 0 && dy < 0) {
@@ -390,7 +384,6 @@ public class GameMap {
             }
 
         }
-        return blastRadius;
     }
 
     /**

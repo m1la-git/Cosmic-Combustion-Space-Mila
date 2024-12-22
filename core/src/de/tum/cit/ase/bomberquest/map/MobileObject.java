@@ -77,7 +77,7 @@ public abstract class MobileObject implements Drawable {
         setElapsedTime(0);
     }
 
-    public void destroy(World world) {
+    private void destroy(World world) {
         if (hitbox != null) {
             world.destroyBody(hitbox);
             hitbox = null; // Set the body to null
@@ -105,6 +105,10 @@ public abstract class MobileObject implements Drawable {
     }
 
     public Body getHitbox() {
+        if (!alive) {
+            System.out.println("hitbox doesn't exist");
+            return null;
+        }
         return hitbox;
     }
 
