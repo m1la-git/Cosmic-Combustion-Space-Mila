@@ -76,4 +76,10 @@ public abstract class StationaryObject implements Drawable {
     public float getY() {
         return y;
     }
+    public int getCellX() {
+        return x;
+    }
+    public int getCellY() {
+        return y;
+    }
 }

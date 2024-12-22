@@ -26,6 +26,11 @@ public class Bomb extends StationaryObject implements Drawable {
         return exploded;
     }
 
+
+    public void explodeNow() {
+        exploded = true;
+    }
+
     @Override
     public TextureRegion getCurrentAppearance() {
         return Animations.BOMB.getKeyFrame(this.elapsedTime, true);

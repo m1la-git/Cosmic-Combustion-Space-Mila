@@ -210,16 +210,18 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
-        //power-ups
+
         if (player.isAlive()) {
             int playerCellX = player.getCellX();
             int playerCellY = player.getCellY();
             // power-ups
             if (walls.containsKey(playerCellX + "," + playerCellY)) {
+                //exit
                 if (walls.get(playerCellX + "," + playerCellY) instanceof Exit && enemies.isEmpty()) {
                     victory = true;
 
                 }
+                //power-ups
                 if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
                     WallContentType type = powerUp.getType();
                     switch (type) {
@@ -261,7 +263,6 @@ public class GameMap {
 
         }
 
-
         // bomb ticks and handling bomb collisions
         Iterator<Map.Entry<String, Bomb>> iterator = bombs.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -276,8 +277,8 @@ public class GameMap {
                 }
             }
             if (bomb.isExploded()) {
-                int bombX = Math.round(bomb.getX());
-                int bombY = Math.round(bomb.getY());
+                int bombX = bomb.getCellX();
+                int bombY = bomb.getCellY();
                 releaseBlast(bombX, bombY, 0, 1);  // Up
                 releaseBlast(bombX, bombY, 0, -1); // Down
                 releaseBlast(bombX, bombY, 1, 0);  // Right
@@ -297,7 +298,13 @@ public class GameMap {
                 if (blast.getType() == BlastType.WALL) {
                     blast.destroy(world);
                 }
+                continue;
             }
+            //explode the bombs under the blast
+            if (bombs.containsKey(blast.getCellX() + "," + blast.getCellY())) {
+                bombs.get(blast.getCellX() + "," + blast.getCellY()).explodeNow();
+            }
+
             // enemies' death
             for (Enemy enemy : enemies) {
                 if (!enemy.isAlive()) {
