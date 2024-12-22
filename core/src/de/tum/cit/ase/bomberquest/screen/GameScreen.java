@@ -103,16 +103,40 @@ public class GameScreen implements Screen {
     }
 
     /**
-     * Updates the camera to match the current state of the game.
-     * Currently, this just centers the camera at the origin.
+     * Updates the camera to follow the player while keeping it within map boundaries.
+     * If the map is smaller than the screen, the camera is centered on the map.
+     */
+    /**
+     * Updates the camera to follow the player while keeping it within map boundaries.
+     * If the map is smaller than the screen, the camera is centered on the map.
      */
     private void updateCamera() {
-        mapCamera.setToOrtho(false);
-        mapCamera.position.x = 10.5f * TILE_SIZE_PX * SCALE;
-        mapCamera.position.y = 10.5f * TILE_SIZE_PX * SCALE;
-        mapCamera.update(); // This is necessary to apply the changes
-    }
+        float viewportWidth = mapCamera.viewportWidth / 2f;  // Half-width of the viewport
+        float viewportHeight = mapCamera.viewportHeight / 2f; // Half-height of the viewport
 
+        float mapWidthPx = (map.getMaxX() + 1) * TILE_SIZE_PX * SCALE;
+        float mapHeightPx = (map.getMaxY() + 1) * TILE_SIZE_PX * SCALE;
+
+        // Determine camera boundaries
+        float maxCameraX = Math.max(viewportWidth, mapWidthPx - viewportWidth); // Max X position camera can move to
+        float maxCameraY = Math.max(viewportHeight, mapHeightPx - viewportHeight); // Max Y position camera can move to
+
+        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f); // Min X position camera can move to
+        float minCameraY = viewportHeight; // Min Y position camera can move to
+
+        // Get player's position
+        float playerX = map.getPlayer().getX() * TILE_SIZE_PX * SCALE;
+        float playerY = map.getPlayer().getY() * TILE_SIZE_PX * SCALE;
+
+        // Clamp the camera position to ensure it stays within the map bounds or centers for small maps
+        float cameraX = (mapWidthPx <= mapCamera.viewportWidth) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
+        float cameraY = (mapHeightPx <= mapCamera.viewportHeight) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
+
+        // Update camera properties
+        mapCamera.setToOrtho(false);
+        mapCamera.position.set(cameraX, cameraY, 0);
+        mapCamera.update(); // Apply the changes
+    }
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
         spriteBatch.setProjectionMatrix(mapCamera.combined);
