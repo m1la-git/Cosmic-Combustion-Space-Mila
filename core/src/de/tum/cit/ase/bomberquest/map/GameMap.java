@@ -216,8 +216,9 @@ public class GameMap {
             int playerCellY = player.getCellY();
             // power-ups
             if (walls.containsKey(playerCellX + "," + playerCellY)) {
-                if (walls.get(playerCellX + "," + playerCellY) instanceof Exit exit) {
+                if (walls.get(playerCellX + "," + playerCellY) instanceof Exit && enemies.isEmpty()) {
                     victory = true;
+
                 }
                 if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
                     WallContentType type = powerUp.getType();
