@@ -152,6 +152,7 @@ public class Player extends MobileObject implements Drawable {
     }
 
 
+
     @Override
     public TextureRegion getCurrentAppearance() {
         if (isAlive()) {

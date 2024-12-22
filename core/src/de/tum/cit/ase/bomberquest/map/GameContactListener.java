@@ -2,11 +2,14 @@ package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.physics.box2d.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class GameContactListener implements ContactListener {
     private final Set<Body> ignoredBombs = new HashSet<>();
+    private final List<Body> bodiesToDestroy = new ArrayList<>();
 
     @Override
     public void beginContact(Contact contact) {
@@ -32,6 +35,10 @@ public class GameContactListener implements ContactListener {
             handleBombCollision(contact, bodyB);
         } else if (isPlayer(bodyB) && isBomb(bodyA)) {
             handleBombCollision(contact, bodyA);
+        } else if (isPlayer(bodyA) && isEnemy(bodyB)) {
+            handlePlayerEnemyCollision(bodyA);
+        } else if (isPlayer(bodyB) && isEnemy(bodyA)) {
+            handlePlayerEnemyCollision(bodyB);
         }
     }
 
@@ -44,6 +51,10 @@ public class GameContactListener implements ContactListener {
         return body.getUserData() instanceof Player; // Replace with your player identification logic
     }
 
+    private boolean isEnemy(Body body) {
+        return body.getUserData() instanceof Enemy; // Replace with your enemy identification logic
+    }
+
     private boolean isBomb(Body body) {
         return body.getUserData() instanceof Bomb; // Replace with your bomb identification logic
     }
@@ -54,6 +65,24 @@ public class GameContactListener implements ContactListener {
             // Disable collision while ignoring this bomb
             contact.setEnabled(false);
         }
+    }
+
+    private void handlePlayerEnemyCollision(Body playerBody) {
+        Player player = (Player) playerBody.getUserData();
+        if (player.isAlive()) {
+            player.markForDeath(playerBody.getWorld(), this);
+        }
+    }
+
+    public void queueBodyForDestruction(Body body) {
+        bodiesToDestroy.add(body);
+    }
+
+    public void processQueuedDestruction() {
+        for (Body body : bodiesToDestroy) {
+            body.getWorld().destroyBody(body);
+        }
+        bodiesToDestroy.clear();
     }
 
     // Methods to manage ignored bombs

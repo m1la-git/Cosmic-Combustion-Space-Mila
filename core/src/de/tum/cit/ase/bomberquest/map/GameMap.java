@@ -65,6 +65,7 @@ public class GameMap {
     private final int MAX_Y;
     private int blastRadius;
     private int concurrentBombs;
+    private boolean victory;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -83,6 +84,7 @@ public class GameMap {
         this.enemies = new ArrayList<>();
         this.blastRadius = 1;
         this.concurrentBombs = 1;
+        this.victory = false;
 
 
         int[] temp = loadMap("map.properties");
@@ -212,9 +214,11 @@ public class GameMap {
         if (player.isAlive()) {
             int playerCellX = player.getCellX();
             int playerCellY = player.getCellY();
-
             // power-ups
             if (walls.containsKey(playerCellX + "," + playerCellY)) {
+                if (walls.get(playerCellX + "," + playerCellY) instanceof Exit exit) {
+                    victory = true;
+                }
                 if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
                     WallContentType type = powerUp.getType();
                     switch (type) {
@@ -258,8 +262,10 @@ public class GameMap {
 
 
         // bomb ticks and handling bomb collisions
-        for (String key : bombs.keySet()) {
-            Bomb bomb = bombs.get(key);
+        Iterator<Map.Entry<String, Bomb>> iterator = bombs.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Bomb> entry = iterator.next();
+            Bomb bomb = entry.getValue();
             bomb.tick(frameTime);
             if (player.isAlive()) {
                 if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
@@ -276,8 +282,8 @@ public class GameMap {
                 releaseBlast(bombX, bombY, 1, 0);  // Right
                 releaseBlast(bombX, bombY, -1, 0); // Left
                 bomb.destroy(world);
-                bombs.remove(key);
-                blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER));
+                iterator.remove();
+                blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER));// Safely remove the current entry
             }
         }
 
@@ -310,6 +316,7 @@ public class GameMap {
         }
 
 
+        contactListener.processQueuedDestruction();
         doPhysicsStep(frameTime);
 
     }
@@ -396,11 +403,7 @@ public class GameMap {
         if (walls.containsKey(x + "," + y)) {
             return (walls.get(x + "," + y) instanceof PowerUp);
         }
-        if (bombs.containsKey(x + "," + y)) {
-            return false;
-        }
-
-        return true;
+        return !bombs.containsKey(x + "," + y);
     }
 
     public Player getPlayer() {
@@ -435,4 +438,7 @@ public class GameMap {
         return MAX_Y;
     }
 
+    public boolean isVictory() {
+        return victory;
+    }
 }

@@ -84,6 +84,21 @@ public abstract class MobileObject implements Drawable {
         }
     }
 
+    public void markForDeath(World world, GameContactListener contactListener) {
+        deathX = getX();
+        deathY = getY();
+        alive = false;
+        System.out.println("death: " + deathX + "," + deathY);
+
+        // Queue the hitbox for destruction
+        if (hitbox != null) {
+            contactListener.queueBodyForDestruction(hitbox);
+            hitbox = null; // Set to null to prevent further interactions
+        }
+
+        setElapsedTime(0);
+    }
+
     public boolean isAlive() {
         return alive;
     }
