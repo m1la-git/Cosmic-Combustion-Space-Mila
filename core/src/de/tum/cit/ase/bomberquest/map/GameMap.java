@@ -397,7 +397,10 @@ public class GameMap {
      * Returns the player on the map.
      */
     public boolean isCellFree(int x, int y) {
-        return !walls.containsKey(x + "," + y);
+        if (walls.containsKey(x + "," + y)) {
+            return (walls.get(x + "," + y) instanceof PowerUp);
+        }
+        return true;
     }
 
     public Player getPlayer() {
