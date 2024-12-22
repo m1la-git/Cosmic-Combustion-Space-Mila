@@ -17,7 +17,7 @@ public class Blast extends StationaryObject implements Drawable {
 
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
-        if (this.elapsedTime >= 0.6f && !finished) {
+        if (this.elapsedTime >= 0.4f && !finished) {
             finished = true;
         }
     }

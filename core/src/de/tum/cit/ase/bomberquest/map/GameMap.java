@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.audio.MusicTrack;
 
 import java.util.*;
 
@@ -66,6 +67,7 @@ public class GameMap {
     private int blastRadius;
     private int concurrentBombs;
     private boolean victory;
+    private int numberOfEnemies;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -87,9 +89,11 @@ public class GameMap {
         this.victory = false;
 
 
+
         int[] temp = loadMap("map.properties");
         this.MAX_X = temp[0];
         this.MAX_Y = temp[1];
+        numberOfEnemies = enemies.size();
         // Create a player with initial position
         this.player = new Player(this.world, entrance[0], entrance[1]);
     }
@@ -210,11 +214,10 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
-
         if (player.isAlive()) {
             int playerCellX = player.getCellX();
             int playerCellY = player.getCellY();
-            // power-ups
+
             if (walls.containsKey(playerCellX + "," + playerCellY)) {
                 //exit
                 if (walls.get(playerCellX + "," + playerCellY) instanceof Exit && enemies.isEmpty()) {
@@ -223,6 +226,7 @@ public class GameMap {
                 }
                 //power-ups
                 if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
+                    MusicTrack.POWER_UP.play();
                     WallContentType type = powerUp.getType();
                     switch (type) {
                         case BOMBS_POWER_UP:
@@ -242,7 +246,6 @@ public class GameMap {
                     String[] coords = key.split(",");
                     int bombX = Integer.parseInt(coords[0]);
                     int bombY = Integer.parseInt(coords[1]);
-
                     if (bombX == playerCellX && bombY == playerCellY) {
                         spaceEmpty = false;
                         break;
@@ -250,6 +253,7 @@ public class GameMap {
                 }
                 if (spaceEmpty) {
                     bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY));
+                    MusicTrack.PLACE_BOMB.play();
                 }
             }
         }
@@ -277,6 +281,7 @@ public class GameMap {
                 }
             }
             if (bomb.isExploded()) {
+                MusicTrack.BOMB_EXPLOSION.play();
                 int bombX = bomb.getCellX();
                 int bombY = bomb.getCellY();
                 releaseBlast(bombX, bombY, 0, 1);  // Up
@@ -312,6 +317,11 @@ public class GameMap {
                 }
                 if (isBlasted(enemy, blast)) {
                     enemy.death(world);
+                    MusicTrack.ENEMY_DEATH.play();
+                    numberOfEnemies--;
+                    if (numberOfEnemies == 0 && player.isAlive()) {
+                        MusicTrack.STAGE_CLEAR.play();
+                    }
                 }
             }
             //player's death
