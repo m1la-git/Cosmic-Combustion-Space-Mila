@@ -374,7 +374,9 @@ public class GameMap {
                     blasts.add(new Blast(world, currentX, currentY, BlastType.WALL));
                     break;
                 }
-                break;
+                if (!(obj instanceof PowerUp || obj instanceof Exit)) {
+                    break;
+                }
             }
             if (i == blastRadius) {
                 if (dx == 0 && dy < 0) {
