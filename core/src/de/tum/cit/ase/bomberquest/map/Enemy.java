@@ -18,11 +18,13 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
     private int targetCellX;
     private int targetCellY;
     private DirectionType lastDirection = DirectionType.NONE;
+    private boolean trapped;
 
     public Enemy(World world, float x, float y, GameMap map) {
-        super(world, x, y, 2, 0.5f, BodyDef.BodyType.KinematicBody);
+        super(world, x, y, 1, 0.5f, BodyDef.BodyType.KinematicBody);
         this.map = map;
         reachedCell = true;
+        trapped = false;
     }
 
     @Override
@@ -35,7 +37,9 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
             }
             if (reachedCell) {
                 setDirection(selectFreeDirection());
-                reachedCell = false;
+                if (!trapped) {
+                    reachedCell = false;
+                }
             }
             moveInDirection(getDirection(), frameTime);
         } else {
@@ -51,6 +55,7 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
         // Randomly pick one of the four directions
         DirectionType[] directions = {DirectionType.UP, DirectionType.DOWN, DirectionType.LEFT, DirectionType.RIGHT};
         List<DirectionType> freeDirections = new ArrayList<>();
+        trapped = false;
 
         for (DirectionType direction : directions) {
             if (isDirectionFree(direction) && direction != DirectionType.getOppositeDirection(lastDirection)) {
@@ -74,7 +79,8 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
             return fallbackDirection;
         }
 
-        return DirectionType.NONE;
+        trapped = true;
+        return fallbackDirection;
     }
 
     private void updateTargetCell(DirectionType direction) {

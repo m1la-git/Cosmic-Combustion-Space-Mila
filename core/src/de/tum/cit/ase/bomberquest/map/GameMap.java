@@ -55,7 +55,7 @@ public class GameMap {
     private final Player player;
     private final int[] entrance;
     private final List<Enemy> enemies;
-    private final List<Bomb> bombs;
+    private final Map<String, Bomb> bombs;
     private final List<Blast> blasts;
     // make sure that map won't have any empty spaces
 
@@ -78,7 +78,7 @@ public class GameMap {
         this.world.setContactListener(contactListener);
         this.walls = new HashMap<>();
         this.entrance = new int[]{0, 0};
-        this.bombs = new ArrayList<>();
+        this.bombs = new HashMap<>();
         this.blasts = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.blastRadius = 1;
@@ -228,18 +228,21 @@ public class GameMap {
                     walls.remove(playerCellX + "," + playerCellY);
                 }
             }
-            // place bomb if space is pressed
+            // place bomb if space is pressed and limit of concurrent bombs isn't reached
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < concurrentBombs) {
                 boolean spaceEmpty = true;
-                for (Bomb bomb : bombs) {
-                    if (bomb.getX() == playerCellX && bomb.getY() == playerCellY) {
+                for (String key : bombs.keySet()) {
+                    String[] coords = key.split(",");
+                    int bombX = Integer.parseInt(coords[0]);
+                    int bombY = Integer.parseInt(coords[1]);
+
+                    if (bombX == playerCellX && bombY == playerCellY) {
                         spaceEmpty = false;
                         break;
                     }
                 }
                 if (spaceEmpty) {
-                    Bomb newBomb = new Bomb(world, playerCellX, playerCellY);
-                    bombs.add(0, newBomb);
+                    bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY));
                 }
             }
         }
@@ -255,8 +258,8 @@ public class GameMap {
 
 
         // bomb ticks and handling bomb collisions
-        for (int i = bombs.size() - 1; i >= 0; i--) {
-            Bomb bomb = bombs.get(i);
+        for (String key : bombs.keySet()) {
+            Bomb bomb = bombs.get(key);
             bomb.tick(frameTime);
             if (player.isAlive()) {
                 if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
@@ -273,7 +276,7 @@ public class GameMap {
                 releaseBlast(bombX, bombY, 1, 0);  // Right
                 releaseBlast(bombX, bombY, -1, 0); // Left
                 bomb.destroy(world);
-                bombs.remove(bomb);
+                bombs.remove(key);
                 blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER));
             }
         }
@@ -393,6 +396,10 @@ public class GameMap {
         if (walls.containsKey(x + "," + y)) {
             return (walls.get(x + "," + y) instanceof PowerUp);
         }
+        if (bombs.containsKey(x + "," + y)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -413,7 +420,7 @@ public class GameMap {
      * Returns the bombs on the map.
      */
     public List<Bomb> getBombs() {
-        return bombs;
+        return bombs.values().stream().toList();
     }
 
     public List<Blast> getBlasts() {
