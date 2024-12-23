@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
-import de.tum.cit.ase.bomberquest.audio.MusicTrack;
+import de.tum.cit.ase.bomberquest.audio.SoundEffects;
 
 import java.util.*;
 
@@ -226,7 +226,7 @@ public class GameMap {
                 }
                 //power-ups
                 if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
-                    MusicTrack.POWER_UP.play();
+                    SoundEffects.POWER_UP.play();
                     WallContentType type = powerUp.getType();
                     switch (type) {
                         case BOMBS_POWER_UP:
@@ -253,7 +253,7 @@ public class GameMap {
                 }
                 if (spaceEmpty) {
                     bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY));
-                    MusicTrack.PLACE_BOMB.play();
+                    SoundEffects.PLACE_BOMB.play();
                 }
             }
         }
@@ -281,7 +281,7 @@ public class GameMap {
                 }
             }
             if (bomb.isExploded()) {
-                MusicTrack.BOMB_EXPLOSION.play();
+                SoundEffects.BOMB_EXPLOSION.play();
                 int bombX = bomb.getCellX();
                 int bombY = bomb.getCellY();
                 releaseBlast(bombX, bombY, 0, 1);  // Up
@@ -317,10 +317,10 @@ public class GameMap {
                 }
                 if (isBlasted(enemy, blast)) {
                     enemy.death(world);
-                    MusicTrack.ENEMY_DEATH.play();
+                    SoundEffects.ENEMY_DEATH.play();
                     numberOfEnemies--;
                     if (numberOfEnemies == 0 && player.isAlive()) {
-                        MusicTrack.STAGE_CLEAR.play();
+                        SoundEffects.STAGE_CLEAR.play();
                     }
                 }
             }
