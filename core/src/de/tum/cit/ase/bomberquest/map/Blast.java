@@ -5,6 +5,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
+/**
+ * Represents the blasts after the exploded bombs.
+ * Blasts are Stationary objects without body
+ * They have a blast type and a respective animation
+ */
 public class Blast extends StationaryObject implements Drawable {
     private final BlastType type;
     private boolean finished = false;
@@ -15,6 +20,10 @@ public class Blast extends StationaryObject implements Drawable {
         this.type = type;
     }
 
+    /**
+     * method to update the object and animation.
+     * @param frameTime the time since the last frame.
+     */
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
         if (this.elapsedTime >= 0.4f && !finished) {

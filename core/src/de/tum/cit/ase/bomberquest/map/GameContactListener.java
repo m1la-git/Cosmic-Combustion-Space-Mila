@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Contact Listener of the game
+ * Handles the physics of collisions of the Bodies.
+ */
 public class GameContactListener implements ContactListener {
     private final Set<Body> ignoredBombs = new HashSet<>();
     private final List<Body> bodiesToDestroy = new ArrayList<>();

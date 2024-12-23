@@ -5,9 +5,8 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
- * Flowers are a static object without any special properties.
- * They do not have a hitbox, so the player does not collide with them.
- * They are purely decorative and serve as a nice floor decoration.
+ * Represents the ground/floor/basic field
+ * Has no special properties other than the coords.
  */
 public class Ground implements Drawable {
 

@@ -1,5 +1,8 @@
 package de.tum.cit.ase.bomberquest.map;
 
+/**
+ * Represents Blast types
+ */
 public enum BlastType {
     CENTER,
     HORIZONTAL,

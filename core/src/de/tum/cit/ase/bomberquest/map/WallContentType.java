@@ -1,5 +1,9 @@
 package de.tum.cit.ase.bomberquest.map;
 
+/**
+ * Represents the type of Content of the Destructible Wall
+ * Either a special power up, an exit, or nothing.
+ */
 public enum WallContentType {
     EMPTY,
     EXIT,

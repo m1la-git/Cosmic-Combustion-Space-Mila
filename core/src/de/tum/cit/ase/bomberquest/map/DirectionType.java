@@ -1,5 +1,8 @@
 package de.tum.cit.ase.bomberquest.map;
 
+/**
+ * Represents the type of direction for Mobile Objects
+ */
 public enum DirectionType {
     UP,
     DOWN,

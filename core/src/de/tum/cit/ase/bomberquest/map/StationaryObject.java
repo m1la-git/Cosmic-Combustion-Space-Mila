@@ -7,6 +7,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
+/**
+ * Represents all Stationary Objects
+ * Abstract superclass for all objects that don't change their coords, like walls, power-ups, bombs, etc.
+ * if the object has a hitbox, it's type is StaticBody
+ */
 public abstract class StationaryObject implements Drawable {
     private final int x;
     private final int y;
@@ -50,7 +55,6 @@ public abstract class StationaryObject implements Drawable {
 
     /**
      * Method to destroy the body.
-     *
      * @param world The Box2D world to remove the body from
      */
     public void destroy(World world) {
@@ -76,6 +80,7 @@ public abstract class StationaryObject implements Drawable {
     public float getY() {
         return y;
     }
+
     public int getCellX() {
         return x;
     }

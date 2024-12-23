@@ -52,6 +52,7 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         this.mapCamera = new OrthographicCamera();
         this.mapCamera.setToOrtho(false);
+        //play background music
         BackgroundTrack.BACKGROUND.play();
     }
 
@@ -104,10 +105,7 @@ public class GameScreen implements Screen {
         hud.render();
     }
 
-    /**
-     * Updates the camera to follow the player while keeping it within map boundaries.
-     * If the map is smaller than the screen, the camera is centered on the map.
-     */
+
     /**
      * Updates the camera to follow the player while keeping it within map boundaries.
      * If the map is smaller than the screen, the camera is centered on the map.
@@ -139,6 +137,10 @@ public class GameScreen implements Screen {
         mapCamera.position.set(cameraX, cameraY, 0);
         mapCamera.update(); // Apply the changes
     }
+
+    /**
+     * Renders the map with all the objects
+     */
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
         spriteBatch.setProjectionMatrix(mapCamera.combined);
@@ -148,26 +150,32 @@ public class GameScreen implements Screen {
 
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
+
+        //ground first
         for (int i = 0; i < map.getMaxX(); i++) {
             for (int j = 0; j < map.getMaxY(); j++) {
                 draw(spriteBatch, new Ground(i, j));
             }
         }
+
+        //walls (destructible and indestructible)
         for (StationaryObject obj : map.getWalls().values()) {
             draw(spriteBatch, obj);
         }
-        for (Blast blast : map.getBlasts()) {
-            draw(spriteBatch, blast);
-        }
-
+        //bombs
         for (Bomb bomb : map.getBombs()) {
             draw(spriteBatch, bomb);
         }
-
-
+        //blasts
+        for (Blast blast : map.getBlasts()) {
+            draw(spriteBatch, blast);
+        }
+        //enemies
         for (Enemy enemy: map.getEnemies()) {
             draw(spriteBatch, enemy);
         }
+
+        //player
         draw(spriteBatch, map.getPlayer());
 
         // Finish drawing, i.e. send the drawn items to the graphics card

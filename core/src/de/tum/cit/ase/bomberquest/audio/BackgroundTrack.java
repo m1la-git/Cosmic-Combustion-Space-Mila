@@ -7,8 +7,6 @@ import com.badlogic.gdx.audio.Music;
 public enum BackgroundTrack {
     BACKGROUND("Background.mp3", 0.15f);
 
-
-
     /** The music file owned by this variant. */
     private final Music music;
 

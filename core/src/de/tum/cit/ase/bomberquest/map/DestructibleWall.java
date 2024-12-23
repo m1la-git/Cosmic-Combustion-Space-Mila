@@ -6,10 +6,13 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
+/**
+ * Represents Destructible Walls.
+ * Destructible Walls are Stationary Objects and have their own content type
+ */
 public class DestructibleWall extends StationaryObject implements Drawable {
-    private boolean isDestroyed = false;
     private Body hitbox;
-    private WallContentType wallContentType;
+    private final WallContentType wallContentType;
 
 
     public DestructibleWall(World world, int x, int y) {

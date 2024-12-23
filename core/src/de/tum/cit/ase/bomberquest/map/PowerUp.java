@@ -5,6 +5,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
+/**
+ * Represents Power Ups.
+ * Power Ups are Stationary Objects without hitbox.
+ * Have their own type.
+ */
 public class PowerUp extends StationaryObject implements Drawable {
     private final WallContentType type;
 

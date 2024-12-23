@@ -15,72 +15,44 @@ import java.util.Deque;
 
 /**
  * Represents the player character in the game.
- * The player has a hitbox, so it can collide with other objects in the game.
+ * Extends MobileObject, has a hitbox and can collide with other objects in-game
+ * Dynamic body type
  */
 public class Player extends MobileObject implements Drawable {
     /**
      * double queue to manage character movement
      */
-
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
-
 
     public Player(World world, float x, float y) {
         super(world, x, y, 2, 0.3f, BodyDef.BodyType.DynamicBody);
-
     }
 
-
     /**
-     * Move the player around in a circle by updating the linear velocity of its hitbox every frame.
-     * This doesn't actually move the player, but it tells the physics engine how the player should move next frame.
-     *
+     * Move the player in the set direction according do the queue
+     * Uses handleInput() to process keyboard input
      * @param frameTime the time since the last frame.
      */
     @Override
     public void tick(float frameTime) {
         increaseElapsedTime(frameTime);
-        // Make the player move in a circle with radius 2 tiles
-        // You can change this to make the player move differently, e.g. in response to user input.
-        // See Gdx.input.isKeyPressed() for keyboard input
         if (isAlive()) {
             handleInput();
-            if (!keyPressOrder.isEmpty()) {
-                switch (keyPressOrder.peekLast()) {
-                    case Input.Keys.W, Input.Keys.UP:
-                        getHitbox().setLinearVelocity(0, getSpeed());
-                        setDirection(DirectionType.UP);
-                        break;
-                    case Input.Keys.S, Input.Keys.DOWN:
-                        getHitbox().setLinearVelocity(0, -getSpeed());
-                        setDirection(DirectionType.DOWN);
-                        break;
-                    case Input.Keys.A, Input.Keys.LEFT:
-                        getHitbox().setLinearVelocity(-getSpeed(), 0);
-                        setDirection(DirectionType.LEFT);
-                        break;
-                    case Input.Keys.D, Input.Keys.RIGHT:
-                        getHitbox().setLinearVelocity(getSpeed(), 0);
-                        setDirection(DirectionType.RIGHT);
-                        break;
-                }
-            } else {
-                getHitbox().setLinearVelocity(0, 0);
-                setDirection(DirectionType.NONE);
-            }
+            moveInDirection();
         } else {
-            if (getElapsedTime() >= 1.05f && !isDead()) {
-                setDead(true);
-            }
+            if (!isAlive() && getElapsedTime() >= 1.05f && !isDead()) setDead();
         }
-
     }
 
     /**
-     * TBA
+     * handling keyboard input with new InputAdapter()
+     * adds keys to the queue for appropriate direction change
+     * sets the direction according to the queue
      */
     private void handleInput() {
+        // check the keyboard input
         Gdx.input.setInputProcessor(new InputAdapter() {
+            //key is just pressed
             @Override
             public boolean keyDown(int keycode) {
                 switch (keycode) {
@@ -115,6 +87,7 @@ public class Player extends MobileObject implements Drawable {
                 return true; // Indicates the event was processed
             }
 
+            //key is just released
             @Override
             public boolean keyUp(int keycode) {
                 switch (keycode) {
@@ -149,6 +122,26 @@ public class Player extends MobileObject implements Drawable {
                 return true;
             }
         });
+
+        // set the direction
+        if (!keyPressOrder.isEmpty()) {
+            switch (keyPressOrder.peekLast()) {
+                case Input.Keys.W, Input.Keys.UP:
+                    setDirection(DirectionType.UP);
+                    break;
+                case Input.Keys.S, Input.Keys.DOWN:
+                    setDirection(DirectionType.DOWN);
+                    break;
+                case Input.Keys.A, Input.Keys.LEFT:
+                    setDirection(DirectionType.LEFT);
+                    break;
+                case Input.Keys.D, Input.Keys.RIGHT:
+                    setDirection(DirectionType.RIGHT);
+                    break;
+            }
+        } else {
+            setDirection(DirectionType.NONE);
+        }
     }
 
 

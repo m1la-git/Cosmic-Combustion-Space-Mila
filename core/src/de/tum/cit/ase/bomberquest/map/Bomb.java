@@ -5,6 +5,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
+/**
+ * Represents bombs
+ * Bombs are Stationary Objects with their own hitbox
+ */
 public class Bomb extends StationaryObject implements Drawable {
     private float elapsedTime;
     private boolean exploded;
