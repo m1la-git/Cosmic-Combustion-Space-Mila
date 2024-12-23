@@ -102,7 +102,7 @@ public class GameScreen implements Screen {
         renderMap();
 
         // Render the HUD on the screen
-        hud.render();
+        hud.render(map.getBlastRadius(), map.getConcurrentBombs(), map.getTimer(), map.getNumberOfEnemies());
     }
 
 
@@ -114,23 +114,23 @@ public class GameScreen implements Screen {
         float viewportWidth = mapCamera.viewportWidth / 2f;  // Half-width of the viewport
         float viewportHeight = mapCamera.viewportHeight / 2f; // Half-height of the viewport
 
-        float mapWidthPx = (map.getMaxX() + 1) * TILE_SIZE_PX * SCALE;
-        float mapHeightPx = (map.getMaxY() + 1) * TILE_SIZE_PX * SCALE;
+        float mapWidthPx = (map.getMAX_X() + 1) * TILE_SIZE_PX * SCALE;
+        float mapHeightPx = (map.getMAX_Y() + 1) * TILE_SIZE_PX * SCALE;
 
         // Determine camera boundaries
         float maxCameraX = Math.max(viewportWidth, mapWidthPx - viewportWidth); // Max X position camera can move to
         float maxCameraY = Math.max(viewportHeight, mapHeightPx - viewportHeight); // Max Y position camera can move to
 
-        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f); // Min X position camera can move to
-        float minCameraY = viewportHeight; // Min Y position camera can move to
+        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f) - hud.getHudX(); // Min X position camera can move to
+        float minCameraY = viewportHeight - hud.getHudY(); // Min Y position camera can move to
 
         // Get player's position
         float playerX = map.getPlayer().getX() * TILE_SIZE_PX * SCALE;
         float playerY = map.getPlayer().getY() * TILE_SIZE_PX * SCALE;
 
         // Clamp the camera position to ensure it stays within the map bounds or centers for small maps
-        float cameraX = (mapWidthPx <= mapCamera.viewportWidth) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
-        float cameraY = (mapHeightPx <= mapCamera.viewportHeight) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
+        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hud.getHudX()) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
+        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hud.getHudY()) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
 
         // Update camera properties
         mapCamera.setToOrtho(false);
@@ -152,8 +152,8 @@ public class GameScreen implements Screen {
         // You may want to add a method to GameMap to return all the drawables in the correct order
 
         //ground first
-        for (int i = 0; i < map.getMaxX(); i++) {
-            for (int j = 0; j < map.getMaxY(); j++) {
+        for (int i = 0; i < map.getMAX_X(); i++) {
+            for (int j = 0; j < map.getMAX_Y(); j++) {
                 draw(spriteBatch, new Ground(i, j));
             }
         }

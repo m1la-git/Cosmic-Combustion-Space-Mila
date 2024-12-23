@@ -58,7 +58,6 @@ public class GameMap {
     private final List<Enemy> enemies;
     private final Map<String, Bomb> bombs;
     private final List<Blast> blasts;
-    // make sure that map won't have any empty spaces
 
     private final Map<String, StationaryObject> walls;
 
@@ -68,6 +67,7 @@ public class GameMap {
     private int concurrentBombs;
     private boolean victory;
     private int numberOfEnemies;
+    private float elapsedTime = 0;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -214,6 +214,7 @@ public class GameMap {
      */
     public void tick(float frameTime) {
         this.player.tick(frameTime);
+        elapsedTime += frameTime;
         if (player.isAlive()) {
             int playerCellX = player.getCellX();
             int playerCellY = player.getCellY();
@@ -450,15 +451,28 @@ public class GameMap {
         return blasts;
     }
 
-    public int getMaxX() {
+    public int getMAX_X() {
         return MAX_X;
     }
 
-    public int getMaxY() {
+    public int getMAX_Y() {
         return MAX_Y;
     }
 
     public boolean isVictory() {
         return victory;
     }
+    public int getBlastRadius() {
+        return blastRadius;
+    }
+    public int getConcurrentBombs() {
+        return concurrentBombs;
+    }
+    public int getNumberOfEnemies() {
+        return numberOfEnemies;
+    }
+    public int getTimer() {
+        return (int) Math.ceil(150f - elapsedTime);
+    }
+
 }

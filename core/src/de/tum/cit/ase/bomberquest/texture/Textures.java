@@ -35,5 +35,7 @@ public class Textures {
 
     public static final TextureRegion MYSTERY_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 8);
 
+    public static final TextureRegion HUD = SpriteSheet.HUD.at(1, 1);
+
 
 }

@@ -24,7 +24,11 @@ public enum SpriteSheet {
      */
     BASIC_TILES("basictiles.png", 16, 16),
 
-    BOMBERMAN("original-bomberman.png", 16, 16);
+    BOMBERMAN("original-bomberman.png", 16, 16),
+
+    HUD("basictiles.png", 64, 48);
+
+
 
     private final Texture spritesheet;
     private final int width;
