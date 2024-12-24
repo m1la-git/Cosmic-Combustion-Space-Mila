@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.map.GameMap;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -43,11 +44,12 @@ public class MenuScreen implements Screen {
         table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Go To Game", game.getSkin());
+        TextButton goToGameButton = new TextButton("PLEASE WORK", game.getSkin());
         table.add(goToGameButton).width(300).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.setMap(new GameMap(game, "maps/map.properties"));
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });

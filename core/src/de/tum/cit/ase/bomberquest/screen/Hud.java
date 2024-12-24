@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
@@ -39,6 +38,20 @@ public class Hud {
     }
 
     /**
+     * Draws this object on the screen.
+     * The texture will be scaled by the game scale and the tile size.
+     * This should only be called between spriteBatch.begin() and spriteBatch.end(), e.g. in the renderMap() method.
+     *
+     * @param spriteBatch The SpriteBatch to draw with.
+     */
+    private static void draw(SpriteBatch spriteBatch, TextureRegion texture, float x, float y, int scale) {
+        // Scale everything
+        float width = texture.getRegionWidth() * scale;
+        float height = texture.getRegionHeight() * scale;
+        spriteBatch.draw(texture, x, y, width, height);
+    }
+
+    /**
      * Renders the HUD on the screen.
      * This uses a different OrthographicCamera so that the HUD is always fixed on the screen.
      */
@@ -49,10 +62,10 @@ public class Hud {
         spriteBatch.begin();
         // Draw the HUD elements
         draw(spriteBatch, Textures.HUD, 0, 0, 4);
-        draw(spriteBatch, Textures.TIMER, 0, (float) (hudY*0.8), 3);
-        draw(spriteBatch, Textures.BLAST, 0, (float) (hudY*0.6), 3);
-        draw(spriteBatch, Textures.BOMB, 0, (float) (hudY*0.4), 3);
-        draw(spriteBatch, Textures.ENEMY, 0, (float) (hudY*0.2), 3);
+        draw(spriteBatch, Textures.TIMER, 0, (float) (hudY * 0.8), 3);
+        draw(spriteBatch, Textures.BLAST, 0, (float) (hudY * 0.6), 3);
+        draw(spriteBatch, Textures.BOMB, 0, (float) (hudY * 0.4), 3);
+        draw(spriteBatch, Textures.ENEMY, 0, (float) (hudY * 0.2), 3);
         draw(spriteBatch, Textures.EXIT, 0, 0, 3);
         font.draw(spriteBatch, "" + timer, 48, hudY - 25);
         font.draw(spriteBatch, "" + blastRadius, 48, (float) (hudY * 0.8) - 25);
@@ -76,26 +89,14 @@ public class Hud {
     }
 
     /**
-     * Draws this object on the screen.
-     * The texture will be scaled by the game scale and the tile size.
-     * This should only be called between spriteBatch.begin() and spriteBatch.end(), e.g. in the renderMap() method.
-     * @param spriteBatch The SpriteBatch to draw with.
-     */
-    private static void draw(SpriteBatch spriteBatch, TextureRegion texture, float x, float y, int scale) {
-        // Drawable coordinates are in tiles, so we need to scale them to pixels
-        // Additionally scale everything by the game scale
-        float width = texture.getRegionWidth() * scale;
-        float height = texture.getRegionHeight() * scale;
-        spriteBatch.draw(texture, x, y, width, height);
-    }
-
-    /**
      * Hud will take 10% of the screen on the bottom
+     *
      * @return the height
      */
     public float getHudX() {
         return hudX;
     }
+
     public float getHudY() {
         return hudY;
     }

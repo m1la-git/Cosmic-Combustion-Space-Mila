@@ -74,7 +74,7 @@ public class GameMap {
      */
     private float physicsTime = 0;
 
-    public GameMap(BomberQuestGame game) {
+    public GameMap(BomberQuestGame game, String mapFile) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         this.contactListener = new GameContactListener();
@@ -90,7 +90,7 @@ public class GameMap {
 
 
 
-        int[] temp = loadMap("map.properties");
+        int[] temp = loadMap(mapFile);
         this.MAX_X = temp[0];
         this.MAX_Y = temp[1];
         numberOfEnemies = enemies.size();
@@ -110,7 +110,7 @@ public class GameMap {
         int maxY = 0;
         boolean existsExit = false;
         List<String> freeDestructibleWalls = new ArrayList<>();
-        FileHandle file = Gdx.files.internal("maps/" + filename);
+        FileHandle file = Gdx.files.internal(filename);
         try {
             for (String line : file.readString().split("\\r?\\n")) {
                 line = line.trim();
