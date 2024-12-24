@@ -26,7 +26,7 @@ public enum SpriteSheet {
 
     BOMBERMAN("original-bomberman.png", 16, 16),
 
-    HUD("basictiles.png", 64, 48);
+    HUD("basictiles.png", 48, 80);
 
 
 

@@ -41,7 +41,7 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
     private boolean trapped;
 
     public Enemy(World world, float x, float y, GameMap map) {
-        super(world, x, y, 1, 0.5f, BodyDef.BodyType.KinematicBody);
+        super(world, x, y, 1, 0.49f);
         this.map = map;
         reachedCell = true;
         trapped = false;

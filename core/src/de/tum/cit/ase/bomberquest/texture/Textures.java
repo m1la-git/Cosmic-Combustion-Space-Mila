@@ -25,6 +25,12 @@ public class Textures {
 
     public static final TextureRegion ENEMY = SpriteSheet.BOMBERMAN.at(16, 7);
 
+    public static final TextureRegion BOMB = SpriteSheet.BOMBERMAN.at(4, 1);
+
+    public static final TextureRegion BLAST = SpriteSheet.BOMBERMAN.at(12, 8);
+
+    public static final TextureRegion TIMER = SpriteSheet.BOMBERMAN.at(1, 1);
+
     public static final TextureRegion WALLPASS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 4);
 
     public static final TextureRegion DETONATOR_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 5);
@@ -35,7 +41,7 @@ public class Textures {
 
     public static final TextureRegion MYSTERY_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 8);
 
-    public static final TextureRegion HUD = SpriteSheet.HUD.at(1, 1);
+    public static final TextureRegion HUD = SpriteSheet.HUD.at(1, 2);
 
 
 }

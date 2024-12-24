@@ -38,8 +38,8 @@ public abstract class MobileObject implements Drawable {
     private float deathX;
     private float deathY;
 
-    public MobileObject(World world, float x, float y, int speed, float radius, BodyDef.BodyType bodyType) {
-        this.hitbox = createHitbox(world, x, y, radius, bodyType);
+    public MobileObject(World world, float x, float y, int speed, float radius) {
+        this.hitbox = createHitbox(world, x, y, radius);
         this.speed = speed;
         direction = DirectionType.NONE;
         alive = true;
@@ -54,14 +54,13 @@ public abstract class MobileObject implements Drawable {
      * @param startX The initial X position.
      * @param startY The initial Y position.
      * @param radius The radius of the hitbox.
-     * @param bodyType Body type: Dynamic for a Player, Kinematic for Enemies
      * @return The created body.
      */
-    private Body createHitbox(World world, float startX, float startY, float radius, BodyDef.BodyType bodyType) {
+    private Body createHitbox(World world, float startX, float startY, float radius) {
         // BodyDef is like a blueprint for the movement properties of the body.
         BodyDef bodyDef = new BodyDef();
-        // Dynamic bodies are affected by forces and collisions, Kinematic bodies aren't.
-        bodyDef.type = bodyType;
+        // Dynamic bodies are affected by forces and collisions.
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         // Set the initial position of the body.
         bodyDef.position.set(startX, startY);
         // Create the body in the world using the body definition.

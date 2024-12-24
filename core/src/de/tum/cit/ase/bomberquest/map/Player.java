@@ -25,7 +25,7 @@ public class Player extends MobileObject implements Drawable {
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
 
     public Player(World world, float x, float y) {
-        super(world, x, y, 2, 0.3f, BodyDef.BodyType.DynamicBody);
+        super(world, x, y, 2, 0.3f);
     }
 
     /**
