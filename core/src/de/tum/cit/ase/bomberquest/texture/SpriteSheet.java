@@ -18,7 +18,7 @@ public enum SpriteSheet {
     /**
      * The character spritesheet, which has a grid size of 16x32.
      */
-    CHARACTER("character.png", 16, 32),
+    CHARACTER("Player.png", 16, 16),
     /**
      * The basic tiles spritesheet, which has a grid size of 16x16.
      */
