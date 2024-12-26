@@ -83,6 +83,9 @@ public class Player extends MobileObject implements Drawable {
     }
 
 
+    public boolean isPlayer1() {
+        return player1;
+    }
     public void addKeys(int keycode) {
         keyPressOrder.addLast(keycode);
     }

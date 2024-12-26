@@ -20,7 +20,7 @@ public class Ground implements Drawable {
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        return Textures.FLOWERS;
+        return Textures.GROUND;
     }
 
     @Override

@@ -25,7 +25,6 @@ public class Bomb extends StationaryObject implements Drawable {
         if (this.elapsedTime >= 3.0f && !exploded) {
             exploded = true;
             owner.returnBomb();
-
         }
     }
 

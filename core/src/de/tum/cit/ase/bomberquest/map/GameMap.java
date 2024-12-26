@@ -281,13 +281,15 @@ public class GameMap {
                 SoundEffects.BOMB_EXPLOSION.play();
                 int bombX = bomb.getCellX();
                 int bombY = bomb.getCellY();
-                releaseBlast(bombX, bombY, 0, 1);  // Up
-                releaseBlast(bombX, bombY, 0, -1); // Down
-                releaseBlast(bombX, bombY, 1, 0);  // Right
-                releaseBlast(bombX, bombY, -1, 0); // Left
+                MobileObject bombOwner = bomb.getOwner();
+                releaseBlast(bombX, bombY, 0, 1, bombOwner);  // Up
+                releaseBlast(bombX, bombY, 0, -1, bombOwner); // Down
+                releaseBlast(bombX, bombY, 1, 0, bombOwner);  // Right
+                releaseBlast(bombX, bombY, -1, 0, bombOwner); // Left
+                blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER, bombOwner));
                 bomb.destroy(world);
                 iterator.remove();
-                blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER));// Safely remove the current entry
+                // Safely remove the current entry
             }
         }
 
@@ -482,8 +484,8 @@ public class GameMap {
             }
         }
         if (spaceEmpty) {
-            bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, player1));
-            player1.placedBomb();
+            bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, player));
+            player.placedBomb();
             SoundEffects.PLACE_BOMB.play();
         }
     }
@@ -528,7 +530,7 @@ public class GameMap {
      * Releasing the blast in 1 direction in a certain radius
      * Until any stationaryObject is met on the way
      */
-    private void releaseBlast(int x, int y, int dx, int dy) {
+    private void releaseBlast(int x, int y, int dx, int dy, MobileObject owner) {
         for (int i = 1; i <= player1.getBlastRadius(); i++) {
             int currentX = x + i * dx;
             int currentY = y + i * dy;
@@ -543,7 +545,7 @@ public class GameMap {
                     } else if (type == WallContentType.EXIT) {
                         walls.put(currentX + "," + currentY, new Exit(world, currentX, currentY));
                     }
-                    blasts.add(new Blast(world, currentX, currentY, BlastType.WALL));
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.WALL, owner));
                     break;
                 }
                 if (!(obj instanceof PowerUp || obj instanceof Exit)) {
@@ -552,19 +554,19 @@ public class GameMap {
             }
             if (i == player1.getBlastRadius()) {
                 if (dx == 0 && dy < 0) {
-                    blasts.add(new Blast(world, currentX, currentY, BlastType.DOWN));
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.DOWN, owner));
                 } else if (dx == 0 && dy > 0) {
-                    blasts.add(new Blast(world, currentX, currentY, BlastType.UP));
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.UP, owner));
                 } else if (dy == 0 && dx > 0) {
-                    blasts.add(new Blast(world, currentX, currentY, BlastType.RIGHT));
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.RIGHT, owner));
                 } else {
-                    blasts.add(new Blast(world, currentX, currentY, BlastType.LEFT));
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.LEFT, owner));
                 }
             } else {
                 if (dx == 0) {
-                    blasts.add(new Blast(world, currentX, currentY, BlastType.VERTICAL));
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.VERTICAL, owner));
                 } else {
-                    blasts.add(new Blast(world, currentX, currentY, BlastType.HORIZONTAL));
+                    blasts.add(new Blast(world, currentX, currentY, BlastType.HORIZONTAL, owner));
                 }
             }
 

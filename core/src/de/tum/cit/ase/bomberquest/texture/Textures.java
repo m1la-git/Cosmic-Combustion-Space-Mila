@@ -11,14 +11,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Textures {
 
-    public static final TextureRegion PLAYER1 = SpriteSheet.CHARACTER.at(1, 1);
-    public static final TextureRegion PLAYER2 = SpriteSheet.CHARACTER.at(1, 7);
+    public static final TextureRegion PLAYER1 = SpriteSheet.MOBILE_OBJECTS.at(1, 1);
 
-    public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
+    public static final TextureRegion PLAYER2 = SpriteSheet.MOBILE_OBJECTS.at(1, 7);
 
-    public static final TextureRegion INDESTRUCTIBLE_WALL = SpriteSheet.BASIC_TILES.at(3, 2);
+    public static final TextureRegion GROUND = SpriteSheet.STATIONARY_OBJECTS.at(1, 3);
 
-    public static final TextureRegion DESTRUCTIBLE_WALL = SpriteSheet.BASIC_TILES.at(1, 1);
+    public static final TextureRegion INDESTRUCTIBLE_WALL = SpriteSheet.STATIONARY_OBJECTS.at(1, 2);
+
+    public static final TextureRegion DESTRUCTIBLE_WALL = SpriteSheet.STATIONARY_OBJECTS.at(1, 1);
 
     public static final TextureRegion EXIT = SpriteSheet.BOMBERMAN.at(4, 12);
 
