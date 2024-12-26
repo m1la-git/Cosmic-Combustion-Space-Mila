@@ -61,79 +61,6 @@ public class Player extends MobileObject implements Drawable {
      * sets the direction according to the queue
      */
     private void handleInput() {
-        // check the keyboard input
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            //key is just pressed
-            @Override
-            public boolean keyDown(int keycode) {
-                switch (keycode) {
-                    case Input.Keys.W:
-                        if (player1) keyPressOrder.addLast(Input.Keys.W);
-                        break;
-                    case Input.Keys.S:
-                        if (player1) keyPressOrder.addLast(Input.Keys.S);
-                        break;
-                    case Input.Keys.A:
-                        if (player1) keyPressOrder.addLast(Input.Keys.A);
-                        break;
-                    case Input.Keys.D:
-                        if (player1) keyPressOrder.addLast(Input.Keys.D);
-                        break;
-                    case Input.Keys.UP:
-                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.UP);
-                        break;
-                    case Input.Keys.DOWN:
-                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.DOWN);
-                        break;
-                    case Input.Keys.LEFT:
-                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.LEFT);
-                        break;
-                    case Input.Keys.RIGHT:
-                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.RIGHT);
-                        break;
-                    default:
-                        // Optionally handle other keys or do nothing.
-                        break;
-                }
-                return true; // Indicates the event was processed
-            }
-
-            //key is just released
-            @Override
-            public boolean keyUp(int keycode) {
-                switch (keycode) {
-                    case Input.Keys.W:
-                        keyPressOrder.remove(Input.Keys.W);
-                        break;
-                    case Input.Keys.S:
-                        keyPressOrder.remove(Input.Keys.S);
-                        break;
-                    case Input.Keys.A:
-                        keyPressOrder.remove(Input.Keys.A);
-                        break;
-                    case Input.Keys.D:
-                        keyPressOrder.remove(Input.Keys.D);
-                        break;
-                    case Input.Keys.UP:
-                        keyPressOrder.remove(Input.Keys.UP);
-                        break;
-                    case Input.Keys.DOWN:
-                        keyPressOrder.remove(Input.Keys.DOWN);
-                        break;
-                    case Input.Keys.LEFT:
-                        keyPressOrder.remove(Input.Keys.LEFT);
-                        break;
-                    case Input.Keys.RIGHT:
-                        keyPressOrder.remove(Input.Keys.RIGHT);
-                        break;
-                    default:
-                        // Optional: Handle other keys if necessary
-                        break;
-                }
-                return true;
-            }
-        });
-
         // set the direction
         if (!keyPressOrder.isEmpty()) {
             switch (keyPressOrder.peekLast()) {
@@ -155,6 +82,13 @@ public class Player extends MobileObject implements Drawable {
         }
     }
 
+
+    public void addKeys(int keycode) {
+        keyPressOrder.addLast(keycode);
+    }
+    public void removeKeys(int keycode) {
+        keyPressOrder.remove(keycode);
+    }
 
     @Override
     public TextureRegion getCurrentAppearance() {

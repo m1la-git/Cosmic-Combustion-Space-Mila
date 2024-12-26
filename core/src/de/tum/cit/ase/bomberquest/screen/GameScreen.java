@@ -187,6 +187,9 @@ public class GameScreen implements Screen {
 
         //player
         draw(spriteBatch, map.getPlayer1());
+        if (map.getPlayer2() != null) {
+            draw(spriteBatch, map.getPlayer2());
+        }
 
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

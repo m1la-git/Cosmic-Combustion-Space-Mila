@@ -40,6 +40,7 @@ public abstract class MobileObject implements Drawable {
 
     private int concurrentBombs;
     private int blastRadius;
+    private int bombsNow;
 
     public MobileObject(World world, float x, float y, int speed, float radius) {
         this.hitbox = createHitbox(world, x, y, radius);
@@ -49,6 +50,7 @@ public abstract class MobileObject implements Drawable {
         dead = false;
         concurrentBombs = 1;
         blastRadius = 1;
+        bombsNow = 1;
     }
 
     /**
@@ -191,7 +193,16 @@ public abstract class MobileObject implements Drawable {
         return speed;
     }
     public void increaseConcurrentBombs() {
-        if (concurrentBombs < 8) concurrentBombs++;
+        if (concurrentBombs < 8) {
+            concurrentBombs++;
+            bombsNow++;
+        }
+    }
+    public void placedBomb() {
+        bombsNow--;
+    }
+    public void returnBomb() {
+        bombsNow++;
     }
     public void increaseBlastRadius() {
         if (blastRadius < 8) blastRadius++;
@@ -199,6 +210,11 @@ public abstract class MobileObject implements Drawable {
     public void increaseSpeed() {
         speed++;
     }
+
+    public int getBombsNow() {
+        return bombsNow;
+    }
+
 
 
 

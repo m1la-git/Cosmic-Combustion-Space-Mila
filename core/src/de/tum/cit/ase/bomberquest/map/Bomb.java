@@ -12,16 +12,20 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 public class Bomb extends StationaryObject implements Drawable {
     private float elapsedTime;
     private boolean exploded;
+    private final MobileObject owner;
 
-    public Bomb(World world, int x, int y) {
+    public Bomb(World world, int x, int y, MobileObject owner) {
         super(world, x, y, true);
         exploded = false;
+        this.owner = owner;
     }
 
     public void tick(float frameTime) {
         this.elapsedTime += frameTime;
         if (this.elapsedTime >= 3.0f && !exploded) {
             exploded = true;
+            owner.returnBomb();
+
         }
     }
 
@@ -38,6 +42,10 @@ public class Bomb extends StationaryObject implements Drawable {
     @Override
     public TextureRegion getCurrentAppearance() {
         return Animations.BOMB.getKeyFrame(this.elapsedTime, true);
+    }
+
+    public MobileObject getOwner() {
+        return owner;
     }
 
 }

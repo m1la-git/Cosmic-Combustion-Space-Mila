@@ -2,6 +2,7 @@ package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -84,17 +85,15 @@ public class GameMap {
         this.victory = false;
 
 
-
         int[] temp = loadMap(mapFile);
         this.MAX_X = temp[0];
         this.MAX_Y = temp[1];
         if (temp[4] == -1) {
             this.player1 = new Player(world, temp[2], temp[3]);
             this.player2 = null;
-        }
-        else {
+        } else {
             this.player1 = new Player(world, temp[2], temp[3], true);
-            this.player2 = new Player(world, temp[4], temp[5]);
+            this.player2 = new Player(world, temp[4], temp[5], false);
         }
 
         numberOfEnemies = enemies.size();
@@ -161,7 +160,6 @@ public class GameMap {
                             entrance2[0] = x;
                             entrance2[1] = y;
                         }
-
                         break;
                     case 3: // enemy
                         enemies.add(new Enemy(world, x, y, this));
@@ -232,38 +230,31 @@ public class GameMap {
      * @param frameTime the time that has passed since the last update
      */
     public void tick(float frameTime) {
+        handleInput();
         player1.tick(frameTime);
-        if(player2 != null) player2.tick(frameTime);
+        if (player2 != null) player2.tick(frameTime);
         elapsedTime += frameTime;
+
         if (player1.isAlive()) {
-            int playerCellX = player1.getCellX();
-            int playerCellY = player1.getCellY();
-            if (walls.containsKey(playerCellX + "," + playerCellY)) {
-                //exit
-                if (walls.get(playerCellX + "," + playerCellY) instanceof Exit && enemies.isEmpty()) {
-                    victory = true;
-                }
-                //power-ups
-                collectPowerUp(playerCellX, playerCellY);
+            //power-ups
+            collectPowerUp(player1);
+
+            checkExit();
+            // place bomb if space is pressed and limit of bombs isn't reached
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player1.getBombsNow() > 0) {
+                placeBomb(player1);
             }
-            // place bomb if space is pressed and limit of concurrent bombs isn't reached
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < player1.getConcurrentBombs()) {
-                boolean spaceEmpty = true;
-                for (String key : bombs.keySet()) {
-                    String[] coords = key.split(",");
-                    int bombX = Integer.parseInt(coords[0]);
-                    int bombY = Integer.parseInt(coords[1]);
-                    if (bombX == playerCellX && bombY == playerCellY) {
-                        spaceEmpty = false;
-                        break;
-                    }
-                }
-                if (spaceEmpty) {
-                    bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY));
-                    SoundEffects.PLACE_BOMB.play();
+        }
+        if (player2 != null) {
+            if (player2.isAlive()) {
+                collectPowerUp(player2);
+                // place bomb if enter is pressed and limit of bombs isn't reached
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && player1.getBombsNow() > 0) {
+                    placeBomb(player2);
                 }
             }
         }
+
         //enemies ticks
         for (int i = enemies.size() - 1; i >= 0; i--) {
             Enemy enemy = enemies.get(i);
@@ -359,19 +350,161 @@ public class GameMap {
         }
     }
 
-    private void collectPowerUp(float playerCellX, float playerCellY) {
-        if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
-            SoundEffects.POWER_UP.play();
-            WallContentType type = powerUp.getType();
-            switch (type) {
-                case BOMBS_POWER_UP:
-                    player1.increaseConcurrentBombs();
-                    break;
-                case FLAMES_POWER_UP:
-                    player1.increaseBlastRadius();
-                    break;
+    private void handleInput() {
+        // check the keyboard input
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            //key is just pressed
+            @Override
+            public boolean keyDown(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.W:
+                        if (player1.isAlive()) player1.addKeys(Input.Keys.W);
+                        break;
+                    case Input.Keys.S:
+                        if (player1.isAlive()) player1.addKeys(Input.Keys.S);
+                        break;
+                    case Input.Keys.A:
+                        if (player1.isAlive()) player1.addKeys(Input.Keys.A);
+                        break;
+                    case Input.Keys.D:
+                        if (player1.isAlive()) player1.addKeys(Input.Keys.D);
+                        break;
+                    case Input.Keys.UP:
+                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.UP);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.addKeys(Input.Keys.UP);
+                        }
+                        break;
+                    case Input.Keys.DOWN:
+                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.DOWN);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.addKeys(Input.Keys.DOWN);
+                        }
+                        break;
+                    case Input.Keys.LEFT:
+                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.LEFT);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.addKeys(Input.Keys.LEFT);
+                        }
+                        break;
+                    case Input.Keys.RIGHT:
+                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.RIGHT);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.addKeys(Input.Keys.RIGHT);
+                        }
+                        break;
+                    default:
+                        // Optionally handle other keys or do nothing.
+                        break;
+                }
+                return true; // Indicates the event was processed
             }
-            walls.remove(playerCellX + "," + playerCellY);
+
+            //key is just released
+            @Override
+            public boolean keyUp(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.W:
+                        if (player1.isAlive()) player1.removeKeys(Input.Keys.W);
+                        break;
+                    case Input.Keys.S:
+                        if (player1.isAlive()) player1.removeKeys(Input.Keys.S);
+                        break;
+                    case Input.Keys.A:
+                        if (player1.isAlive()) player1.removeKeys(Input.Keys.A);
+                        break;
+                    case Input.Keys.D:
+                        if (player1.isAlive()) player1.removeKeys(Input.Keys.D);
+                        break;
+                    case Input.Keys.UP:
+                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.UP);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.removeKeys(Input.Keys.UP);
+                        }
+                        break;
+                    case Input.Keys.DOWN:
+                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.DOWN);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.removeKeys(Input.Keys.DOWN);
+                        }
+                        break;
+                    case Input.Keys.LEFT:
+                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.LEFT);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.removeKeys(Input.Keys.LEFT);
+                        }
+                        break;
+                    case Input.Keys.RIGHT:
+                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.RIGHT);
+                        else if (player2 != null) {
+                            if (player2.isAlive()) player2.removeKeys(Input.Keys.RIGHT);
+                        }
+                        break;
+                    default:
+                        // Optional: Handle other keys if necessary
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void checkExit() {
+        int player1CellX = player1.getCellX();
+        int player1CellY = player1.getCellY();
+        if (walls.containsKey(player1CellX + "," + player1CellY)) {
+            //exit
+            if (walls.get(player1CellX + "," + player1CellY) instanceof Exit && enemies.isEmpty()) {
+                if (player2 != null) {
+                    int player2CellX = player2.getCellX();
+                    int player2CellY = player2.getCellY();
+                    if (player2.isAlive() && walls.get(player2CellX + "," + player2CellY) instanceof Exit) {
+                        victory = true;
+                    }
+                } else {
+                    victory = true;
+                }
+            }
+        }
+    }
+
+    private void placeBomb(Player player) {
+        int playerCellX = player.getCellX();
+        int playerCellY = player.getCellY();
+        boolean spaceEmpty = true;
+        for (String key : bombs.keySet()) {
+            String[] coords = key.split(",");
+            int bombX = Integer.parseInt(coords[0]);
+            int bombY = Integer.parseInt(coords[1]);
+            if (bombX == playerCellX && bombY == playerCellY) {
+                spaceEmpty = false;
+                break;
+            }
+        }
+        if (spaceEmpty) {
+            bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, player1));
+            player1.placedBomb();
+            SoundEffects.PLACE_BOMB.play();
+        }
+    }
+
+    private void collectPowerUp(Player player) {
+        int playerCellX = player.getCellX();
+        int playerCellY = player.getCellY();
+        if (walls.containsKey(playerCellX + "," + playerCellY)) {
+            if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
+                SoundEffects.POWER_UP.play();
+                WallContentType type = powerUp.getType();
+                switch (type) {
+                    case BOMBS_POWER_UP:
+                        player.increaseConcurrentBombs();
+                        break;
+                    case FLAMES_POWER_UP:
+                        player.increaseBlastRadius();
+                        break;
+                }
+                walls.remove(playerCellX + "," + playerCellY);
+            }
         }
     }
 
@@ -451,6 +584,7 @@ public class GameMap {
     public Player getPlayer1() {
         return player1;
     }
+
     public Player getPlayer2() {
         return player2;
     }
@@ -486,9 +620,11 @@ public class GameMap {
     public boolean isVictory() {
         return victory;
     }
+
     public int getNumberOfEnemies() {
         return numberOfEnemies;
     }
+
     public int getTimer() {
         return (int) Math.ceil(150f - elapsedTime);
     }
