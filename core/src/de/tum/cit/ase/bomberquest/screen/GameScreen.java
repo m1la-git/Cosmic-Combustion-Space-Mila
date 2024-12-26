@@ -7,11 +7,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
 import de.tum.cit.ase.bomberquest.map.*;
+import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
+import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -82,7 +85,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || map.getPlayer().isDead() || map.isVictory()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || map.getPlayer1().isDead() || map.isVictory()) {
             game.goToMenu();
         }
 
@@ -98,11 +101,18 @@ public class GameScreen implements Screen {
         // Update the camera
         updateCamera();
 
+        OrthographicCamera hudCamera = hud.getCamera();
+        spriteBatch.setProjectionMatrix(hudCamera.combined);
+        spriteBatch.begin();
+
+        spriteBatch.draw(Textures.BACKGROUND, 0, 0, hudCamera.viewportWidth, hudCamera.viewportHeight);
+        spriteBatch.end();
+
         // Render the map on the screen
         renderMap();
 
         // Render the HUD on the screen
-        hud.render(map.getBlastRadius(), map.getConcurrentBombs(), map.getTimer(), map.getNumberOfEnemies());
+        hud.render(map.getPlayer1().getBlastRadius(), map.getPlayer1().getConcurrentBombs(), map.getTimer(), map.getNumberOfEnemies());
     }
 
 
@@ -125,12 +135,12 @@ public class GameScreen implements Screen {
         float minCameraY = viewportHeight - hud.getHudY(); // Min Y position camera can move to
 
         // Get player's position
-        float playerX = map.getPlayer().getX() * TILE_SIZE_PX * SCALE;
-        float playerY = map.getPlayer().getY() * TILE_SIZE_PX * SCALE;
+        float playerX = map.getPlayer1().getX() * TILE_SIZE_PX * SCALE;
+        float playerY = map.getPlayer1().getY() * TILE_SIZE_PX * SCALE;
 
         // Clamp the camera position to ensure it stays within the map bounds or centers for small maps
-        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hud.getHudX()) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
-        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hud.getHudY()) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
+        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hud.getHudX() * 2) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
+        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hud.getHudY() * 2) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
 
         // Update camera properties
         mapCamera.setToOrtho(false);
@@ -176,7 +186,7 @@ public class GameScreen implements Screen {
         }
 
         //player
-        draw(spriteBatch, map.getPlayer());
+        draw(spriteBatch, map.getPlayer1());
 
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

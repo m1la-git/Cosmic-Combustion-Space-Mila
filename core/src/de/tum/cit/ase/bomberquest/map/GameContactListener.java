@@ -45,6 +45,8 @@ public class GameContactListener implements ContactListener {
             handlePlayerEnemyCollision(bodyB);
         } else if (isEnemy(bodyA) && isEnemy(bodyB)) {
             contact.setEnabled(false);
+        }else if (isPlayer(bodyB) && isPlayer(bodyA)) {
+            contact.setEnabled(false);
         }
     }
 

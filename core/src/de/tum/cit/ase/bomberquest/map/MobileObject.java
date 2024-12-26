@@ -38,12 +38,17 @@ public abstract class MobileObject implements Drawable {
     private float deathX;
     private float deathY;
 
+    private int concurrentBombs;
+    private int blastRadius;
+
     public MobileObject(World world, float x, float y, int speed, float radius) {
         this.hitbox = createHitbox(world, x, y, radius);
         this.speed = speed;
         direction = DirectionType.NONE;
         alive = true;
         dead = false;
+        concurrentBombs = 1;
+        blastRadius = 1;
     }
 
     /**
@@ -176,6 +181,25 @@ public abstract class MobileObject implements Drawable {
         return dead;
     }
 
+    public int getConcurrentBombs() {
+        return concurrentBombs;
+    }
+    public int getBlastRadius() {
+        return blastRadius;
+    }
+    public int getSpeed() {
+        return speed;
+    }
+    public void increaseConcurrentBombs() {
+        if (concurrentBombs < 8) concurrentBombs++;
+    }
+    public void increaseBlastRadius() {
+        if (blastRadius < 8) blastRadius++;
+    }
+    public void increaseSpeed() {
+        speed++;
+    }
+
 
 
     public float getElapsedTime() {
@@ -194,13 +218,8 @@ public abstract class MobileObject implements Drawable {
         return hitbox;
     }
 
-    public int getSpeed() {
-        return speed;
-    }
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
+
 
     public DirectionType getDirection() {
         return direction;

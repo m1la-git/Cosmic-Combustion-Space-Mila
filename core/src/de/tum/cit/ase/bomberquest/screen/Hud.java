@@ -100,5 +100,8 @@ public class Hud {
     public float getHudY() {
         return hudY;
     }
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
 
 }

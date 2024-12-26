@@ -53,8 +53,8 @@ public class GameMap {
      */
     private final GameContactListener contactListener;
     // Game objects
-    private final Player player;
-    private final int[] entrance;
+    private final Player player1;
+    private final Player player2;
     private final List<Enemy> enemies;
     private final Map<String, Bomb> bombs;
     private final List<Blast> blasts;
@@ -63,8 +63,6 @@ public class GameMap {
 
     private final int MAX_X;
     private final int MAX_Y;
-    private int blastRadius;
-    private int concurrentBombs;
     private boolean victory;
     private int numberOfEnemies;
     private float elapsedTime = 0;
@@ -80,12 +78,9 @@ public class GameMap {
         this.contactListener = new GameContactListener();
         this.world.setContactListener(contactListener);
         this.walls = new HashMap<>();
-        this.entrance = new int[]{0, 0};
         this.bombs = new HashMap<>();
         this.blasts = new ArrayList<>();
         this.enemies = new ArrayList<>();
-        this.blastRadius = 1;
-        this.concurrentBombs = 1;
         this.victory = false;
 
 
@@ -93,9 +88,17 @@ public class GameMap {
         int[] temp = loadMap(mapFile);
         this.MAX_X = temp[0];
         this.MAX_Y = temp[1];
+        if (temp[4] == -1) {
+            this.player1 = new Player(world, temp[2], temp[3]);
+            this.player2 = null;
+        }
+        else {
+            this.player1 = new Player(world, temp[2], temp[3], true);
+            this.player2 = new Player(world, temp[4], temp[5]);
+        }
+
         numberOfEnemies = enemies.size();
         // Create a player with initial position
-        this.player = new Player(this.world, entrance[0], entrance[1]);
     }
 
     /**
@@ -108,6 +111,8 @@ public class GameMap {
     public int[] loadMap(String filename) {
         int maxX = 0;
         int maxY = 0;
+        int[] entrance1 = new int[]{-1, -1};
+        int[] entrance2 = new int[]{-1, -1};
         boolean existsExit = false;
         List<String> freeDestructibleWalls = new ArrayList<>();
         FileHandle file = Gdx.files.internal(filename);
@@ -146,8 +151,17 @@ public class GameMap {
                         freeDestructibleWalls.add(x + "," + y);
                         break;
                     case 2: // entrance
-                        entrance[0] = x;
-                        entrance[1] = y;
+                        if (entrance1[0] == -1) {
+                            entrance1[0] = x;
+                            entrance1[1] = y;
+                        }
+                        //max 2 players
+                        else {
+
+                            entrance2[0] = x;
+                            entrance2[1] = y;
+                        }
+
                         break;
                     case 3: // enemy
                         enemies.add(new Enemy(world, x, y, this));
@@ -185,6 +199,11 @@ public class GameMap {
                 }
 
             }
+            //at least one player
+            if (entrance1[0] == -1) {
+                Gdx.app.error("GameMap", "Entrance not found.");
+            }
+            //create exit if absent
             if (!existsExit) {
                 if (freeDestructibleWalls.isEmpty()) {
                     Gdx.app.error("GameMap", "No place for an exit.");
@@ -202,7 +221,7 @@ public class GameMap {
         } catch (Exception e) {
             Gdx.app.error("GameMap", "Error reading map file: " + e.getMessage());
         }
-        return new int[]{maxX, maxY};
+        return new int[]{maxX, maxY, entrance1[0], entrance1[1], entrance2[0], entrance2[1]};
     }
 
 
@@ -213,35 +232,22 @@ public class GameMap {
      * @param frameTime the time that has passed since the last update
      */
     public void tick(float frameTime) {
-        this.player.tick(frameTime);
+        player1.tick(frameTime);
+        if(player2 != null) player2.tick(frameTime);
         elapsedTime += frameTime;
-        if (player.isAlive()) {
-            int playerCellX = player.getCellX();
-            int playerCellY = player.getCellY();
-
+        if (player1.isAlive()) {
+            int playerCellX = player1.getCellX();
+            int playerCellY = player1.getCellY();
             if (walls.containsKey(playerCellX + "," + playerCellY)) {
                 //exit
                 if (walls.get(playerCellX + "," + playerCellY) instanceof Exit && enemies.isEmpty()) {
                     victory = true;
-
                 }
                 //power-ups
-                if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
-                    SoundEffects.POWER_UP.play();
-                    WallContentType type = powerUp.getType();
-                    switch (type) {
-                        case BOMBS_POWER_UP:
-                            if (concurrentBombs < 8) concurrentBombs++;
-                            break;
-                        case FLAMES_POWER_UP:
-                            if (blastRadius < 8) blastRadius++;
-                            break;
-                    }
-                    walls.remove(playerCellX + "," + playerCellY);
-                }
+                collectPowerUp(playerCellX, playerCellY);
             }
             // place bomb if space is pressed and limit of concurrent bombs isn't reached
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < concurrentBombs) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && bombs.size() < player1.getConcurrentBombs()) {
                 boolean spaceEmpty = true;
                 for (String key : bombs.keySet()) {
                     String[] coords = key.split(",");
@@ -265,7 +271,6 @@ public class GameMap {
             if (enemy.isDead()) {
                 enemies.remove(i);
             }
-
         }
 
         // bomb ticks and handling bomb collisions
@@ -274,8 +279,8 @@ public class GameMap {
             Map.Entry<String, Bomb> entry = iterator.next();
             Bomb bomb = entry.getValue();
             bomb.tick(frameTime);
-            if (player.isAlive()) {
-                if (isOverlapping(player.getHitbox(), bomb.getHitbox())) {
+            if (player1.isAlive()) {
+                if (isOverlapping(player1.getHitbox(), bomb.getHitbox())) {
                     contactListener.addIgnoredBomb(bomb.getHitbox());
                 } else {
                     contactListener.removeIgnoredBomb(bomb.getHitbox());
@@ -320,15 +325,15 @@ public class GameMap {
                     enemy.death(world);
                     SoundEffects.ENEMY_DEATH.play();
                     numberOfEnemies--;
-                    if (numberOfEnemies == 0 && player.isAlive()) {
+                    if (numberOfEnemies == 0 && player1.isAlive()) {
                         SoundEffects.STAGE_CLEAR.play();
                     }
                 }
             }
             //player's death
-            if (player.isAlive()) {
-                if (isBlasted(player, blast)) {
-                    player.death(world);
+            if (player1.isAlive()) {
+                if (isBlasted(player1, blast)) {
+                    player1.death(world);
                 }
             }
 
@@ -354,6 +359,22 @@ public class GameMap {
         }
     }
 
+    private void collectPowerUp(float playerCellX, float playerCellY) {
+        if (walls.get(playerCellX + "," + playerCellY) instanceof PowerUp powerUp) {
+            SoundEffects.POWER_UP.play();
+            WallContentType type = powerUp.getType();
+            switch (type) {
+                case BOMBS_POWER_UP:
+                    player1.increaseConcurrentBombs();
+                    break;
+                case FLAMES_POWER_UP:
+                    player1.increaseBlastRadius();
+                    break;
+            }
+            walls.remove(playerCellX + "," + playerCellY);
+        }
+    }
+
 
     private boolean isBlasted(MobileObject obj, Blast blast) {
         return obj.getCellX() == blast.getX() && obj.getCellY() == blast.getY();
@@ -375,7 +396,7 @@ public class GameMap {
      * Until any stationaryObject is met on the way
      */
     private void releaseBlast(int x, int y, int dx, int dy) {
-        for (int i = 1; i <= blastRadius; i++) {
+        for (int i = 1; i <= player1.getBlastRadius(); i++) {
             int currentX = x + i * dx;
             int currentY = y + i * dy;
             if (walls.containsKey(currentX + "," + currentY)) {
@@ -396,7 +417,7 @@ public class GameMap {
                     break;
                 }
             }
-            if (i == blastRadius) {
+            if (i == player1.getBlastRadius()) {
                 if (dx == 0 && dy < 0) {
                     blasts.add(new Blast(world, currentX, currentY, BlastType.DOWN));
                 } else if (dx == 0 && dy > 0) {
@@ -427,8 +448,11 @@ public class GameMap {
         return !bombs.containsKey(x + "," + y);
     }
 
-    public Player getPlayer() {
-        return player;
+    public Player getPlayer1() {
+        return player1;
+    }
+    public Player getPlayer2() {
+        return player2;
     }
 
 
@@ -461,12 +485,6 @@ public class GameMap {
 
     public boolean isVictory() {
         return victory;
-    }
-    public int getBlastRadius() {
-        return blastRadius;
-    }
-    public int getConcurrentBombs() {
-        return concurrentBombs;
     }
     public int getNumberOfEnemies() {
         return numberOfEnemies;

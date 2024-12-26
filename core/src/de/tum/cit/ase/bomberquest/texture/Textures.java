@@ -1,5 +1,7 @@
 package de.tum.cit.ase.bomberquest.texture;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -8,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * These can be referenced anywhere they are needed.
  */
 public class Textures {
+
+    public static final TextureRegion PLAYER1 = SpriteSheet.CHARACTER.at(1, 1);
+    public static final TextureRegion PLAYER2 = SpriteSheet.CHARACTER.at(1, 7);
 
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
 
@@ -42,6 +47,8 @@ public class Textures {
     public static final TextureRegion MYSTERY_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 8);
 
     public static final TextureRegion HUD = SpriteSheet.HUD.at(1, 2);
+
+    public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/background.jpg"));
 
 
 }

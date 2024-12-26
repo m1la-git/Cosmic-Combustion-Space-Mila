@@ -12,36 +12,64 @@ public class Animations {
     /**
      * player walking down
      */
-
-    public static final Animation<TextureRegion> PLAYER_WALK_DOWN = new Animation<>(0.1f,
-            SpriteSheet.CHARACTER.at(2, 1),
+    public static final Animation<TextureRegion> PLAYER1_WALK_DOWN = new Animation<>(0.1f,
             SpriteSheet.CHARACTER.at(1, 1),
-            SpriteSheet.CHARACTER.at(2, 1),
-            SpriteSheet.CHARACTER.at(1, 2)
+            SpriteSheet.CHARACTER.at(1, 2),
+            SpriteSheet.CHARACTER.at(1, 1),
+            SpriteSheet.CHARACTER.at(1, 3)
     );
     /**
      * player walking up
      */
-    public static final Animation<TextureRegion> PLAYER_WALK_UP = new Animation<>(0.1f,
-            SpriteSheet.CHARACTER.at(2, 2),
-            SpriteSheet.CHARACTER.at(1, 3),
-            SpriteSheet.CHARACTER.at(2, 2),
-            SpriteSheet.CHARACTER.at(1, 4)
+    public static final Animation<TextureRegion> PLAYER1_WALK_UP = new Animation<>(0.1f,
+            SpriteSheet.CHARACTER.at(1, 4),
+            SpriteSheet.CHARACTER.at(1, 5),
+            SpriteSheet.CHARACTER.at(1, 4),
+            SpriteSheet.CHARACTER.at(1, 6)
     );
     /**
      * player walking right
      */
-    public static final Animation<TextureRegion> PLAYER_WALK_RIGHT = new Animation<>(0.1f,
-            SpriteSheet.CHARACTER.at(1, 5),
-            SpriteSheet.CHARACTER.at(1, 6)
+    public static final Animation<TextureRegion> PLAYER1_WALK_RIGHT = new Animation<>(0.1f,
+            SpriteSheet.CHARACTER.at(2, 1),
+            SpriteSheet.CHARACTER.at(2, 2),
+            SpriteSheet.CHARACTER.at(2, 1),
+            SpriteSheet.CHARACTER.at(2, 3)
     );
     /**
      * player walking left
      */
-    public static final Animation<TextureRegion> PLAYER_WALK_LEFT = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> PLAYER1_WALK_LEFT = new Animation<>(0.1f,
+            SpriteSheet.CHARACTER.at(2, 4),
             SpriteSheet.CHARACTER.at(2, 5),
+            SpriteSheet.CHARACTER.at(2, 4),
             SpriteSheet.CHARACTER.at(2, 6)
     );
+    public static final Animation<TextureRegion> PLAYER2_WALK_DOWN = new Animation<>(0.1f,
+            SpriteSheet.CHARACTER.at(1, 7),
+            SpriteSheet.CHARACTER.at(1, 8),
+            SpriteSheet.CHARACTER.at(1, 7),
+            SpriteSheet.CHARACTER.at(1, 9)
+    );
+    public static final Animation<TextureRegion> PLAYER2_WALK_UP = new Animation<>(0.1f,
+            SpriteSheet.CHARACTER.at(1, 10),
+            SpriteSheet.CHARACTER.at(1, 11),
+            SpriteSheet.CHARACTER.at(1, 10),
+            SpriteSheet.CHARACTER.at(1, 12)
+    );
+    public static final Animation<TextureRegion> PLAYER2_WALK_RIGHT = new Animation<>(0.1f,
+            SpriteSheet.CHARACTER.at(2, 7),
+            SpriteSheet.CHARACTER.at(2, 8),
+            SpriteSheet.CHARACTER.at(2, 7),
+            SpriteSheet.CHARACTER.at(2, 9)
+    );
+    public static final Animation<TextureRegion> PLAYER2_WALK_LEFT = new Animation<>(0.1f,
+            SpriteSheet.CHARACTER.at(2, 10),
+            SpriteSheet.CHARACTER.at(2, 11),
+            SpriteSheet.CHARACTER.at(2, 10),
+            SpriteSheet.CHARACTER.at(2, 12)
+    );
+
     /**
      * player death animation
      */
@@ -165,5 +193,7 @@ public class Animations {
             SpriteSheet.BOMBERMAN.at(4, 10),
             SpriteSheet.BOMBERMAN.at(4, 11)
     );
+
+
 
 }

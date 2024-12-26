@@ -4,11 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
-import de.tum.cit.ase.bomberquest.texture.SpriteSheet;
+import de.tum.cit.ase.bomberquest.texture.Textures;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -24,13 +23,25 @@ public class Player extends MobileObject implements Drawable {
      */
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
 
+    private final boolean players2;
+    private final boolean player1;
+
+    public Player(World world, float x, float y, boolean player1) {
+        super(world, x, y, 2, 0.3f);
+        players2 = true;
+        this.player1 = player1;
+    }
+
     public Player(World world, float x, float y) {
         super(world, x, y, 2, 0.3f);
+        players2 = false;
+        this.player1 = true;
     }
 
     /**
      * Move the player in the set direction according do the queue
      * Uses handleInput() to process keyboard input
+     *
      * @param frameTime the time since the last frame.
      */
     @Override
@@ -57,28 +68,28 @@ public class Player extends MobileObject implements Drawable {
             public boolean keyDown(int keycode) {
                 switch (keycode) {
                     case Input.Keys.W:
-                        keyPressOrder.addLast(Input.Keys.W);
+                        if (player1) keyPressOrder.addLast(Input.Keys.W);
                         break;
                     case Input.Keys.S:
-                        keyPressOrder.addLast(Input.Keys.S);
+                        if (player1) keyPressOrder.addLast(Input.Keys.S);
                         break;
                     case Input.Keys.A:
-                        keyPressOrder.addLast(Input.Keys.A);
+                        if (player1) keyPressOrder.addLast(Input.Keys.A);
                         break;
                     case Input.Keys.D:
-                        keyPressOrder.addLast(Input.Keys.D);
+                        if (player1) keyPressOrder.addLast(Input.Keys.D);
                         break;
                     case Input.Keys.UP:
-                        keyPressOrder.addLast(Input.Keys.UP);
+                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.UP);
                         break;
                     case Input.Keys.DOWN:
-                        keyPressOrder.addLast(Input.Keys.DOWN);
+                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.DOWN);
                         break;
                     case Input.Keys.LEFT:
-                        keyPressOrder.addLast(Input.Keys.LEFT);
+                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.LEFT);
                         break;
                     case Input.Keys.RIGHT:
-                        keyPressOrder.addLast(Input.Keys.RIGHT);
+                        if (!player1 || !players2) keyPressOrder.addLast(Input.Keys.RIGHT);
                         break;
                     default:
                         // Optionally handle other keys or do nothing.
@@ -145,18 +156,29 @@ public class Player extends MobileObject implements Drawable {
     }
 
 
-
     @Override
     public TextureRegion getCurrentAppearance() {
         if (isAlive()) {
             // Get the frame of the walk down animation that corresponds to the current time.
-            return switch (getDirection()) {
-                case UP -> Animations.PLAYER_WALK_UP.getKeyFrame(getElapsedTime(), true);
-                case DOWN -> Animations.PLAYER_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
-                case LEFT -> Animations.PLAYER_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
-                case RIGHT -> Animations.PLAYER_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
-                case NONE -> SpriteSheet.CHARACTER.at(1, 1);
-            };
+            if (player1) {
+                return switch (getDirection()) {
+                    case UP -> Animations.PLAYER1_WALK_UP.getKeyFrame(getElapsedTime(), true);
+                    case DOWN -> Animations.PLAYER1_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
+                    case LEFT -> Animations.PLAYER1_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
+                    case RIGHT -> Animations.PLAYER1_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
+                    case NONE -> Textures.PLAYER1;
+                };
+            } else {
+                return switch (getDirection()) {
+                    case UP -> Animations.PLAYER2_WALK_UP.getKeyFrame(getElapsedTime(), true);
+                    case DOWN -> Animations.PLAYER2_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
+                    case LEFT -> Animations.PLAYER2_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
+                    case RIGHT -> Animations.PLAYER2_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
+                    case NONE -> Textures.PLAYER2;
+                };
+            }
+
+
         }
         return Animations.PLAYER_DEATH.getKeyFrame(getElapsedTime(), false);
     }
