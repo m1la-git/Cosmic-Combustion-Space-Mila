@@ -42,6 +42,11 @@ public abstract class MobileObject implements Drawable {
     private int blastRadius;
     private int bombsNow;
 
+    /**
+     * Remember the lastDirection the object went to
+     */
+    private DirectionType lastDirection = DirectionType.NONE;
+
     public MobileObject(World world, float x, float y, int speed, float radius) {
         this.hitbox = createHitbox(world, x, y, radius);
         this.speed = speed;
@@ -98,11 +103,12 @@ public abstract class MobileObject implements Drawable {
      * set the velocity according to the direction.
      */
     protected void moveInDirection() {
-
+        if (direction!= DirectionType.NONE) setLastDirection(direction);
         // Update the hitbox's position based on direction and speed
         switch (direction) {
             case UP:
                 getHitbox().setLinearVelocity(0, getSpeed());
+
                 break;
             case DOWN:
                 getHitbox().setLinearVelocity(0, -getSpeed());
@@ -243,6 +249,13 @@ public abstract class MobileObject implements Drawable {
 
     public void setDirection(DirectionType direction) {
         this.direction = direction;
+    }
+
+    public DirectionType getLastDirection() {
+        return lastDirection;
+    }
+    public void setLastDirection(DirectionType lastDirection) {
+        this.lastDirection = lastDirection;
     }
 
     /**

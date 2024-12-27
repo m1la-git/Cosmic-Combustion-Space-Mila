@@ -31,17 +31,14 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
     private boolean reachedCell;
     private int targetX;
     private int targetY;
-    /**
-     * Remember the lastDirection the enemy went to
-     */
-    private DirectionType lastDirection = DirectionType.NONE;
+
     /**
      * For a proper direction choice when there are no free spaces around
      */
     private boolean trapped;
 
     public Enemy(World world, float x, float y, GameMap map) {
-        super(world, x, y, 1, 0.48f);
+        super(world, x, y, 1, 0.4f);
         this.map = map;
         reachedCell = true;
         trapped = false;
@@ -84,7 +81,7 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
         trapped = false;
 
         for (DirectionType direction : directions) {
-            if (isDirectionFree(direction) && direction != DirectionType.getOppositeDirection(lastDirection)) {
+            if (isDirectionFree(direction) && direction != DirectionType.getOppositeDirection(getDirection())) {
                 freeDirections.add(direction);
             }
         }
@@ -93,15 +90,15 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
         if (!freeDirections.isEmpty()) {
             DirectionType direction = freeDirections.get(random.nextInt(freeDirections.size()));
             updateTargetCell(direction);
-            lastDirection = direction;
+            setDirection(direction);
             return direction;
         }
 
         // If no alternative, choose the opposite direction as a fallback
-        DirectionType fallbackDirection = DirectionType.getOppositeDirection(lastDirection);
+        DirectionType fallbackDirection = DirectionType.getOppositeDirection(getDirection());
         if (isDirectionFree(fallbackDirection)) {
             updateTargetCell(fallbackDirection);
-            lastDirection = fallbackDirection;
+            setDirection(fallbackDirection);
             return fallbackDirection;
         }
 
@@ -162,9 +159,11 @@ public class Enemy extends MobileObject implements Drawable { // Change directio
     @Override
     public TextureRegion getCurrentAppearance() {
         if (isAlive()) {
-            return switch (getDirection()) {
-                case UP, RIGHT -> Animations.ENEMY_WALK_UP_OR_RIGHT.getKeyFrame(getElapsedTime(), true);
-                case DOWN, LEFT -> Animations.ENEMY_WALK_DOWN_OR_LEFT.getKeyFrame(getElapsedTime(), true);
+            return switch (getLastDirection()) {
+                case UP -> Animations.ENEMY_WALK_UP.getKeyFrame(getElapsedTime(), true);
+                case RIGHT -> Animations.ENEMY_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
+                case LEFT -> Animations.ENEMY_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
+                case DOWN -> Animations.ENEMY_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
                 case NONE -> Textures.ENEMY;
             };
         }

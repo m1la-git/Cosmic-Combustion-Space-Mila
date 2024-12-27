@@ -1,8 +1,6 @@
 package de.tum.cit.ase.bomberquest.map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.texture.Animations;
@@ -25,6 +23,7 @@ public class Player extends MobileObject implements Drawable {
 
     private final boolean players2;
     private final boolean player1;
+
 
     public Player(World world, float x, float y, boolean player1) {
         super(world, x, y, 2, 0.3f);
@@ -51,7 +50,7 @@ public class Player extends MobileObject implements Drawable {
             handleInput();
             moveInDirection();
         } else {
-            if (!isAlive() && getElapsedTime() >= 1.05f && !isDead()) setDead();
+            if (!isAlive() && getElapsedTime() >= 1.15f && !isDead()) setDead();
         }
     }
 
@@ -103,7 +102,14 @@ public class Player extends MobileObject implements Drawable {
                     case DOWN -> Animations.PLAYER1_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
                     case LEFT -> Animations.PLAYER1_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
                     case RIGHT -> Animations.PLAYER1_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
-                    case NONE -> Textures.PLAYER1;
+                    case NONE -> {
+                        yield switch (getLastDirection()) {
+                            case UP -> Textures.PLAYER1_UP;
+                            case DOWN, NONE -> Textures.PLAYER1_DOWN;
+                            case LEFT -> Textures.PLAYER1_LEFT;
+                            case RIGHT -> Textures.PLAYER1_RIGHT;
+                        };
+                    }
                 };
             } else {
                 return switch (getDirection()) {
@@ -111,7 +117,14 @@ public class Player extends MobileObject implements Drawable {
                     case DOWN -> Animations.PLAYER2_WALK_DOWN.getKeyFrame(getElapsedTime(), true);
                     case LEFT -> Animations.PLAYER2_WALK_LEFT.getKeyFrame(getElapsedTime(), true);
                     case RIGHT -> Animations.PLAYER2_WALK_RIGHT.getKeyFrame(getElapsedTime(), true);
-                    case NONE -> Textures.PLAYER2;
+                    case NONE -> {
+                        yield switch (getLastDirection()) {
+                            case UP -> Textures.PLAYER2_UP;
+                            case DOWN, NONE -> Textures.PLAYER2_DOWN;
+                            case LEFT -> Textures.PLAYER2_LEFT;
+                            case RIGHT -> Textures.PLAYER2_RIGHT;
+                        };
+                    }
                 };
             }
 

@@ -85,41 +85,71 @@ public class Animations {
     /**
      * player death animation
      */
-    public static final Animation<TextureRegion> PLAYER_DEATH = new Animation<>(0.15f,
-            SpriteSheet.MOBILE_OBJECTS.at(5, 1),
-            SpriteSheet.MOBILE_OBJECTS.at(5, 2),
-            SpriteSheet.MOBILE_OBJECTS.at(5, 3),
-            SpriteSheet.MOBILE_OBJECTS.at(5, 4),
-            SpriteSheet.MOBILE_OBJECTS.at(5, 5),
-            SpriteSheet.MOBILE_OBJECTS.at(5, 6)
+    public static final Animation<TextureRegion> PLAYER_DEATH = new Animation<>(0.1f,
+            SpriteSheet.MOBILE_OBJECTS.at(3, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 8),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 9),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 10),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 11),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 12),
+            SpriteSheet.STATIONARY_OBJECTS.at(1, 4)
+    );
+
+
+    /**
+     * enemy walking down
+     */
+    public static final Animation<TextureRegion> ENEMY_WALK_DOWN = new Animation<>(0.1f,
+            SpriteSheet.MOBILE_OBJECTS.at(3, 1),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 2),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 1),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 3)
     );
     /**
-     * enemy walking down or left
+     * enemy walking up
      */
-    public static final Animation<TextureRegion> ENEMY_WALK_DOWN_OR_LEFT = new Animation<>(0.1f,
-            SpriteSheet.BOMBERMAN.at(16, 4),
-            SpriteSheet.BOMBERMAN.at(16, 5),
-            SpriteSheet.BOMBERMAN.at(16, 6),
-            SpriteSheet.BOMBERMAN.at(16, 5)
+    public static final Animation<TextureRegion> ENEMY_WALK_UP = new Animation<>(0.1f,
+            SpriteSheet.MOBILE_OBJECTS.at(3, 4),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 5),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 4),
+            SpriteSheet.MOBILE_OBJECTS.at(3, 6)
     );
     /**
-     * enemy walking up or right
+     * enemy walking right
      */
-    public static final Animation<TextureRegion> ENEMY_WALK_UP_OR_RIGHT = new Animation<>(0.1f,
-            SpriteSheet.BOMBERMAN.at(16, 1),
-            SpriteSheet.BOMBERMAN.at(16, 2),
-            SpriteSheet.BOMBERMAN.at(16, 3),
-            SpriteSheet.BOMBERMAN.at(16, 2)
+    public static final Animation<TextureRegion> ENEMY_WALK_RIGHT = new Animation<>(0.1f,
+            SpriteSheet.MOBILE_OBJECTS.at(4, 1),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 2),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 1),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 3)
     );
+    /**
+     * enemy walking left
+     */
+    public static final Animation<TextureRegion> ENEMY_WALK_LEFT = new Animation<>(0.1f,
+            SpriteSheet.MOBILE_OBJECTS.at(4, 4),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 5),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 4),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 6)
+    );
+
     /**
      * enemy death animation
      */
-    public static final Animation<TextureRegion> ENEMY_DEATH = new Animation<>(0.21f,
-            SpriteSheet.BOMBERMAN.at(16, 7),
-            SpriteSheet.BOMBERMAN.at(16, 8),
-            SpriteSheet.BOMBERMAN.at(16, 9),
-            SpriteSheet.BOMBERMAN.at(16, 10),
-            SpriteSheet.BOMBERMAN.at(16, 11)
+    public static final Animation<TextureRegion> ENEMY_DEATH = new Animation<>(0.1f,
+            SpriteSheet.MOBILE_OBJECTS.at(4, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 7),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 8),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 9),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 10),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 11),
+            SpriteSheet.MOBILE_OBJECTS.at(4, 12),
+            SpriteSheet.STATIONARY_OBJECTS.at(1, 4)
     );
     /**
      * bomb animation
