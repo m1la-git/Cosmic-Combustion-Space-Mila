@@ -97,7 +97,7 @@ public class GameMap {
             this.player2 = new Player(world, temp[4], temp[5], false);
         }
 
-        numberOfEnemies = 1;
+        numberOfEnemies = enemies.size();
         // Create a player with initial position
     }
 
