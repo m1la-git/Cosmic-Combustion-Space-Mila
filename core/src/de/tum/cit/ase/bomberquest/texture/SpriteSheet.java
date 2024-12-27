@@ -29,7 +29,9 @@ public enum SpriteSheet {
 
     HUD("basictiles.png", 48, 80),
 
-    STATIONARY_OBJECTS("StationaryObjects.png", 16, 16);
+    STATIONARY_OBJECTS("StationaryObjects.png", 16, 16),
+
+    BOMB("Bombs.png", 16, 16);
 
 
 

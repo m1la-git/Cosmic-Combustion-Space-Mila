@@ -7,12 +7,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
 import de.tum.cit.ase.bomberquest.map.*;
-import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
@@ -167,6 +165,7 @@ public class GameScreen implements Screen {
                 draw(spriteBatch, new Ground(i, j));
             }
         }
+        if (map.getExit() != null) draw(spriteBatch, map.getExit());
 
         //walls (destructible and indestructible)
         for (StationaryObject obj : map.getWalls().values()) {
@@ -181,7 +180,7 @@ public class GameScreen implements Screen {
             draw(spriteBatch, blast);
         }
         //enemies
-        for (Enemy enemy: map.getEnemies()) {
+        for (Enemy enemy : map.getEnemies()) {
             draw(spriteBatch, enemy);
         }
 
@@ -190,13 +189,11 @@ public class GameScreen implements Screen {
             if (map.getPlayer1().getY() > map.getPlayer2().getY()) {
                 draw(spriteBatch, map.getPlayer1());
                 draw(spriteBatch, map.getPlayer2());
-            }
-            else {
+            } else {
                 draw(spriteBatch, map.getPlayer2());
                 draw(spriteBatch, map.getPlayer1());
             }
-        }
-        else {
+        } else {
             draw(spriteBatch, map.getPlayer1());
         }
 

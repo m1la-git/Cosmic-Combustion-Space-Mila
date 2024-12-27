@@ -67,6 +67,7 @@ public class GameMap {
     private boolean victory;
     private int numberOfEnemies;
     private float elapsedTime = 0;
+    private Exit exit;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -96,7 +97,7 @@ public class GameMap {
             this.player2 = new Player(world, temp[4], temp[5], false);
         }
 
-        numberOfEnemies = enemies.size();
+        numberOfEnemies = 1;
         // Create a player with initial position
     }
 
@@ -235,6 +236,8 @@ public class GameMap {
         if (player2 != null) player2.tick(frameTime);
         elapsedTime += frameTime;
 
+        if (exit!=null) exit.tick(frameTime);
+
         if (player1.isAlive()) {
             //power-ups
             collectPowerUp(player1);
@@ -320,6 +323,7 @@ public class GameMap {
                     numberOfEnemies--;
                     if (numberOfEnemies == 0 && player1.isAlive()) {
                         SoundEffects.STAGE_CLEAR.play();
+                        exit.open();
                     }
                 }
             }
@@ -454,13 +458,11 @@ public class GameMap {
     private void checkExit() {
         int player1CellX = player1.getCellX();
         int player1CellY = player1.getCellY();
-        if (walls.containsKey(player1CellX + "," + player1CellY)) {
+        if (exit != null) {
             //exit
-            if (walls.get(player1CellX + "," + player1CellY) instanceof Exit && enemies.isEmpty()) {
+            if (exit.getCellX() == player1CellX && exit.getCellY() == player1CellY && exit.isOpen()) {
                 if (player2 != null) {
-                    int player2CellX = player2.getCellX();
-                    int player2CellY = player2.getCellY();
-                    if (player2.isAlive() && walls.get(player2CellX + "," + player2CellY) instanceof Exit) {
+                    if (player2.isAlive() && exit.getCellX() == player2.getCellX() && exit.getCellY() == player2.getCellY()) {
                         victory = true;
                     }
                 } else {
@@ -543,12 +545,12 @@ public class GameMap {
                     if (type != WallContentType.EMPTY && type != WallContentType.EXIT) {
                         walls.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
                     } else if (type == WallContentType.EXIT) {
-                        walls.put(currentX + "," + currentY, new Exit(world, currentX, currentY));
+                        exit = new Exit(world, currentX, currentY);
                     }
                     blasts.add(new Blast(world, currentX, currentY, BlastType.WALL, owner));
                     break;
                 }
-                if (!(obj instanceof PowerUp || obj instanceof Exit)) {
+                if (!(obj instanceof PowerUp)) {
                     break;
                 }
             }
@@ -598,6 +600,9 @@ public class GameMap {
 
     public List<Enemy> getEnemies() {
         return enemies;
+    }
+    public Exit getExit() {
+        return exit;
     }
 
     /**

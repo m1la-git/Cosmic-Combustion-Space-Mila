@@ -21,7 +21,7 @@ public class Textures {
 
     public static final TextureRegion DESTRUCTIBLE_WALL = SpriteSheet.STATIONARY_OBJECTS.at(1, 1);
 
-    public static final TextureRegion EXIT = SpriteSheet.BOMBERMAN.at(4, 12);
+    public static final TextureRegion EXIT = SpriteSheet.STATIONARY_OBJECTS.at(1, 4);
 
     public static final TextureRegion BOMBS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 1);
 
