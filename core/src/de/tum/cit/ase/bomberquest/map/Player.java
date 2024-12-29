@@ -25,6 +25,7 @@ public class Player extends MobileObject implements Drawable {
     private final boolean player1;
 
 
+
     public Player(World world, float x, float y, boolean player1) {
         super(world, x, y, 2, 0.3f);
         players2 = true;
