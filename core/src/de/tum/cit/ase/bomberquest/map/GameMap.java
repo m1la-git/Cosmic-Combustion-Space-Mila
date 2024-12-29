@@ -69,6 +69,7 @@ public class GameMap {
     private float elapsedTime = 0;
     private Exit exit;
     private List<String> powerUps;
+
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -111,6 +112,7 @@ public class GameMap {
      * @param filename the name of the file with the map
      */
     public int[] loadMap(String filename) {
+        boolean powerUpsWritten = false;
         int maxX = 0;
         int maxY = 0;
         int[] entrance1 = new int[]{-1, -1};
@@ -174,27 +176,35 @@ public class GameMap {
                         }
                         break;
                     case 5: // powerUp: bombs
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBS_POWER_UP));
                         break;
                     case 6: // powerUp: flames
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMES_POWER_UP));
                         break;
                     case 7: // powerUp: speed
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.SPEED_POWER_UP));
                         break;
                     case 8: // powerUp: wallpass
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.WALLPASS_POWER_UP));
                         break;
                     case 9: // powerUp: wallpass
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.DETONATOR_POWER_UP));
                         break;
                     case 10: // powerUp: bombpass
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBPASS_POWER_UP));
                         break;
                     case 11: // powerUp: flamepass
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMEPASS_POWER_UP));
                         break;
                     case 12: // powerUp: mystery
+                        powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.MYSTERY_POWER_UP));
                         break;
                 }
@@ -217,6 +227,27 @@ public class GameMap {
                     walls.get(randomX + "," + randomY).destroy(world);
                     walls.replace(randomX + "," + randomY, new DestructibleWall(world, randomX, randomY, WallContentType.EXIT));
                     System.out.println("Random exit coords: " + randomX + "," + randomY);
+                    freeDestructibleWalls.remove(randomX + "," + randomY);
+                }
+            }
+            // generate power-ups if there are none on the map
+            if (!powerUpsWritten && !freeDestructibleWalls.isEmpty()) {
+                for (String key : freeDestructibleWalls) {
+                    Random random = new Random();
+                    if (random.nextInt(100) < 20) { // 20% chance power-up drop
+                        String[] wallCoords = key.split(",");
+                        int wallX = Integer.parseInt(wallCoords[0]);
+                        int wallY = Integer.parseInt(wallCoords[1]);
+                        int randomNum = random.nextInt(100);
+                        walls.get(wallX + "," + wallY).destroy(world);
+                        if (randomNum < 10)
+                            walls.replace(key, new DestructibleWall(world, wallX, wallY, WallContentType.SPEED_POWER_UP)); // 10% speed power-up
+                        else if (randomNum < 55 && randomNum > 10)
+                            walls.replace(key, new DestructibleWall(world, wallX, wallY, WallContentType.BOMBS_POWER_UP));// 45% bombs
+                        else
+                            walls.replace(key, new DestructibleWall(world, wallX, wallY, WallContentType.FLAMES_POWER_UP)); // 45% flames
+
+                    }
                 }
             }
         } catch (Exception e) {
@@ -638,6 +669,7 @@ public class GameMap {
     public List<Blast> getBlasts() {
         return blasts;
     }
+
     public boolean isPlayerDead() {
         if (player1.isDead()) return true;
         if (player2 != null) return player2.isDead();

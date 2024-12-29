@@ -36,8 +36,8 @@ public class Hud {
         this.font = font;
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        hudX = 192;
-        hudY = 320;
+        hudX = 16*3*4.5f;
+        hudY = 16*6*4.5f;
         elapsedTime = 0;
     }
 
@@ -48,7 +48,7 @@ public class Hud {
      *
      * @param spriteBatch The SpriteBatch to draw with.
      */
-    private static void draw(SpriteBatch spriteBatch, TextureRegion texture, float x, float y, int scale) {
+    private static void draw(SpriteBatch spriteBatch, TextureRegion texture, float x, float y, float scale) {
         // Scale everything
         float width = texture.getRegionWidth() * scale;
         float height = texture.getRegionHeight() * scale;
@@ -66,12 +66,12 @@ public class Hud {
         // Start drawing
         spriteBatch.begin();
         // Draw the HUD elements
-        draw(spriteBatch, Textures.HUD, 0, 0, 4);
-        draw(spriteBatch, Textures.TIMER, 0, (float) (hudY * 0.8), 3);
-        draw(spriteBatch, Textures.BLAST, 0, (float) (hudY * 0.6), 3);
-        draw(spriteBatch, Textures.BOMB, 0, (float) (hudY * 0.4), 3);
-        draw(spriteBatch, Textures.ENEMY, 0, (float) (hudY * 0.2), 3);
-        draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 0, 0, 3);
+        draw(spriteBatch, Textures.HUD, 0, 0, 4.5f);
+        draw(spriteBatch, Textures.TIMER, 5, (float) (hudY * 0.8), 3.5f);
+        draw(spriteBatch, Textures.BLAST_HUD, 5, (float) (hudY * 0.6), 3.5f);
+        draw(spriteBatch, Textures.BOMB_HUD, 5, (float) (hudY * 0.4), 3.5f);
+        draw(spriteBatch, Textures.ENEMY, 5, (float) (hudY * 0.2), 3.5f);
+        draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 0, 0, 3.5f);
         font.draw(spriteBatch, "" + timer, 48, hudY - 25);
         font.draw(spriteBatch, "" + player.getBlastRadius(), 48, (float) (hudY * 0.8) - 25);
         font.draw(spriteBatch, "" + player.getConcurrentBombs(), 48, (float) (hudY * 0.6) - 25);

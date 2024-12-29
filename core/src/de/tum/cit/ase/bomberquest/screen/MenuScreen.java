@@ -49,7 +49,7 @@ public class MenuScreen implements Screen {
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setMap(new GameMap(game, "maps/map.properties"));
+                game.setMap(new GameMap(game, "maps/map-3.properties"));
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });
@@ -90,6 +90,7 @@ public class MenuScreen implements Screen {
     public void show() {
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
+        System.out.println(Gdx.input.getInputProcessor());
     }
 
     // The following methods are part of the Screen interface but are not used in this screen.

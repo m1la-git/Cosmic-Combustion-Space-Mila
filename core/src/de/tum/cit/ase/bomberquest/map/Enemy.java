@@ -122,21 +122,19 @@ public class Enemy extends MobileObject implements Drawable {
 
             // Check if the next tile in the path is now blocked (e.g., by a bomb)
             if (!map.isCellFree(nextTargetX, nextTargetY)) {
-                System.out.println("Obstacle detected on path, recalculating."); // Debugging
                 pathToPlayer = null; // Invalidate the current path
                 return; // Recalculate the path in the next tick
             }
 
             if (reachedCell) {
                 DirectionType nextDirection = getDirectionToTarget(nextTargetX, nextTargetY);
-                System.out.println("Following path to: " + nextTargetX + ", " + nextTargetY + ", Direction: " + nextDirection); // Debugging
                 setDirection(nextDirection);
                 updateTargetCellFromCoords(nextTargetX, nextTargetY);
                 reachedCell = false; // Moved, so not at the new target yet
             }
 
             // Continue moving if not yet reached the target of the current step
-            if (!reachedCell && getDirection() != DirectionType.NONE) {
+            if (getDirection() != DirectionType.NONE) {
                 moveInDirection();
             }
 

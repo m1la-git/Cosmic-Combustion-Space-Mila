@@ -44,6 +44,7 @@ public class GameScreen implements Screen {
     private final Hud hud;
     private final OrthographicCamera mapCamera;
 
+
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
@@ -132,16 +133,22 @@ public class GameScreen implements Screen {
         float maxCameraX = Math.max(viewportWidth, mapWidthPx - viewportWidth); // Max X position camera can move to
         float maxCameraY = Math.max(viewportHeight, mapHeightPx - viewportHeight); // Max Y position camera can move to
 
-        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f) - hud.getHudX(); // Min X position camera can move to
-        float minCameraY = viewportHeight - hud.getHudY(); // Min Y position camera can move to
+        //if hitbox is always free on the side then no need to adjust the map to it
+        float hudX = hud.getHudX();
+        float hudY = hud.getHudY();
+        if ((viewportWidth - hud.getHudX()) <= mapWidthPx / 2) {
+            hudY = 0;
+        }
+        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f) - hudX; // Min X position camera can move to
+        float minCameraY = Math.max(viewportHeight, mapHeightPx / 2f) - hudY; // Min Y position camera can move to
 
         // Get player's position
         float playerX = map.getPlayer1().getX() * TILE_SIZE_PX * SCALE;
         float playerY = map.getPlayer1().getY() * TILE_SIZE_PX * SCALE;
 
         // Clamp the camera position to ensure it stays within the map bounds or centers for small maps
-        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hud.getHudX() * 2) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
-        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hud.getHudY() * 2) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
+        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hudX * 2) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
+        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hudY * 2) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
 
         // Update camera properties
         mapCamera.setToOrtho(false);
