@@ -14,6 +14,10 @@ import de.tum.cit.ase.bomberquest.map.*;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
  * It handles the game logic and rendering of the game elements.
@@ -110,7 +114,7 @@ public class GameScreen implements Screen {
         renderMap();
 
         // Render the HUD on the screen
-        hud.render(map.getPlayer1().getBlastRadius(), map.getPlayer1().getConcurrentBombs(), map.getTimer(), map.getNumberOfEnemies());
+        hud.render(map.getPlayer1().getBlastRadius(), map.getPlayer1().getConcurrentBombs(), map.getTimer(), map.getNumberOfEnemies(), frameTime);
     }
 
 
@@ -179,22 +183,14 @@ public class GameScreen implements Screen {
         for (Blast blast : map.getBlasts()) {
             draw(spriteBatch, blast);
         }
-        //enemies
-        for (Enemy enemy : map.getEnemies()) {
-            draw(spriteBatch, enemy);
-        }
 
-        //players
-        if (map.getPlayer2() != null) {
-            if (map.getPlayer1().getY() > map.getPlayer2().getY()) {
-                draw(spriteBatch, map.getPlayer1());
-                draw(spriteBatch, map.getPlayer2());
-            } else {
-                draw(spriteBatch, map.getPlayer2());
-                draw(spriteBatch, map.getPlayer1());
-            }
-        } else {
-            draw(spriteBatch, map.getPlayer1());
+
+        List<MobileObject> entities = new ArrayList<>(map.getEnemies());
+        entities.add(map.getPlayer1());
+        if (map.getPlayer2() != null) entities.add(map.getPlayer2());
+        entities.sort(Comparator.comparing(MobileObject::getY).reversed());
+        for (MobileObject object : entities) {
+            draw(spriteBatch, object);
         }
 
         // Finish drawing, i.e. send the drawn items to the graphics card

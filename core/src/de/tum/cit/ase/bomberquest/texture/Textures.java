@@ -27,21 +27,19 @@ public class Textures {
 
     public static final TextureRegion DESTRUCTIBLE_WALL = SpriteSheet.STATIONARY_OBJECTS.at(1, 1);
 
-    public static final TextureRegion EXIT = SpriteSheet.STATIONARY_OBJECTS.at(1, 4);
-
     public static final TextureRegion BOMBS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 1);
 
     public static final TextureRegion FLAMES_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 2);
 
     public static final TextureRegion SPEED_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 3);
 
-    public static final TextureRegion ENEMY = SpriteSheet.MOBILE_OBJECTS.at(3, 1);
+    public static final TextureRegion ENEMY = SpriteSheet.STATIONARY_OBJECTS.at(1, 4);
 
     public static final TextureRegion BOMB = SpriteSheet.BOMBERMAN.at(4, 1);
 
     public static final TextureRegion BLAST = SpriteSheet.BOMBERMAN.at(12, 8);
 
-    public static final TextureRegion TIMER = SpriteSheet.BOMBERMAN.at(1, 1);
+    public static final TextureRegion TIMER = SpriteSheet.STATIONARY_OBJECTS.at(1, 5);
 
     public static final TextureRegion WALLPASS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 4);
 

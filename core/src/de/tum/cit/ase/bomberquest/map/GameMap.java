@@ -68,6 +68,7 @@ public class GameMap {
     private int numberOfEnemies;
     private float elapsedTime = 0;
     private Exit exit;
+    private List<String> powerUps;
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
@@ -84,6 +85,7 @@ public class GameMap {
         this.blasts = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.victory = false;
+        powerUps = new ArrayList<>();
 
 
         int[] temp = loadMap(mapFile);
@@ -273,13 +275,7 @@ public class GameMap {
             Map.Entry<String, Bomb> entry = iterator.next();
             Bomb bomb = entry.getValue();
             bomb.tick(frameTime);
-            if (player1.isAlive()) {
-                if (isOverlapping(player1.getHitbox(), bomb.getHitbox())) {
-                    contactListener.addIgnoredBomb(bomb.getHitbox());
-                } else {
-                    contactListener.removeIgnoredBomb(bomb.getHitbox());
-                }
-            }
+            handleBombsOverlapping(player1, bomb);
             if (bomb.isExploded()) {
                 SoundEffects.BOMB_EXPLOSION.play();
                 int bombX = bomb.getCellX();
@@ -334,6 +330,9 @@ public class GameMap {
                 }
             }
 
+        }
+        for (String key: powerUps){
+            if (walls.get(key) instanceof PowerUp powerUp) powerUp.tick(frameTime);
         }
 
 
@@ -472,9 +471,9 @@ public class GameMap {
         }
     }
 
-    private void placeBomb(Player player) {
-        int playerCellX = player.getCellX();
-        int playerCellY = player.getCellY();
+    private void placeBomb(MobileObject mobileObject) {
+        int playerCellX = mobileObject.getCellX();
+        int playerCellY = mobileObject.getCellY();
         boolean spaceEmpty = true;
         for (String key : bombs.keySet()) {
             String[] coords = key.split(",");
@@ -486,8 +485,8 @@ public class GameMap {
             }
         }
         if (spaceEmpty) {
-            bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, player));
-            player.placedBomb();
+            bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, mobileObject));
+            mobileObject.placedBomb();
             SoundEffects.PLACE_BOMB.play();
         }
     }
@@ -508,6 +507,7 @@ public class GameMap {
                         break;
                 }
                 walls.remove(playerCellX + "," + playerCellY);
+                powerUps.remove(playerCellX + "," + playerCellY);
             }
         }
     }
@@ -524,9 +524,22 @@ public class GameMap {
      * @param bodyB: Bomb's hitbox
      */
     private boolean isOverlapping(Body bodyA, Body bodyB) {
-        return bodyA.getPosition().dst(bodyB.getPosition()) < 1f; // Adjust threshold as needed
+        return bodyA.getPosition().dst(bodyB.getPosition()) < 0.77f; // Adjust threshold as needed
     }
 
+    private void handleBombsOverlapping(MobileObject mobileObject, Bomb bomb) {
+        if (mobileObject.isAlive()) {
+            if (isOverlapping(mobileObject.getHitbox(), bomb.getHitbox())) {
+                if(!(mobileObject.getIgnoredBombs().contains(bomb.getHitbox()))) {
+                    mobileObject.addIgnoredBomb(bomb.getHitbox());
+                }
+            } else {
+                if(mobileObject.getIgnoredBombs().contains(bomb.getHitbox())) {
+                    mobileObject.removeIgnoredBomb(bomb.getHitbox());
+                }
+            }
+        }
+    }
 
     /**
      * Releasing the blast in 1 direction in a certain radius
@@ -544,6 +557,7 @@ public class GameMap {
                     walls.remove(currentX + "," + currentY);
                     if (type != WallContentType.EMPTY && type != WallContentType.EXIT) {
                         walls.put(currentX + "," + currentY, new PowerUp(world, currentX, currentY, type));
+                        powerUps.add(currentX + "," + currentY);
                     } else if (type == WallContentType.EXIT) {
                         exit = new Exit(world, currentX, currentY);
                     }

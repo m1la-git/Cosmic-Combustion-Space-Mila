@@ -12,7 +12,7 @@ import java.util.Set;
  * Handles the physics of collisions of the Bodies.
  */
 public class GameContactListener implements ContactListener {
-    private final Set<Body> ignoredBombs = new HashSet<>();
+
     private final List<Body> bodiesToDestroy = new ArrayList<>();
 
     @Override
@@ -35,10 +35,10 @@ public class GameContactListener implements ContactListener {
         Body bodyB = fixtureB.getBody();
 
         // Check if one body is the player, and the other is a bomb
-        if (isPlayer(bodyA) && isBomb(bodyB)) {
-            handleBombCollision(contact, bodyB);
-        } else if (isPlayer(bodyB) && isBomb(bodyA)) {
-            handleBombCollision(contact, bodyA);
+        if (isMobileObject(bodyA) && isBomb(bodyB)) {
+            handleBombCollision(contact, bodyA, bodyB);
+        } else if (isMobileObject(bodyB) && isBomb(bodyA)) {
+            handleBombCollision(contact, bodyB, bodyA);
         } else if (isPlayer(bodyA) && isEnemy(bodyB)) {
             handlePlayerEnemyCollision(bodyA);
         } else if (isPlayer(bodyB) && isEnemy(bodyA)) {
@@ -55,6 +55,10 @@ public class GameContactListener implements ContactListener {
         // Not needed for this use case
     }
 
+    private boolean isMobileObject(Body body) {
+        return body.getUserData() instanceof MobileObject;
+    }
+
     private boolean isPlayer(Body body) {
         return body.getUserData() instanceof Player; // Replace with your player identification logic
     }
@@ -68,8 +72,9 @@ public class GameContactListener implements ContactListener {
     }
 
     //Actual handling of the collision:
-    private void handleBombCollision(Contact contact, Body bomb) {
-        if (ignoredBombs.contains(bomb)) {
+    private void handleBombCollision(Contact contact, Body mobileObjectBody, Body bomb) {
+        MobileObject mobileObject = (MobileObject) mobileObjectBody.getUserData();
+        if (mobileObject.getIgnoredBombs().contains(bomb)) {
             // Disable collision while ignoring this bomb
             contact.setEnabled(false);
         }
@@ -93,12 +98,4 @@ public class GameContactListener implements ContactListener {
         bodiesToDestroy.clear();
     }
 
-    // Methods to manage ignored bombs
-    public void addIgnoredBomb(Body bomb) {
-        ignoredBombs.add(bomb);
-    }
-
-    public void removeIgnoredBomb(Body bomb) {
-        ignoredBombs.remove(bomb);
-    }
 }

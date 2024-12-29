@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Represents all Mobile Objects.
  * Abstract superclass for a player and enemies.
@@ -47,6 +51,8 @@ public abstract class MobileObject implements Drawable {
      */
     private DirectionType lastDirection = DirectionType.NONE;
 
+    private final Set<Body> ignoredBombs;
+
     public MobileObject(World world, float x, float y, int speed, float radius) {
         this.hitbox = createHitbox(world, x, y, radius);
         this.speed = speed;
@@ -56,6 +62,7 @@ public abstract class MobileObject implements Drawable {
         concurrentBombs = 1;
         blastRadius = 1;
         bombsNow = 1;
+        ignoredBombs = new HashSet<>();
     }
 
     /**
@@ -222,6 +229,15 @@ public abstract class MobileObject implements Drawable {
     }
 
 
+    public Set<Body> getIgnoredBombs() {
+        return ignoredBombs;
+    }
+    public void addIgnoredBomb(Body body) {
+        ignoredBombs.add(body);
+    }
+    public void removeIgnoredBomb(Body body) {
+        ignoredBombs.remove(body);
+    }
 
 
     public float getElapsedTime() {

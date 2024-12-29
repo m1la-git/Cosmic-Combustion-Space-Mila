@@ -3,7 +3,6 @@ package de.tum.cit.ase.bomberquest.texture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import de.tum.cit.ase.bomberquest.map.StationaryObject;
 
 /**
  * Enumerates all spritesheets used in the game and provides helper methods for grabbing texture regions from them.
@@ -23,15 +22,14 @@ public enum SpriteSheet {
     /**
      * The basic tiles spritesheet, which has a grid size of 16x16.
      */
-    BASIC_TILES("basictiles.png", 16, 16),
 
     BOMBERMAN("original-bomberman.png", 16, 16),
 
-    HUD("basictiles.png", 48, 80),
+    HUD("StationaryObjects.png", 48, 80),
 
     STATIONARY_OBJECTS("StationaryObjects.png", 16, 16),
 
-    BOMB("Bombs.png", 16, 16);
+    BOMBS_AND_BLASTS("Bombs and Blasts.png", 16, 16);
 
 
 

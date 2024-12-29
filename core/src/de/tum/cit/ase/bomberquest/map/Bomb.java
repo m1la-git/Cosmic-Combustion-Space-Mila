@@ -40,7 +40,11 @@ public class Bomb extends StationaryObject implements Drawable {
 
     @Override
     public TextureRegion getCurrentAppearance() {
-        return Animations.BOMB.getKeyFrame(this.elapsedTime, true);
+        if (owner instanceof Player player) {
+            if (player.isPlayer1()) return Animations.BOMB_P1.getKeyFrame(elapsedTime, true);
+            return Animations.BOMB_P2.getKeyFrame(elapsedTime, true);
+        }
+        return Animations.BOMB_ENEMY.getKeyFrame(elapsedTime, true);
     }
 
     public MobileObject getOwner() {
