@@ -41,6 +41,10 @@ public class Blast extends StationaryObject implements Drawable {
         return type;
     }
 
+    public MobileObject getOwner() {
+        return owner;
+    }
+
     @Override
     public TextureRegion getCurrentAppearance() {
         if (owner instanceof Player player) {

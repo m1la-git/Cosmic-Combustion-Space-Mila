@@ -81,13 +81,12 @@ public class GameScreen implements Screen {
 
     /**
      * The render method is called every frame to render the game.
-     *
      * @param deltaTime The time in seconds since the last render.
      */
     @Override
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || map.getPlayer1().isDead() || map.isVictory()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || map.isPlayerDead() || map.isVictory()) {
             game.goToMenu();
         }
 
@@ -114,7 +113,7 @@ public class GameScreen implements Screen {
         renderMap();
 
         // Render the HUD on the screen
-        hud.render(map.getPlayer1().getBlastRadius(), map.getPlayer1().getConcurrentBombs(), map.getTimer(), map.getNumberOfEnemies(), frameTime);
+        hud.render(map.getPlayer1(), map.getTimer(), map.getNumberOfEnemies(), frameTime);
     }
 
 

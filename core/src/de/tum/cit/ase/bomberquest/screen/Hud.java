@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.bomberquest.map.Player;
 import de.tum.cit.ase.bomberquest.texture.Animations;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
@@ -58,7 +59,7 @@ public class Hud {
      * Renders the HUD on the screen.
      * This uses a different OrthographicCamera so that the HUD is always fixed on the screen.
      */
-    public void render(int blastRadius, int concurrentBombs, int timer, int enemies, float frameTime) {
+    public void render(Player player, int timer, int enemies, float frameTime) {
         elapsedTime += frameTime;
         // Render from the camera's perspective
         spriteBatch.setProjectionMatrix(camera.combined);
@@ -72,10 +73,11 @@ public class Hud {
         draw(spriteBatch, Textures.ENEMY, 0, (float) (hudY * 0.2), 3);
         draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 0, 0, 3);
         font.draw(spriteBatch, "" + timer, 48, hudY - 25);
-        font.draw(spriteBatch, "" + blastRadius, 48, (float) (hudY * 0.8) - 25);
-        font.draw(spriteBatch, "" + concurrentBombs, 48, (float) (hudY * 0.6) - 25);
+        font.draw(spriteBatch, "" + player.getBlastRadius(), 48, (float) (hudY * 0.8) - 25);
+        font.draw(spriteBatch, "" + player.getConcurrentBombs(), 48, (float) (hudY * 0.6) - 25);
         font.draw(spriteBatch, "" + enemies, 48, (float) (hudY * 0.4) - 25);
         font.draw(spriteBatch, "Press Esc to Pause!", 0, camera.viewportHeight - 10);
+        font.draw(spriteBatch, "" + player.getPoints(), 0, camera.viewportHeight - 20);
 
         // Finish drawing
         spriteBatch.end();

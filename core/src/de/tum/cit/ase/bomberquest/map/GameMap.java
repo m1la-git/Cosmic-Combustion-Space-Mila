@@ -238,7 +238,7 @@ public class GameMap {
         if (player2 != null) player2.tick(frameTime);
         elapsedTime += frameTime;
 
-        if (exit!=null) exit.tick(frameTime);
+        if (exit != null) exit.tick(frameTime);
 
         if (player1.isAlive()) {
             //power-ups
@@ -276,6 +276,8 @@ public class GameMap {
             Bomb bomb = entry.getValue();
             bomb.tick(frameTime);
             handleBombsOverlapping(player1, bomb);
+            if (player2 != null) handleBombsOverlapping(player2, bomb);
+            for (Enemy enemy : enemies) handleBombsOverlapping(enemy, bomb);
             if (bomb.isExploded()) {
                 SoundEffects.BOMB_EXPLOSION.play();
                 int bombX = bomb.getCellX();
@@ -317,21 +319,27 @@ public class GameMap {
                     enemy.death(world);
                     SoundEffects.ENEMY_DEATH.play();
                     numberOfEnemies--;
+                    if (blast.getOwner() instanceof Player player) player.increasePoints(1000);
                     if (numberOfEnemies == 0 && player1.isAlive()) {
                         SoundEffects.STAGE_CLEAR.play();
                         exit.open();
                     }
                 }
             }
-            //player's death
+            //players' death
             if (player1.isAlive()) {
                 if (isBlasted(player1, blast)) {
                     player1.death(world);
                 }
             }
+            if (player2 != null) {
+                if (isBlasted(player2, blast)) {
+                    player2.death(world);
+                }
+            }
 
         }
-        for (String key: powerUps){
+        for (String key : powerUps) {
             if (walls.get(key) instanceof PowerUp powerUp) powerUp.tick(frameTime);
         }
 
@@ -530,11 +538,11 @@ public class GameMap {
     private void handleBombsOverlapping(MobileObject mobileObject, Bomb bomb) {
         if (mobileObject.isAlive()) {
             if (isOverlapping(mobileObject.getHitbox(), bomb.getHitbox())) {
-                if(!(mobileObject.getIgnoredBombs().contains(bomb.getHitbox()))) {
+                if (!(mobileObject.getIgnoredBombs().contains(bomb.getHitbox()))) {
                     mobileObject.addIgnoredBomb(bomb.getHitbox());
                 }
             } else {
-                if(mobileObject.getIgnoredBombs().contains(bomb.getHitbox())) {
+                if (mobileObject.getIgnoredBombs().contains(bomb.getHitbox())) {
                     mobileObject.removeIgnoredBomb(bomb.getHitbox());
                 }
             }
@@ -615,6 +623,7 @@ public class GameMap {
     public List<Enemy> getEnemies() {
         return enemies;
     }
+
     public Exit getExit() {
         return exit;
     }
@@ -628,6 +637,11 @@ public class GameMap {
 
     public List<Blast> getBlasts() {
         return blasts;
+    }
+    public boolean isPlayerDead() {
+        if (player1.isDead()) return true;
+        if (player2 != null) return player2.isDead();
+        return false;
     }
 
     public int getMAX_X() {
@@ -647,7 +661,7 @@ public class GameMap {
     }
 
     public int getTimer() {
-        return (int) Math.ceil(150f - elapsedTime);
+        return (int) Math.ceil(200f - elapsedTime);
     }
 
 }

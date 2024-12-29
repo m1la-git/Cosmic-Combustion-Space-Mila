@@ -23,19 +23,21 @@ public class Player extends MobileObject implements Drawable {
 
     private final boolean players2;
     private final boolean player1;
-
+    private int points;
 
 
     public Player(World world, float x, float y, boolean player1) {
         super(world, x, y, 2, 0.3f);
         players2 = true;
         this.player1 = player1;
+        points = 0;
     }
 
     public Player(World world, float x, float y) {
         super(world, x, y, 2, 0.3f);
         players2 = false;
         this.player1 = true;
+        points = 0;
     }
 
     /**
@@ -91,6 +93,12 @@ public class Player extends MobileObject implements Drawable {
     }
     public void removeKeys(int keycode) {
         keyPressOrder.remove(keycode);
+    }
+    public int getPoints() {
+        return points;
+    }
+    public void increasePoints(int points) {
+        this.points += points;
     }
 
     @Override
