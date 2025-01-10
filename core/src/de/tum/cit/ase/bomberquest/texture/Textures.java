@@ -27,29 +27,15 @@ public class Textures {
 
     public static final TextureRegion DESTRUCTIBLE_WALL = SpriteSheet.STATIONARY_OBJECTS.at(1, 1);
 
-    public static final TextureRegion BOMBS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 1);
+    public static final TextureRegion ENEMY = SpriteSheet.MOBILE_OBJECTS.at(3, 1);
 
-    public static final TextureRegion FLAMES_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 2);
-
-    public static final TextureRegion SPEED_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 3);
-
-    public static final TextureRegion ENEMY = SpriteSheet.STATIONARY_OBJECTS.at(1, 4);
+    public static final TextureRegion ENEMY_HUD = SpriteSheet.STATIONARY_OBJECTS.at(1, 4);
 
     public static final TextureRegion BOMB_HUD = SpriteSheet.STATIONARY_OBJECTS.at(1, 6);
 
     public static final TextureRegion BLAST_HUD = SpriteSheet.STATIONARY_OBJECTS.at(1, 7);
 
     public static final TextureRegion TIMER = SpriteSheet.STATIONARY_OBJECTS.at(1, 5);
-
-    public static final TextureRegion WALLPASS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 4);
-
-    public static final TextureRegion DETONATOR_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 5);
-
-    public static final TextureRegion BOMBPASS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 6);
-
-    public static final TextureRegion FLAMEPASS_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 7);
-
-    public static final TextureRegion MYSTERY_POWER_UP = SpriteSheet.BOMBERMAN.at(15, 8);
 
     public static final TextureRegion HUD = SpriteSheet.HUD.at(3, 1);
 

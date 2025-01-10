@@ -67,11 +67,11 @@ public class Hud {
         spriteBatch.begin();
         // Draw the HUD elements
         draw(spriteBatch, Textures.HUD, 0, 0, 4.5f);
-        draw(spriteBatch, Textures.TIMER, 5, (float) (hudY * 0.8), 3.5f);
-        draw(spriteBatch, Textures.BLAST_HUD, 5, (float) (hudY * 0.6), 3.5f);
-        draw(spriteBatch, Textures.BOMB_HUD, 5, (float) (hudY * 0.4), 3.5f);
-        draw(spriteBatch, Textures.ENEMY, 5, (float) (hudY * 0.2), 3.5f);
-        draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 0, 0, 3.5f);
+        draw(spriteBatch, Textures.TIMER, 15, (float) (hudY * 0.8) + 15, 3.5f);
+        draw(spriteBatch, Textures.BLAST_HUD, 15, (float) (hudY * 0.6) + 15, 3.5f);
+        draw(spriteBatch, Textures.BOMB_HUD, 15, (float) (hudY * 0.4) + 15, 3.5f);
+        draw(spriteBatch, Textures.ENEMY_HUD, 15, (float) (hudY * 0.2) + 15, 3.5f);
+        draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 15, 15, 3.5f);
         font.draw(spriteBatch, "" + timer, 48, hudY - 25);
         font.draw(spriteBatch, "" + player.getBlastRadius(), 48, (float) (hudY * 0.8) - 25);
         font.draw(spriteBatch, "" + player.getConcurrentBombs(), 48, (float) (hudY * 0.6) - 25);

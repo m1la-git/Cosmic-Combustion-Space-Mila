@@ -15,15 +15,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public enum SpriteSheet {
 
-    /**
-     * The character spritesheet, which has a grid size of 16x32.
-     */
-    MOBILE_OBJECTS("MobileObjects.png", 16, 32),
-    /**
-     * The basic tiles spritesheet, which has a grid size of 16x16.
-     */
 
-    BOMBERMAN("original-bomberman.png", 16, 16),
+    MOBILE_OBJECTS("MobileObjects.png", 16, 32),
 
     HUD("StationaryObjects.png", 48, 96),
 
