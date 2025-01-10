@@ -41,7 +41,7 @@ public class MenuScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("MEOW MEOW MEOW MEOW MEOW", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add a button to go to the game screen
         TextButton goToGameButton = new TextButton("PLEASE WORK", game.getSkin());
@@ -49,6 +49,7 @@ public class MenuScreen implements Screen {
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Button Clicked"); // Check if the listener is being called
                 game.setMap(new GameMap(game, "maps/map-3.properties"));
                 game.goToGame(); // Change to the game screen when button is pressed
             }

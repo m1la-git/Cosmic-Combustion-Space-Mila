@@ -89,7 +89,10 @@ public class Player extends MobileObject implements Drawable {
         return player1;
     }
     public void addKeys(int keycode) {
-        keyPressOrder.addLast(keycode);
+        if (!keyPressOrder.contains(keycode)) {
+            keyPressOrder.addLast(keycode);
+        }
+
     }
     public void removeKeys(int keycode) {
         keyPressOrder.remove(keycode);

@@ -395,102 +395,43 @@ public class GameMap {
     }
 
     private void handleInput() {
-        // check the keyboard input
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            //key is just pressed
-            @Override
-            public boolean keyDown(int keycode) {
-                switch (keycode) {
-                    case Input.Keys.W:
-                        if (player1.isAlive()) player1.addKeys(Input.Keys.W);
-                        break;
-                    case Input.Keys.S:
-                        if (player1.isAlive()) player1.addKeys(Input.Keys.S);
-                        break;
-                    case Input.Keys.A:
-                        if (player1.isAlive()) player1.addKeys(Input.Keys.A);
-                        break;
-                    case Input.Keys.D:
-                        if (player1.isAlive()) player1.addKeys(Input.Keys.D);
-                        break;
-                    case Input.Keys.UP:
-                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.UP);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.addKeys(Input.Keys.UP);
-                        }
-                        break;
-                    case Input.Keys.DOWN:
-                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.DOWN);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.addKeys(Input.Keys.DOWN);
-                        }
-                        break;
-                    case Input.Keys.LEFT:
-                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.LEFT);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.addKeys(Input.Keys.LEFT);
-                        }
-                        break;
-                    case Input.Keys.RIGHT:
-                        if (player2 == null && player1.isAlive()) player1.addKeys(Input.Keys.RIGHT);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.addKeys(Input.Keys.RIGHT);
-                        }
-                        break;
-                    default:
-                        // Optionally handle other keys or do nothing.
-                        break;
-                }
-                return true; // Indicates the event was processed
-            }
+        // wasd
+        if (player1.isAlive()) {
+            handlePlayerInput(player1, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D);
+        }
+        // arrows
+        if (player2 != null && player2.isAlive()) {
+            handlePlayerInput(player2, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
+        }
+        else if (player2 == null && player1.isAlive()){
+            handlePlayerInput(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
+        }
+    }
+    private void handlePlayerInput(Player player, int upKey, int downKey, int leftKey, int rightKey) {
+        // Check and add keys if pressed
+        if (Gdx.input.isKeyPressed(upKey)) {
+            player.addKeys(upKey);
+        } else {
+            player.removeKeys(upKey);
+        }
 
-            //key is just released
-            @Override
-            public boolean keyUp(int keycode) {
-                switch (keycode) {
-                    case Input.Keys.W:
-                        if (player1.isAlive()) player1.removeKeys(Input.Keys.W);
-                        break;
-                    case Input.Keys.S:
-                        if (player1.isAlive()) player1.removeKeys(Input.Keys.S);
-                        break;
-                    case Input.Keys.A:
-                        if (player1.isAlive()) player1.removeKeys(Input.Keys.A);
-                        break;
-                    case Input.Keys.D:
-                        if (player1.isAlive()) player1.removeKeys(Input.Keys.D);
-                        break;
-                    case Input.Keys.UP:
-                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.UP);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.removeKeys(Input.Keys.UP);
-                        }
-                        break;
-                    case Input.Keys.DOWN:
-                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.DOWN);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.removeKeys(Input.Keys.DOWN);
-                        }
-                        break;
-                    case Input.Keys.LEFT:
-                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.LEFT);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.removeKeys(Input.Keys.LEFT);
-                        }
-                        break;
-                    case Input.Keys.RIGHT:
-                        if (player2 == null && player1.isAlive()) player1.removeKeys(Input.Keys.RIGHT);
-                        else if (player2 != null) {
-                            if (player2.isAlive()) player2.removeKeys(Input.Keys.RIGHT);
-                        }
-                        break;
-                    default:
-                        // Optional: Handle other keys if necessary
-                        break;
-                }
-                return true;
-            }
-        });
+        if (Gdx.input.isKeyPressed(downKey)) {
+            player.addKeys(downKey);
+        } else {
+            player.removeKeys(downKey);
+        }
+
+        if (Gdx.input.isKeyPressed(leftKey)) {
+            player.addKeys(leftKey);
+        }else{
+            player.removeKeys(leftKey);
+        }
+
+        if (Gdx.input.isKeyPressed(rightKey)) {
+            player.addKeys(rightKey);
+        }else{
+            player.removeKeys(rightKey);
+        }
     }
 
     private void checkExit() {
