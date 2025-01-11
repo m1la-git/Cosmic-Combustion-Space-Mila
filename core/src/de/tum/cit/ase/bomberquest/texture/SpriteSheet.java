@@ -18,7 +18,7 @@ public enum SpriteSheet {
 
     MOBILE_OBJECTS("MobileObjects.png", 16, 32),
 
-    HUD("StationaryObjects.png", 48, 96),
+    HUD("Hud.png", 16, 16),
 
     STATIONARY_OBJECTS("StationaryObjects.png", 16, 16),
 

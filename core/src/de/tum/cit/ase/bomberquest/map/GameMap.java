@@ -68,7 +68,7 @@ public class GameMap {
     private int numberOfEnemies;
     private float elapsedTime = 0;
     private Exit exit;
-    private List<String> powerUps;
+    private final List<String> powerUps;
 
     /**
      * The accumulated time since the last physics step.
@@ -350,7 +350,7 @@ public class GameMap {
                     enemy.death(world);
                     SoundEffects.ENEMY_DEATH.play();
                     numberOfEnemies--;
-                    if (blast.getOwner() instanceof Player player) player.increasePoints(1000);
+                    if (blast.getOwner() instanceof Player player) player.increasePoints(100);
                     if (numberOfEnemies == 0 && player1.isAlive()) {
                         SoundEffects.STAGE_CLEAR.play();
                         exit.open();

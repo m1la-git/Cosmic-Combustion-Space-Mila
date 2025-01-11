@@ -29,17 +29,19 @@ public class Textures {
 
     public static final TextureRegion ENEMY = SpriteSheet.MOBILE_OBJECTS.at(3, 1);
 
-    public static final TextureRegion ENEMY_HUD = SpriteSheet.STATIONARY_OBJECTS.at(1, 4);
+    public static final TextureRegion ENEMY_HUD = SpriteSheet.HUD.at(1, 4);
 
-    public static final TextureRegion BOMB_HUD = SpriteSheet.STATIONARY_OBJECTS.at(1, 6);
+    public static final TextureRegion BOMB_HUD = SpriteSheet.HUD.at(3, 4);
 
-    public static final TextureRegion BLAST_HUD = SpriteSheet.STATIONARY_OBJECTS.at(1, 7);
+    public static final TextureRegion BLAST_HUD = SpriteSheet.HUD.at(4, 4);
 
-    public static final TextureRegion TIMER = SpriteSheet.STATIONARY_OBJECTS.at(1, 5);
+    public static final TextureRegion TIMER = SpriteSheet.HUD.at(2, 4);
 
-    public static final TextureRegion HUD = SpriteSheet.HUD.at(3, 1);
+    public static final TextureRegion STAR = SpriteSheet.HUD.at(5, 4);
 
-    public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/background.jpg"));
+    public static final TextureRegion HUD = new TextureRegion(new Texture(Gdx.files.internal("texture/Hud.png")), 0, 0, 48, 96);
+
+    public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/Background.jpg"));
 
 
 }

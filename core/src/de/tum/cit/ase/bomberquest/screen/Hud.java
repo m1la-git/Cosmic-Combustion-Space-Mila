@@ -23,12 +23,13 @@ public class Hud {
      */
     private final BitmapFont font;
     /**
-     * The camera used to render the HUD.
+     * The camera used to render the HUD_BACKGROUND.
      */
     private final OrthographicCamera camera;
 
-    private final float hudX;
-    private final float hudY;
+    private static final float HUD_X = 180;
+    private static final float HUD_Y = 240;
+    private static final float SCALE = 3.5f;
     private float elapsedTime;
 
     public Hud(SpriteBatch spriteBatch, BitmapFont font) {
@@ -36,55 +37,70 @@ public class Hud {
         this.font = font;
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        hudX = 16*3*4.5f;
-        hudY = 16*6*4.5f;
         elapsedTime = 0;
+    }
+
+    private void drawHudPlayer(SpriteBatch spriteBatch, Player player, float startX) {
+        draw(spriteBatch, Textures.STAR, startX, ((HUD_Y - 9) / 3 * 2) + 15);
+        draw(spriteBatch, Textures.BLAST_HUD, startX, ((HUD_Y - 9) / 3) + 15);
+        draw(spriteBatch, Textures.BOMB_HUD, startX, 15);
+        font.draw(spriteBatch, player.getPoints() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3 * 2) + 57);
+        font.draw(spriteBatch, player.getBlastRadius() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3) + 57);
+        font.draw(spriteBatch, player.getConcurrentBombs() + "", startX + 16 * SCALE + 15,  57);
+
     }
 
     /**
      * Draws this object on the screen.
-     * The texture will be scaled by the game scale and the tile size.
-     * This should only be called between spriteBatch.begin() and spriteBatch.end(), e.g. in the renderMap() method.
-     *
+     * The texture will be scaled by the game scale.
+     * This should only be called between spriteBatch.begin() and spriteBatch.end()
      * @param spriteBatch The SpriteBatch to draw with.
      */
-    private static void draw(SpriteBatch spriteBatch, TextureRegion texture, float x, float y, float scale) {
+    private static void draw(SpriteBatch spriteBatch, TextureRegion texture, float x, float y) {
         // Scale everything
-        float width = texture.getRegionWidth() * scale;
-        float height = texture.getRegionHeight() * scale;
+        float width = texture.getRegionWidth() * SCALE;
+        float height = texture.getRegionHeight() * SCALE;
         spriteBatch.draw(texture, x, y, width, height);
     }
 
     /**
-     * Renders the HUD on the screen.
-     * This uses a different OrthographicCamera so that the HUD is always fixed on the screen.
+     * Renders the HUD_BACKGROUND on the screen.
+     * This uses a different OrthographicCamera so that the HUD_BACKGROUND is always fixed on the screen.
      */
-    public void render(Player player, int timer, int enemies, float frameTime) {
+    public void render(Player player1, Player player2, int timer, int enemies, float frameTime) {
         elapsedTime += frameTime;
         // Render from the camera's perspective
         spriteBatch.setProjectionMatrix(camera.combined);
         // Start drawing
         spriteBatch.begin();
-        // Draw the HUD elements
-        draw(spriteBatch, Textures.HUD, 0, 0, 4.5f);
-        draw(spriteBatch, Textures.TIMER, 15, (float) (hudY * 0.8) + 15, 3.5f);
-        draw(spriteBatch, Textures.BLAST_HUD, 15, (float) (hudY * 0.6) + 15, 3.5f);
-        draw(spriteBatch, Textures.BOMB_HUD, 15, (float) (hudY * 0.4) + 15, 3.5f);
-        draw(spriteBatch, Textures.ENEMY_HUD, 15, (float) (hudY * 0.2) + 15, 3.5f);
-        draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 15, 15, 3.5f);
-        font.draw(spriteBatch, "" + timer, 48, hudY - 25);
-        font.draw(spriteBatch, "" + player.getBlastRadius(), 48, (float) (hudY * 0.8) - 25);
-        font.draw(spriteBatch, "" + player.getConcurrentBombs(), 48, (float) (hudY * 0.6) - 25);
-        font.draw(spriteBatch, "" + enemies, 48, (float) (hudY * 0.4) - 25);
-        font.draw(spriteBatch, "Press Esc to Pause!", 0, camera.viewportHeight - 10);
-        font.draw(spriteBatch, "" + player.getPoints(), 0, camera.viewportHeight - 20);
+
+        TextureRegion texture = Textures.HUD;
+        float maxX = camera.viewportWidth;
+        float maxY = camera.viewportHeight;
+
+        //player1 hud
+        spriteBatch.draw(texture, 0, 0, HUD_X, HUD_Y);
+        drawHudPlayer(spriteBatch, player1, 17);
+
+        //player2 hud
+        if (player2 != null) {
+            spriteBatch.draw(texture, maxX - HUD_X, 0, HUD_X, HUD_Y);
+            drawHudPlayer(spriteBatch, player2, maxX - HUD_X + 17);
+        }
+
+        //main hud
+        spriteBatch.draw(texture, 0, maxY - HUD_Y, HUD_X, HUD_Y);
+        draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 15, maxY - HUD_Y);
+
+
+
 
         // Finish drawing
         spriteBatch.end();
     }
 
     /**
-     * Resizes the HUD when the screen size changes.
+     * Resizes the HUD_BACKGROUND when the screen size changes.
      * This is called when the window is resized.
      *
      * @param width  The new width of the screen.
@@ -100,11 +116,11 @@ public class Hud {
      * @return the height
      */
     public float getHudX() {
-        return hudX;
+        return HUD_X;
     }
 
     public float getHudY() {
-        return hudY;
+        return HUD_Y;
     }
     public OrthographicCamera getCamera() {
         return camera;

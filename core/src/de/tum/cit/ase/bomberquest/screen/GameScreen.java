@@ -114,8 +114,8 @@ public class GameScreen implements Screen {
         // Render the map on the screen
         renderMap();
 
-        // Render the HUD on the screen
-        hud.render(map.getPlayer1(), map.getTimer(), map.getNumberOfEnemies(), frameTime);
+        // Render the HUD_BACKGROUND on the screen
+        hud.render(map.getPlayer1(), map.getPlayer2(), map.getTimer(), map.getNumberOfEnemies(), frameTime);
     }
 
 
@@ -137,10 +137,7 @@ public class GameScreen implements Screen {
         //if hitbox is always free on the side then no need to adjust the map to it
         float hudX = hud.getHudX();
         float hudY = hud.getHudY();
-        if ((viewportWidth - hud.getHudX()) <= mapWidthPx / 2) {
-            hudY = 0;
-        }
-        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f) - hudX; // Min X position camera can move to
+        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f ) - hudX; // Min X position camera can move to
         float minCameraY = Math.max(viewportHeight, mapHeightPx / 2f) - hudY; // Min Y position camera can move to
 
         // Get player's position
@@ -148,8 +145,8 @@ public class GameScreen implements Screen {
         float playerY = map.getPlayer1().getY() * TILE_SIZE_PX * SCALE;
 
         // Clamp the camera position to ensure it stays within the map bounds or centers for small maps
-        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hudX * 2) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
-        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hudY * 2) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
+        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hudX * 2 || map.getPlayer2() != null) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
+        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hudY * 2 || map.getPlayer2() != null) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
 
         // Update camera properties
         mapCamera.setToOrtho(false);

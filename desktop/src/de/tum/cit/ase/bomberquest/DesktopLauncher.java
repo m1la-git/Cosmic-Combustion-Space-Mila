@@ -5,6 +5,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import games.spooky.gdx.nativefilechooser.desktop.DesktopFileChooser;
 
+import java.util.List;
+
 /**
  * The DesktopLauncher class is the entry point for the desktop version of the Bomber Quest game.
  * It sets up the game window and launches the game using LibGDX framework.
@@ -18,7 +20,8 @@ public class DesktopLauncher {
 	public static void main(String[] arg) {
 		// Configuration for the game window
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setTitle("Bomber Quest"); // Set the window title
+		config.setTitle("Cosmic combustion: Space Mila"); // Set the window title
+		config.setWindowIcon("texture/Icon.png");
 
 		// Get the display mode of the current monitor
 		Graphics.DisplayMode displayMode = Lwjgl3ApplicationConfiguration.getDisplayMode();
