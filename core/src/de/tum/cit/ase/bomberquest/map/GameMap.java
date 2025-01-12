@@ -69,6 +69,7 @@ public class GameMap {
     private float elapsedTime = 0;
     private Exit exit;
     private final List<String> powerUps;
+    private boolean exitOpen;
 
     /**
      * The accumulated time since the last physics step.
@@ -86,6 +87,8 @@ public class GameMap {
         this.blasts = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.victory = false;
+        exitOpen = false;
+
         powerUps = new ArrayList<>();
 
 
@@ -101,6 +104,9 @@ public class GameMap {
         }
 
         numberOfEnemies = enemies.size();
+        if (numberOfEnemies == 0) {
+            exitOpen = true;
+        }
         // Create a player with initial position
     }
 
@@ -353,7 +359,8 @@ public class GameMap {
                     if (blast.getOwner() instanceof Player player) player.increasePoints(100);
                     if (numberOfEnemies == 0 && player1.isAlive()) {
                         SoundEffects.STAGE_CLEAR.play();
-                        exit.open();
+                        exitOpen = true;
+                        if (exit != null) exit.open();
                     }
                 }
             }
@@ -439,7 +446,7 @@ public class GameMap {
         int player1CellY = player1.getCellY();
         if (exit != null) {
             //exit
-            if (exit.getCellX() == player1CellX && exit.getCellY() == player1CellY && exit.isOpen()) {
+            if (exit.getCellX() == player1CellX && exit.getCellY() == player1CellY && exitOpen) {
                 if (player2 != null) {
                     if (player2.isAlive() && exit.getCellX() == player2.getCellX() && exit.getCellY() == player2.getCellY()) {
                         victory = true;
@@ -540,6 +547,7 @@ public class GameMap {
                         powerUps.add(currentX + "," + currentY);
                     } else if (type == WallContentType.EXIT) {
                         exit = new Exit(world, currentX, currentY);
+                        if (exitOpen) exit.open();
                     }
                     blasts.add(new Blast(world, currentX, currentY, BlastType.WALL, owner));
                     break;

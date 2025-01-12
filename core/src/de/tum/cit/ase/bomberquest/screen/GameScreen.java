@@ -115,7 +115,7 @@ public class GameScreen implements Screen {
         renderMap();
 
         // Render the HUD_BACKGROUND on the screen
-        hud.render(map.getPlayer1(), map.getPlayer2(), map.getTimer(), map.getNumberOfEnemies(), frameTime);
+        hud.render(map.getPlayer1(), map.getPlayer2(), map.getTimer(), map.getNumberOfEnemies(), map.getExit() != null && map.getExit().isOpen(), frameTime);
     }
 
 

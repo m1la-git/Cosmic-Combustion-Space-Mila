@@ -40,15 +40,7 @@ public class Hud {
         elapsedTime = 0;
     }
 
-    private void drawHudPlayer(SpriteBatch spriteBatch, Player player, float startX) {
-        draw(spriteBatch, Textures.STAR, startX, ((HUD_Y - 9) / 3 * 2) + 15);
-        draw(spriteBatch, Textures.BLAST_HUD, startX, ((HUD_Y - 9) / 3) + 15);
-        draw(spriteBatch, Textures.BOMB_HUD, startX, 15);
-        font.draw(spriteBatch, player.getPoints() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3 * 2) + 57);
-        font.draw(spriteBatch, player.getBlastRadius() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3) + 57);
-        font.draw(spriteBatch, player.getConcurrentBombs() + "", startX + 16 * SCALE + 15,  57);
 
-    }
 
     /**
      * Draws this object on the screen.
@@ -63,11 +55,28 @@ public class Hud {
         spriteBatch.draw(texture, x, y, width, height);
     }
 
+    private void drawHudPlayer(SpriteBatch spriteBatch, Player player, float startX) {
+        draw(spriteBatch, Textures.STAR, startX, ((HUD_Y - 9) / 3 * 2) + 15);
+        draw(spriteBatch, Textures.BLAST_HUD, startX, ((HUD_Y - 9) / 3) + 15);
+        draw(spriteBatch, Textures.BOMB_HUD, startX, 15);
+        font.draw(spriteBatch, player.getPoints() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3 * 2) + 57);
+        font.draw(spriteBatch, player.getBlastRadius() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3) + 57);
+        font.draw(spriteBatch, player.getConcurrentBombs() + "", startX + 16 * SCALE + 15,  57);
+        String playerText;
+        if (player.isPlayer1()) playerText = "Player 1";
+        else playerText = "Player 2";
+        font.draw(spriteBatch, playerText, startX + 10,  HUD_Y + 30);
+
+    }
+    private void drawHudMain(SpriteBatch spriteBatch, float startX) {
+
+    }
+
     /**
      * Renders the HUD_BACKGROUND on the screen.
      * This uses a different OrthographicCamera so that the HUD_BACKGROUND is always fixed on the screen.
      */
-    public void render(Player player1, Player player2, int timer, int enemies, float frameTime) {
+    public void render(Player player1, Player player2, int timer, int enemies, boolean exitOpen, float frameTime) {
         elapsedTime += frameTime;
         // Render from the camera's perspective
         spriteBatch.setProjectionMatrix(camera.combined);
@@ -90,7 +99,20 @@ public class Hud {
 
         //main hud
         spriteBatch.draw(texture, 0, maxY - HUD_Y, HUD_X, HUD_Y);
-        draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 15, maxY - HUD_Y);
+        draw(spriteBatch, Textures.TIMER, 17, ((HUD_Y - 9) / 3 * 2) + maxY - HUD_Y + 15);
+        draw(spriteBatch, Textures.ENEMY_HUD, 17, ((HUD_Y - 9) / 3) + maxY - HUD_Y + 15);
+        font.draw(spriteBatch, timer + "", 17 + 16 * SCALE + 15, ((HUD_Y - 9) / 3 * 2) + maxY - HUD_Y + 57);
+        font.draw(spriteBatch, enemies + "", 17 + 16 * SCALE + 15, ((HUD_Y - 9) / 3) + maxY - HUD_Y + 57);
+        if (exitOpen) {
+            draw(spriteBatch, Animations.EXIT_OPENED.getKeyFrame(elapsedTime, true), 18, 15 + maxY - HUD_Y);
+            draw(spriteBatch, Textures.CHECK_MARK, 18 + 16 * SCALE + 12, 15 + maxY - HUD_Y);
+        }
+        else {
+            draw(spriteBatch, Animations.EXIT_CLOSED.getKeyFrame(elapsedTime, true), 18, 15 + maxY - HUD_Y);
+            draw(spriteBatch, Textures.CROSS_MARK, 18 + 16 * SCALE + 12, 15 + maxY - HUD_Y);
+        }
+
+
 
 
 

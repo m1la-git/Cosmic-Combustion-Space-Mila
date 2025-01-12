@@ -39,9 +39,14 @@ public class Textures {
 
     public static final TextureRegion STAR = SpriteSheet.HUD.at(5, 4);
 
+    public static final TextureRegion CHECK_MARK = SpriteSheet.HUD.at(6, 4);
+
+    public static final TextureRegion CROSS_MARK = SpriteSheet.HUD.at(7, 4);
+
     public static final TextureRegion HUD = new TextureRegion(new Texture(Gdx.files.internal("texture/Hud.png")), 0, 0, 48, 96);
 
     public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/Background.jpg"));
+
 
 
 }
