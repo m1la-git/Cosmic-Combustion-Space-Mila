@@ -40,5 +40,7 @@ public class Textures {
 
     public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/Background.jpg"));
 
+    public static final Texture GAME_LOGO = new Texture(Gdx.files.internal("texture/Game Logo.png"));
+
 
 }

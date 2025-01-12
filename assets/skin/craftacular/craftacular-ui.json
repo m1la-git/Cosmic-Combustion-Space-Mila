@@ -83,32 +83,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		fontColor: green
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
-	default-horizontal: {
-		background: slider
-		knobBefore: slider-knob
-	}
-	default-vertical: {
-		background: slider
-		knob: slider-knob
-	}
-	hunger: {
-		background: meat-bg
-		knobAfter: meat
-	}
-	health: {
-		background: heart-bg
-		knobBefore: heart
-	}
-	xp: {
-		background: xp-bg
-		knobBefore: xp
-	}
-	armor: {
-		background: armor-bg
-		knobBefore: armor
-	}
-}
+
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: {
 		background: scroll-bg
