@@ -23,7 +23,7 @@ public class Hud {
      */
     private final BitmapFont font;
     /**
-     * The camera used to render the HUD_BACKGROUND.
+     * The camera used to render the HUD.
      */
     private final OrthographicCamera camera;
 

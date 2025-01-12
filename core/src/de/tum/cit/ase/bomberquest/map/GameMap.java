@@ -624,6 +624,9 @@ public class GameMap {
         if (player2 != null) return player2.isDead();
         return false;
     }
+    public boolean isExitOpen() {
+        return exitOpen;
+    }
 
     public int getMAX_X() {
         return MAX_X;
