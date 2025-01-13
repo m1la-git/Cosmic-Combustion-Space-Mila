@@ -131,8 +131,8 @@ public class GameScreen implements Screen {
         float mapHeightPx = (map.getMAX_Y() + 1) * TILE_SIZE_PX * SCALE;
 
         // Calculate the 15% screen margin
-        float screenMarginX = mapCamera.viewportWidth * 0.15f;
-        float screenMarginY = mapCamera.viewportHeight * 0.15f;
+        float screenMarginX = mapCamera.viewportWidth * 0.1f;
+        float screenMarginY = mapCamera.viewportHeight * 0.1f;
 
         // Calculate max and min camera bounds with the margin in mind
         float maxCameraX = Math.max(viewportHalfWidth, mapWidthPx - viewportHalfWidth + screenMarginX);
