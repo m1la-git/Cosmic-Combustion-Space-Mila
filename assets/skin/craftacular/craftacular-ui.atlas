@@ -1,52 +1,41 @@
-craftacular-ui.png
+Buttons.png
 size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 button
   rotate: false
-  xy: 1, 309
-  size: 372, 65
+  xy: 0, 0
+  size: 367, 64
   split: 7, 7, 7, 11
   pad: 8, 8, 8, 12
-  orig: 372, 65
+  orig: 367, 64
   offset: 0, 0
   index: -1
 button-disabled
   rotate: false
-  xy: 650, 958
-  size: 372, 65
+  xy: 0, 130
+  size: 367, 64
   split: 7, 7, 7, 11
   pad: 8, 8, 8, 12
-  orig: 372, 65
+  orig: 367, 64
   offset: 0, 0
   index: -1
 button-hover
   rotate: false
-  xy: 1, 242
-  size: 372, 65
+  xy: 0, 65
+  size: 367, 64
   split: 7, 7, 7, 11
   pad: 8, 8, 8, 12
-  orig: 372, 65
+  orig: 367, 64
   offset: 0, 0
   index: -1
-font-bold-export
+underline
   rotate: false
-  xy: 1, 13
-  size: 224, 227
-  orig: 224, 227
+  xy: 398, 162
+  size: 5, 7
+  split: 2, 2, 0, 6
+  pad: 0, 0, 0, 6
+  orig: 5, 7
   offset: 0, 0
   index: -1
-font-export
-  rotate: false
-  xy: 650, 424
-  size: 205, 205
-  orig: 205, 205
-  offset: 0, 0
-  index: -1
-
-
-
-
-
-

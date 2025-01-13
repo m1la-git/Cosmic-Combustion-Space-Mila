@@ -14,12 +14,6 @@ com.badlogic.gdx.graphics.Color: {
 		b: 0.55
 		a: 1
 	}
-	green: {
-		r: 0.03529522
-		g: 0.77666664
-		b: 0
-		a: 1
-	}
 	white: {
 		r: 1
 		g: 1
@@ -54,14 +48,23 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
 		font: font
 	}
-	dim: {
+	bold: {
+		font: bold
+	}
+	underline: {
 		font: font
-		fontColor: gray
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
 		font: font
+		up: button
+		over: button-hover
+		disabled: button-disabled
+	}
+	gray: {
+		font: font
+		fontColor: gray
 		up: button
 		over: button-hover
 		disabled: button-disabled

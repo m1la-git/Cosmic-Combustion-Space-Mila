@@ -76,8 +76,12 @@ public class MenuScreen implements Screen {
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });
-        TextButton continueButton = new TextButton("Continue", game.getSkin());
-        if (game.getMap() == null) continueButton.setDisabled(true);
+        TextButton continueButton;
+        if (game.getMap() == null) {
+            continueButton = new TextButton("Continue", game.getSkin(), "gray");
+            continueButton.setDisabled(true);
+        }
+        else continueButton = new TextButton("Continue", game.getSkin());
         table.add(continueButton).width(500).padBottom(10).row();
         continueButton.addListener(new ChangeListener() {
             @Override
@@ -88,6 +92,8 @@ public class MenuScreen implements Screen {
 
         TextButton rulesButton = new TextButton("Rules", game.getSkin());
         table.add(rulesButton).width(500).row();
+        Label label1 = new Label("Rules", game.getSkin(), "underline");
+        table.add(label1).width(500).row();
     }
 
     /**
