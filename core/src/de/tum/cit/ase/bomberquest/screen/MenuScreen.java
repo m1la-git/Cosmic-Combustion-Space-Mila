@@ -9,11 +9,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -101,9 +99,37 @@ public class MenuScreen implements Screen {
         });
 
         TextButton rulesButton = new TextButton("Rules", game.getSkin());
-        table.add(rulesButton).width(500).row();
-        Label label1 = new Label("Rules", game.getSkin(), "underline");
-        table.add(label1).width(500).row();
+        table.add(rulesButton).width(500).padBottom(10).row();
+        TextButton quitButton = new TextButton("Quit", game.getSkin());
+        quitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                showQuitConfirmationDialog(game);
+            }
+        });
+        table.add(quitButton).width(500).padBottom(20).row();
+    }
+
+    private void showQuitConfirmationDialog(BomberQuestGame game) {
+        Dialog dialog = new Dialog("Confirm Quit", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object.equals(true)) {
+                    Gdx.app.exit(); // Or do other cleanup and then exit
+                }
+            }
+        };
+
+        Label messageLabel = new Label("Are you sure you want to quit?", game.getSkin());
+        messageLabel.setAlignment(Align.center);  // Center the text
+        dialog.getContentTable().add(messageLabel).pad(10f); // Add padding
+
+        dialog.button("Yes", true); // Sends true if clicked
+        dialog.button("No", false); // Sends false if clicked
+        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true); // Allows enter to confirm
+        dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, false); // Allows escape to cancel
+
+        dialog.show(stage);
     }
 
     /**
@@ -145,7 +171,6 @@ public class MenuScreen implements Screen {
     public void show() {
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
-        System.out.println(Gdx.input.getInputProcessor());
     }
 
     // The following methods are part of the Screen interface but are not used in this screen.

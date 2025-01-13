@@ -112,10 +112,6 @@ public class Hud {
         }
 
 
-
-
-
-
         // Finish drawing
         spriteBatch.end();
     }

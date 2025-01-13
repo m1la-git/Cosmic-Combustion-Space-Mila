@@ -64,7 +64,7 @@ public class BomberQuestGame extends Game {
     @Override
     public void create() {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
-        this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
+        this.skin = new Skin(Gdx.files.internal("skin/UI skin.json")); // Load UI skin
          // Play some background music
         goToMenu(); // Navigate to the menu screen
     }
@@ -95,12 +95,12 @@ public class BomberQuestGame extends Game {
 
             @Override
             public void onCancellation() {
-                System.out.println("Cancellation");
+                System.out.println("File cancelled");
             }
 
             @Override
             public void onError(Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println("FileChooser Error: " + e.getMessage());
             }
         });
 

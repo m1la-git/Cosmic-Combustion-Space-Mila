@@ -43,6 +43,7 @@ public class GameScreen implements Screen {
     private final GameMap map;
     private final Hud hud;
     private final OrthographicCamera mapCamera;
+    private boolean opened = false;
 
 
     /**
@@ -211,8 +212,18 @@ public class GameScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
-        mapCamera.setToOrtho(false);
-        hud.resize(width, height);
+        if (opened) {
+            BackgroundTrack.BACKGROUND.pause();
+            game.goToMenu();
+            opened = false;
+        }
+        else{
+            mapCamera.setToOrtho(false);
+            hud.resize(width, height);
+            opened = true;
+        }
+
+
     }
 
     // Unused methods from the Screen interface
