@@ -52,7 +52,7 @@ public class BomberQuestGame extends Game {
      */
     public BomberQuestGame(NativeFileChooser fileChooser) {
         this.fileChooser = fileChooser;
-        mapFilePath = "maps/map-3.properties";
+        mapFilePath = "maps/map-2.properties";
     }
 
     /**

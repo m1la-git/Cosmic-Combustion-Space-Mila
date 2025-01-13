@@ -124,29 +124,30 @@ public class GameScreen implements Screen {
      * If the map is smaller than the screen, the camera is centered on the map.
      */
     private void updateCamera() {
-        float viewportWidth = mapCamera.viewportWidth / 2f;  // Half-width of the viewport
-        float viewportHeight = mapCamera.viewportHeight / 2f; // Half-height of the viewport
+        float viewportHalfWidth = mapCamera.viewportWidth / 2f;  // Half-width of the viewport
+        float viewportHalfHeight = mapCamera.viewportHeight / 2f; // Half-height of the viewport
 
         float mapWidthPx = (map.getMAX_X() + 1) * TILE_SIZE_PX * SCALE;
         float mapHeightPx = (map.getMAX_Y() + 1) * TILE_SIZE_PX * SCALE;
 
-        // Determine camera boundaries
-        float maxCameraX = Math.max(viewportWidth, mapWidthPx - viewportWidth); // Max X position camera can move to
-        float maxCameraY = Math.max(viewportHeight, mapHeightPx - viewportHeight); // Max Y position camera can move to
+        // Calculate the 15% screen margin
+        float screenMarginX = mapCamera.viewportWidth * 0.15f;
+        float screenMarginY = mapCamera.viewportHeight * 0.15f;
 
-        //if hitbox is always free on the side then no need to adjust the map to it
-        float hudX = hud.getHudX();
-        float hudY = hud.getHudY();
-        float minCameraX = Math.max(viewportWidth, mapWidthPx / 2f ) - hudX; // Min X position camera can move to
-        float minCameraY = Math.max(viewportHeight, mapHeightPx / 2f) - hudY; // Min Y position camera can move to
+        // Calculate max and min camera bounds with the margin in mind
+        float maxCameraX = Math.max(viewportHalfWidth, mapWidthPx - viewportHalfWidth + screenMarginX);
+        float maxCameraY = Math.max(viewportHalfHeight, mapHeightPx - viewportHalfHeight + screenMarginY);
+
+        float minCameraX = Math.min(viewportHalfWidth - screenMarginX, mapWidthPx - viewportHalfWidth);
+        float minCameraY = Math.min(viewportHalfHeight - screenMarginY, mapHeightPx - viewportHalfHeight);
 
         // Get player's position
         float playerX = map.getPlayer1().getX() * TILE_SIZE_PX * SCALE;
         float playerY = map.getPlayer1().getY() * TILE_SIZE_PX * SCALE;
 
-        // Clamp the camera position to ensure it stays within the map bounds or centers for small maps
-        float cameraX = (mapWidthPx <= mapCamera.viewportWidth - hudX * 2 || map.getPlayer2() != null) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
-        float cameraY = (mapHeightPx <= mapCamera.viewportHeight - hudY * 2 || map.getPlayer2() != null) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
+        // Clamp the camera position to ensure it stays within the new map bounds
+        float cameraX = (mapWidthPx <= mapCamera.viewportWidth * 0.8 || map.getPlayer2() != null) ? mapWidthPx / 2f : Math.max(minCameraX, Math.min(playerX, maxCameraX));
+        float cameraY = (mapHeightPx <= mapCamera.viewportHeight * 0.8 || map.getPlayer2() != null) ? mapHeightPx / 2f : Math.max(minCameraY, Math.min(playerY, maxCameraY));
 
         // Update camera properties
         mapCamera.setToOrtho(false);
