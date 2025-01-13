@@ -3,14 +3,17 @@ package de.tum.cit.ase.bomberquest;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
-import de.tum.cit.ase.bomberquest.audio.SoundEffects;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.screen.GameScreen;
 import de.tum.cit.ase.bomberquest.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+
+import java.io.File;
 
 /**
  * The BomberQuestGame class represents the core of the Bomber Quest game.
@@ -40,6 +43,8 @@ public class BomberQuestGame extends Game {
      */
     private GameMap map;
 
+    private String mapFilePath;
+
     /**
      * Constructor for BomberQuestGame.
      *
@@ -47,6 +52,7 @@ public class BomberQuestGame extends Game {
      */
     public BomberQuestGame(NativeFileChooser fileChooser) {
         this.fileChooser = fileChooser;
+        mapFilePath = "maps/map-3.properties";
     }
 
     /**
@@ -75,6 +81,29 @@ public class BomberQuestGame extends Game {
      */
     public void goToGame() {
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+    }
+    public void chooseMap() {
+        NativeFileChooserConfiguration config = new NativeFileChooserConfiguration();
+        config.mimeFilter = "text/x-java-properties"; // choose only .properties file
+        config.title = "Select a Properties File";
+        config.directory = Gdx.files.external("");
+        fileChooser.chooseFile(config, new NativeFileChooserCallback() {
+            @Override
+            public void onFileChosen(FileHandle fileHandle) {
+                setMapFilePath(fileHandle.path()); // Store the absolute path
+            }
+
+            @Override
+            public void onCancellation() {
+                System.out.println("Cancellation");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        });
+
     }
 
     /**
@@ -125,5 +154,16 @@ public class BomberQuestGame extends Game {
 
     public void setMap(GameMap map) {
         this.map = map;
+    }
+
+    public void createNewMap() {
+        setMap(new GameMap(this, mapFilePath));
+    }
+
+    public String getMapFilePath() {
+        return mapFilePath;
+    }
+    public void setMapFilePath(String mapFilePath) {
+        this.mapFilePath = mapFilePath;
     }
 }

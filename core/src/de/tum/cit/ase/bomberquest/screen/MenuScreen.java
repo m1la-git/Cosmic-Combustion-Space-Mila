@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Textures;
+import org.w3c.dom.Text;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -72,7 +73,7 @@ public class MenuScreen implements Screen {
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setMap(new GameMap(game, "maps/map-3.properties"));
+                game.createNewMap();
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });
@@ -87,6 +88,15 @@ public class MenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToGame(); // Change to the game screen when button is pressed
+            }
+        });
+        TextButton loadMapButton = new TextButton("Load Map", game.getSkin());
+        table.add(loadMapButton).width(500).padBottom(10).row();
+        loadMapButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Load Map");
+                game.chooseMap();
             }
         });
 

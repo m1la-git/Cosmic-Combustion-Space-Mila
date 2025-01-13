@@ -67,15 +67,12 @@ public class Hud {
         String playerText;
         if (player.isPlayer1()) playerText = "Player 1";
         else playerText = "Player 2";
-        bold.draw(spriteBatch, playerText, startX + 10,  HUD_Y + 30);
-
-    }
-    private void drawHudMain(SpriteBatch spriteBatch, float startX) {
+        bold.draw(spriteBatch, playerText, startX,  HUD_Y + 30);
 
     }
 
     /**
-     * Renders the HUD_BACKGROUND on the screen.
+     * Renders the HUD on the screen.
      * This uses a different OrthographicCamera so that the HUD_BACKGROUND is always fixed on the screen.
      */
     public void render(Player player1, Player player2, int timer, int enemies, boolean exitOpen, float frameTime) {
