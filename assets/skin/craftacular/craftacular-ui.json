@@ -1,13 +1,10 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-	bold: {
-		file: font-bold-export.fnt
-	}
 	font: {
-		file: font-export.fnt
+		file: Pixel Sans.fnt
 	}
-	title: {
-		file: font-title-export.fnt
+	bold: {
+		file: Pixel Sans Bold.fnt
 	}
 }
 com.badlogic.gdx.graphics.Color: {
@@ -30,17 +27,7 @@ com.badlogic.gdx.graphics.Color: {
 		a: 1
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
-	gray: {
-		name: white
-		color: {
-			r: 0.73666674
-			g: 0.73666674
-			b: 0.73666674
-			a: 1
-		}
-	}
-}
+
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
 		up: button
@@ -71,37 +58,6 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		font: font
 		fontColor: gray
 	}
-	bold: {
-		font: bold
-		background: underline
-	}
-	title: {
-		font: title
-	}
-	xp: {
-		font: bold
-		fontColor: green
-	}
-}
-
-com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
-	default: {
-		background: scroll-bg
-		hScroll: scroll-horizontal
-		hScrollKnob: scroll-knob-horizontal
-		vScroll: scroll-vertical
-		vScrollKnob: scroll-knob-vertical
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
-	default-horizontal: {
-		background: slider
-		knob: slider-knob
-	}
-	default-vertical: {
-		background: slider
-		knob: slider-knob
-	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
@@ -109,27 +65,6 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		up: button
 		over: button-hover
 		disabled: button-disabled
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
-	default: {
-		font: font
-		fontColor: white
-		background: text-field
-		cursor: cursor
-		selection: gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
-	default: {
-		label: default
-		background: tooltip
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-	default: {
-		background: window
-		titleFont: font
 	}
 }
 }

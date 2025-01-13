@@ -22,6 +22,7 @@ public class Hud {
      * The font used to draw text on the screen.
      */
     private final BitmapFont font;
+    private final BitmapFont bold;
     /**
      * The camera used to render the HUD.
      */
@@ -32,9 +33,10 @@ public class Hud {
     private static final float SCALE = 3.5f;
     private float elapsedTime;
 
-    public Hud(SpriteBatch spriteBatch, BitmapFont font) {
+    public Hud(SpriteBatch spriteBatch, BitmapFont font, BitmapFont bold) {
         this.spriteBatch = spriteBatch;
         this.font = font;
+        this.bold = bold;
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false);
         elapsedTime = 0;
@@ -65,7 +67,7 @@ public class Hud {
         String playerText;
         if (player.isPlayer1()) playerText = "Player 1";
         else playerText = "Player 2";
-        font.draw(spriteBatch, playerText, startX + 10,  HUD_Y + 30);
+        bold.draw(spriteBatch, playerText, startX + 10,  HUD_Y + 30);
 
     }
     private void drawHudMain(SpriteBatch spriteBatch, float startX) {
