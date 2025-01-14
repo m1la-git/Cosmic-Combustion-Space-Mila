@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -31,6 +32,8 @@ public class MenuScreen implements Screen {
     private final Sprite backgroundSprite; // Added sprite for the background
 
     private final SpriteBatch batch; //Added batch to draw background
+
+    private Actor overlay; // For the darkened background
 
 
 
@@ -104,31 +107,57 @@ public class MenuScreen implements Screen {
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                overlay.setVisible(true);
                 showQuitConfirmationDialog(game);
             }
         });
         table.add(quitButton).width(500).padBottom(20).row();
+        // Create a semi-transparent overlay
+        overlay = new Actor() {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                Color oldColor = batch.getColor();
+                batch.setColor(0, 0, 0, 0.7f); // Black with 50% transparency
+                batch.draw(game.getSkin().getRegion("white"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                batch.setColor(oldColor);
+            }
+        };
+        overlay.setVisible(false); // Hide it initially
+        stage.addActor(overlay);
     }
 
     private void showQuitConfirmationDialog(BomberQuestGame game) {
-        Dialog dialog = new Dialog("Confirm Quit", game.getSkin()) {
+        Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
                 if (object.equals(true)) {
                     Gdx.app.exit(); // Or do other cleanup and then exit
+                }
+                else {
+                    overlay.setVisible(false);
                 }
             }
         };
 
         Label messageLabel = new Label("Are you sure you want to quit?", game.getSkin());
         messageLabel.setAlignment(Align.center);  // Center the text
-        dialog.getContentTable().add(messageLabel).pad(10f); // Add padding
+        dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+        TextButton yesButton = new TextButton("Yes", game.getSkin(), "mini");
+        yesButton.getLabel().setFontScale(0.9f);  // Scale down the text
+        TextButton noButton = new TextButton("No", game.getSkin(), "mini");
+        noButton.getLabel().setFontScale(0.9f);  // Scale down the text
 
-        dialog.button("Yes", true); // Sends true if clicked
-        dialog.button("No", false); // Sends false if clicked
-        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true); // Allows enter to confirm
-        dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, false); // Allows escape to cancel
+        // Set button result values
+        dialog.setObject(yesButton, true);   // "Yes" button sends true
+        dialog.setObject(noButton, false);   // "No" button sends false
+        // Add buttons with spacing between them
+        dialog.getButtonTable().add(yesButton).pad(10f).size(100f, 40f); // Set size and padding
+        dialog.getButtonTable().add(noButton).pad(10f).size(100f, 40f);  // Set size and padding
+        // Allow keyboard shortcuts
+        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+        dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
 
+        // Show the dialog
         dialog.show(stage);
     }
 

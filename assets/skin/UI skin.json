@@ -1,0 +1,91 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	font: {
+		file: Pixel Sans.fnt
+	}
+	bold: {
+		file: Pixel Sans Bold.fnt
+	}
+}
+com.badlogic.gdx.graphics.Color: {
+	gray: {
+		r: 0.55
+		g: 0.55
+		b: 0.55
+		a: 1
+	}
+	white: {
+		r: 1
+		g: 1
+		b: 1
+		a: 1
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+	white: {
+		name: white
+		color: white
+	}
+}
+
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	default: {
+		up: button
+		over: button-hover
+		disabled: button-disabled
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
+	default: {
+		up: button
+		over: button-hover
+		disabled: button-disabled
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
+	default: {
+		font: font
+		up: button
+		over: button-hover
+		disabled: button-disabled
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: {
+		font: font
+	}
+	bold: {
+		font: bold
+	}
+	underline: {
+		font: font
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+	default: {
+		font: font
+		up: button
+		over: button-hover
+		disabled: button-disabled
+	}
+	mini: {
+		font: font
+		up: button-mini
+		over: button-mini-hover
+		disabled: button-mini-disabled
+	}
+	gray: {
+		font: font
+		fontColor: gray
+		up: button
+		over: button-hover
+		disabled: button-disabled
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+	default: {
+		background: window
+		titleFont: bold
+	}
+}
+}

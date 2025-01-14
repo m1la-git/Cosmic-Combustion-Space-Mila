@@ -1,0 +1,76 @@
+UI skin.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+button
+  rotate: false
+  xy: 0, 0
+  size: 367, 64
+  split: 7, 7, 7, 11
+  pad: 8, 8, 8, 12
+  orig: 367, 64
+  offset: 0, 0
+  index: -1
+button-disabled
+  rotate: false
+  xy: 0, 130
+  size: 367, 64
+  split: 7, 7, 7, 11
+  pad: 8, 8, 8, 12
+  orig: 367, 64
+  offset: 0, 0
+  index: -1
+button-hover
+  rotate: false
+  xy: 0, 65
+  size: 367, 64
+  split: 7, 7, 7, 11
+  pad: 8, 8, 8, 12
+  orig: 367, 64
+  offset: 0, 0
+  index: -1
+button-mini
+  rotate: false
+  xy: 368, 0
+  size: 144, 64
+  split: 7, 7, 7, 11
+  pad: 8, 8, 8, 12
+  orig: 144, 64
+  offset: 0, 0
+  index: -1
+button-mini-disabled
+  rotate: false
+  xy: 368, 130
+  size: 144, 64
+  split: 7, 7, 7, 11
+  pad: 8, 8, 8, 12
+  orig: 144, 64
+  offset: 0, 0
+  index: -1
+button-mini-hover
+  rotate: false
+  xy: 368, 65
+  size: 144, 64
+  split: 7, 7, 7, 11
+  pad: 8, 8, 8, 12
+  orig: 144, 64
+  offset: 0, 0
+  index: -1
+window
+  rotate: false
+  xy: 0, 195
+  size: 43, 43
+  split: 16, 16, 16, 16
+  pad: 13, 13, 13, 13
+  orig: 43, 43
+  offset: 0, 0
+  index: -1
+white
+  rotate: false
+  xy: 43, 195
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+
