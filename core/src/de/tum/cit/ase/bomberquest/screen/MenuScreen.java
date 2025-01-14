@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
+import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
@@ -73,6 +74,7 @@ public class MenuScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) { // Change to the game screen when button is pressed
                 if (game.getMap() != null) showNewGameConfirmationDialog(game);
                 else {
+                    BackgroundTrack.BACKGROUND.stop();
                     game.createNewMap();
                     game.goToGame();
                 }
@@ -118,7 +120,7 @@ public class MenuScreen implements Screen {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 Color oldColor = batch.getColor();
-                batch.setColor(0, 0, 0, 0.7f); // Black with 70% transparency
+                batch.setColor(0, 0, 0, 0.5f); // Black with 50% transparency
                 batch.draw(game.getSkin().getRegion("white"), 0, 0, camera.viewportWidth, camera.viewportHeight);
                 batch.setColor(oldColor);
             }
@@ -133,6 +135,7 @@ public class MenuScreen implements Screen {
             @Override
             protected void result(Object object) {
                 if (object.equals(true)) {
+                    BackgroundTrack.BACKGROUND.stop();
                     game.createNewMap();
                     game.goToGame();
                 }

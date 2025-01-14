@@ -65,6 +65,7 @@ public class GameMap {
     private final int MAX_X;
     private final int MAX_Y;
     private boolean victory;
+    private String gameOverMessage;
     private int numberOfEnemies;
     private float elapsedTime = 0;
     private Exit exit;
@@ -87,6 +88,7 @@ public class GameMap {
         this.blasts = new ArrayList<>();
         this.enemies = new ArrayList<>();
         this.victory = false;
+        this.gameOverMessage = "";
         exitOpen = false;
 
         powerUps = new ArrayList<>();

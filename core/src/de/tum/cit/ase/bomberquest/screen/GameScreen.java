@@ -5,9 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
 import de.tum.cit.ase.bomberquest.map.*;
@@ -39,11 +47,13 @@ public class GameScreen implements Screen {
     public static final int SCALE = 4;
 
     private final BomberQuestGame game;
+    private final Stage stage; // New stage for dialog
     private final SpriteBatch spriteBatch;
     private final GameMap map;
     private final Hud hud;
     private final OrthographicCamera mapCamera;
-    private boolean opened = false;
+    private final Actor overlay; // For the darkened background
+    private boolean isPaused = false; // Flag to track pause state
 
 
     /**
@@ -54,6 +64,7 @@ public class GameScreen implements Screen {
     public GameScreen(BomberQuestGame game) {
         this.game = game;
         this.spriteBatch = game.getSpriteBatch();
+        this.stage = new Stage(new ScreenViewport());
         this.map = game.getMap();
         this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"), game.getSkin().getFont("bold"));
         // Create and configure the camera for the game view
@@ -61,6 +72,19 @@ public class GameScreen implements Screen {
         this.mapCamera.setToOrtho(false);
         //play background music
         BackgroundTrack.BACKGROUND.play();
+
+        // Create a semi-transparent overlay
+        overlay = new Actor() {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                Color oldColor = batch.getColor();
+                batch.setColor(0, 0, 0, 0.5f); // Black with 50% transparency
+                batch.draw(game.getSkin().getRegion("white"), 0, 0, hud.getCamera().viewportWidth, hud.getCamera().viewportHeight);
+                batch.setColor(oldColor);
+            }
+        };
+        overlay.setVisible(false); // Hide it initially
+        stage.addActor(overlay);
     }
 
     /**
@@ -87,23 +111,25 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float deltaTime) {
+
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || map.isPlayerDead() || map.isVictory()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             BackgroundTrack.BACKGROUND.pause();
             game.goToMenu();
         }
+
 
         // Clear the previous frame from the screen, or else the picture smears
         ScreenUtils.clear(Color.BLACK);
 
         // Cap frame time to 250ms to prevent spiral of death
         float frameTime = Math.min(deltaTime, 0.250f);
+        if (!isPaused) {
+            map.tick(frameTime); // Update the map state
+        }
+        updateCamera(); // Update the camera
 
-        // Update the map state
-        map.tick(frameTime);
 
-        // Update the camera
-        updateCamera();
 
         OrthographicCamera hudCamera = hud.getCamera();
         spriteBatch.setProjectionMatrix(hudCamera.combined);
@@ -117,6 +143,15 @@ public class GameScreen implements Screen {
 
         // Render the HUD_BACKGROUND on the screen
         hud.render(map.getPlayer1(), map.getPlayer2(), map.getTimer(), map.getNumberOfEnemies(), map.isExitOpen(), frameTime);
+
+        if (!isPaused && map.isPlayerDead() || map.isVictory()) {
+            isPaused = true; // Pause the game after showing the dialog
+            BackgroundTrack.BACKGROUND.stop();
+            showGameOverDialog(map.isVictory());
+        }
+
+        stage.act(deltaTime); // Update the stage
+        stage.draw();         // Draw the stage (for dialog)
     }
 
 
@@ -203,6 +238,36 @@ public class GameScreen implements Screen {
         spriteBatch.end();
     }
 
+    private void showGameOverDialog(boolean victory) {
+        Dialog dialog = new Dialog("", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object.equals(false)) game.finishGame();  // Go to menu when button is clicked
+                else {
+                    game.restartGame();
+                }
+            }
+        };
+        Label messageLabel = new Label(victory ? "VICTORY" : "GAME OVER", game.getSkin(), "bold");
+        messageLabel.setFontScale(1.6f);
+        messageLabel.setAlignment(Align.center);  // Center the text
+        dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+
+        TextButton restartButton = new TextButton("Restart", game.getSkin(), "mini");
+        TextButton menuButton = new TextButton("Go to Menu", game.getSkin(), "mini");
+
+        // Set button result values
+        dialog.setObject(restartButton, true);   // "Yes" button sends true
+        dialog.setObject(menuButton, false);   // "No" button sends false
+        // Add buttons with spacing between them
+        dialog.getButtonTable().add(restartButton).pad(10f).size(200f, 60f); // Set size and padding
+        dialog.getButtonTable().add(menuButton).pad(10f).size(200f, 60f);  // Set size and padding
+        // Allow keyboard shortcuts
+        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+        overlay.setVisible(true);
+        dialog.show(stage);
+    }
+
     /**
      * Called when the window is resized.
      * This is where the camera is updated to match the new window size.
@@ -212,16 +277,10 @@ public class GameScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
-        if (opened) {
-            BackgroundTrack.BACKGROUND.pause();
-            game.goToMenu();
-            opened = false;
-        }
-        else{
-            mapCamera.setToOrtho(false);
-            hud.resize(width, height);
-            opened = true;
-        }
+        mapCamera.setToOrtho(false);
+        hud.resize(width, height);
+        stage.getViewport().update(width, height, true);
+
 
 
     }
@@ -237,7 +296,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage); // Set input processor in show()
+        System.out.println(Gdx.input.getInputProcessor());
     }
 
     @Override
@@ -246,6 +306,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
 
 }

@@ -31,10 +31,8 @@ public enum BackgroundTrack {
         isPlaying = true;
     }
     public void stop() {
-        if (isPlaying) {
-            this.music.stop();
-            this.isPlaying = false;
-        }
+        this.music.stop();
+        this.isPlaying = false;
     }
     public void pause() {
         if (isPlaying) {

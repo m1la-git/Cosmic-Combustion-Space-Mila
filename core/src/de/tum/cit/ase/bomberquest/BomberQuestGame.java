@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.screen.GameScreen;
 import de.tum.cit.ase.bomberquest.screen.MenuScreen;
@@ -141,6 +142,15 @@ public class BomberQuestGame extends Game {
         if (previousScreen != null) {
             previousScreen.dispose();
         }
+    }
+    public void finishGame() {
+        goToMenu();
+        setMap(null);
+    }
+    public void restartGame() {
+        setMap(null);
+        createNewMap();
+        goToGame();
     }
 
     /**
