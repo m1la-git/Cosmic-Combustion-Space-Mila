@@ -252,6 +252,18 @@ public class GameScreen implements Screen {
         messageLabel.setFontScale(1.6f);
         messageLabel.setAlignment(Align.center);  // Center the text
         dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+        if (map.getPlayer2() != null) {
+            Label player1Label = new Label("Player1 points: " + map.getPlayer1().getPoints(), game.getSkin());
+            Label player2Label = new Label("Player2 points: " + map.getPlayer2().getPoints(), game.getSkin());
+            dialog.getContentTable().add(player1Label).pad(20f).row();
+            dialog.getContentTable().add(player2Label).pad(20f).row();
+        }
+        else {
+            Label player1Label = new Label("Player points: " + map.getPlayer1().getPoints(), game.getSkin());
+            dialog.getContentTable().add(player1Label).pad(20f).row();
+
+        }
+
 
         TextButton restartButton = new TextButton("Restart", game.getSkin(), "mini");
         TextButton menuButton = new TextButton("Go to Menu", game.getSkin(), "mini");
