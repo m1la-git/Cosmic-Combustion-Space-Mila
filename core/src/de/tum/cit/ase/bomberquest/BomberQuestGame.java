@@ -82,7 +82,7 @@ public class BomberQuestGame extends Game {
     public void goToGame() {
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
     }
-    public void chooseMap() {
+    public boolean chooseMap() {
         NativeFileChooserConfiguration config = new NativeFileChooserConfiguration();
         config.mimeFilter = "text/x-java-properties"; // choose only .properties file
         config.title = "Select a Properties File";
@@ -91,6 +91,7 @@ public class BomberQuestGame extends Game {
             @Override
             public void onFileChosen(FileHandle fileHandle) {
                 setMapFilePath(fileHandle.path()); // Store the absolute path
+                setMap(null);
             }
 
             @Override
@@ -103,6 +104,7 @@ public class BomberQuestGame extends Game {
                 System.out.println("FileChooser Error: " + e.getMessage());
             }
         });
+        return (map == null);
 
     }
 

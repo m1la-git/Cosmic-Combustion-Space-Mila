@@ -66,13 +66,16 @@ public class MenuScreen implements Screen {
         table.add(logoImage).size(600, 510).padBottom(50).row(); // Set cell size
 
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("New Game", game.getSkin());
-        table.add(goToGameButton).width(500).padBottom(10).row();
-        goToGameButton.addListener(new ChangeListener() {
+        TextButton newGameButton = new TextButton("New Game", game.getSkin());
+        table.add(newGameButton).width(500).padBottom(10).row();
+        newGameButton.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.createNewMap();
-                game.goToGame(); // Change to the game screen when button is pressed
+            public void changed(ChangeEvent event, Actor actor) { // Change to the game screen when button is pressed
+                if (game.getMap() != null) showNewGameConfirmationDialog(game);
+                else {
+                    game.createNewMap();
+                    game.goToGame();
+                }
             }
         });
         TextButton continueButton;
@@ -93,8 +96,9 @@ public class MenuScreen implements Screen {
         loadMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Load Map");
-                game.chooseMap();
+                if (game.getMap() != null) showLoadMapConfirmationDialog(game, continueButton);
+                else continueButton.setDisabled(game.chooseMap());
+
             }
         });
 
@@ -114,7 +118,7 @@ public class MenuScreen implements Screen {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 Color oldColor = batch.getColor();
-                batch.setColor(0, 0, 0, 0.7f); // Black with 50% transparency
+                batch.setColor(0, 0, 0, 0.7f); // Black with 70% transparency
                 batch.draw(game.getSkin().getRegion("white"), 0, 0, camera.viewportWidth, camera.viewportHeight);
                 batch.setColor(oldColor);
             }
@@ -123,6 +127,35 @@ public class MenuScreen implements Screen {
         stage.addActor(overlay);
     }
 
+    private void showNewGameConfirmationDialog(BomberQuestGame game) {
+        overlay.setVisible(true);
+        Dialog dialog = new Dialog("", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object.equals(true)) {
+                    game.createNewMap();
+                    game.goToGame();
+                }
+                else {
+                    overlay.setVisible(false);
+                }
+            }
+        };
+        dialogUI(game, dialog, "Are you sure you want to start a new game? Your unsaved progress will be lost.");
+    }
+    private void showLoadMapConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
+        overlay.setVisible(true);
+        Dialog dialog = new Dialog("", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object.equals(true)) {
+                    continueButton.setDisabled(game.chooseMap());
+                }
+                overlay.setVisible(false);
+            }
+        };
+        dialogUI(game, dialog, "Are you sure you want to load a new map? Your unsaved progress will be lost.");
+    }
     private void showQuitConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -136,7 +169,11 @@ public class MenuScreen implements Screen {
                 }
             }
         };
-        Label messageLabel = new Label("Are you sure you want to quit?", game.getSkin());
+        dialogUI(game, dialog, "Are you sure you want to quit the game?");
+    }
+
+    private void dialogUI(BomberQuestGame game, Dialog dialog, String labelText) {
+        Label messageLabel = new Label(labelText, game.getSkin());
         messageLabel.setAlignment(Align.center);  // Center the text
         dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
         TextButton yesButton = new TextButton("Yes", game.getSkin(), "mini");
@@ -153,11 +190,9 @@ public class MenuScreen implements Screen {
         // Allow keyboard shortcuts
         dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
         dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
-
         // Show the dialog
         dialog.show(stage);
     }
-
     /**
      * The render method is called every frame to render the menu screen.
      * It clears the screen and draws the stage.
