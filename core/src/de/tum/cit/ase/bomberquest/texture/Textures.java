@@ -38,7 +38,7 @@ public class Textures {
 
     public static final TextureRegion HUD = new TextureRegion(new Texture(Gdx.files.internal("texture/Hud.png")), 0, 0, 48, 96);
 
-    public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/Background.jpg"));
+    public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/Background.png"));
 
     public static final Texture GAME_LOGO = new Texture(Gdx.files.internal("texture/Game Logo.png"));
 

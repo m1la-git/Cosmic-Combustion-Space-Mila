@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,9 +17,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
-import de.tum.cit.ase.bomberquest.map.GameMap;
 import de.tum.cit.ase.bomberquest.texture.Textures;
-import org.w3c.dom.Text;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -54,10 +51,10 @@ public class MenuScreen implements Screen {
         // You may need to adjust background sprite size and position depending on your background.
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Make it fill the screen
 
-        addUI(game);
+        addUI(game, camera);
     }
 
-    private void addUI(BomberQuestGame game) {
+    private void addUI(BomberQuestGame game, OrthographicCamera camera) {
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
@@ -107,18 +104,18 @@ public class MenuScreen implements Screen {
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                overlay.setVisible(true);
                 showQuitConfirmationDialog(game);
             }
         });
         table.add(quitButton).width(500).padBottom(20).row();
+
         // Create a semi-transparent overlay
         overlay = new Actor() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 Color oldColor = batch.getColor();
                 batch.setColor(0, 0, 0, 0.7f); // Black with 50% transparency
-                batch.draw(game.getSkin().getRegion("white"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                batch.draw(game.getSkin().getRegion("white"), 0, 0, camera.viewportWidth, camera.viewportHeight);
                 batch.setColor(oldColor);
             }
         };
@@ -127,6 +124,7 @@ public class MenuScreen implements Screen {
     }
 
     private void showQuitConfirmationDialog(BomberQuestGame game) {
+        overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
@@ -138,7 +136,6 @@ public class MenuScreen implements Screen {
                 }
             }
         };
-
         Label messageLabel = new Label("Are you sure you want to quit?", game.getSkin());
         messageLabel.setAlignment(Align.center);  // Center the text
         dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
