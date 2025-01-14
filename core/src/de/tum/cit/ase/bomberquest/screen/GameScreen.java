@@ -144,10 +144,10 @@ public class GameScreen implements Screen {
         // Render the HUD_BACKGROUND on the screen
         hud.render(map.getPlayer1(), map.getPlayer2(), map.getTimer(), map.getNumberOfEnemies(), map.isExitOpen(), frameTime);
 
-        if (!isPaused && map.isPlayerDead() || map.isVictory()) {
+        if (!isPaused && map.isGameOver()) {
             isPaused = true; // Pause the game after showing the dialog
             BackgroundTrack.BACKGROUND.stop();
-            showGameOverDialog(map.isVictory());
+            showGameOverDialog(map.isGameOver());
         }
 
         stage.act(deltaTime); // Update the stage
@@ -248,22 +248,24 @@ public class GameScreen implements Screen {
                 }
             }
         };
-        Label messageLabel = new Label(victory ? "VICTORY" : "GAME OVER", game.getSkin(), "bold");
-        messageLabel.setFontScale(1.6f);
+        String gameOverMessage = map.getGameOverMessage();
+        Label messageLabel = new Label(gameOverMessage.isEmpty() ? "VICTORY" : "GAME OVER", game.getSkin(), "bold");
+        messageLabel.setFontScale(2.5f);
         messageLabel.setAlignment(Align.center);  // Center the text
         dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
-        if (map.getPlayer2() != null) {
-            Label player1Label = new Label("Player1 points: " + map.getPlayer1().getPoints(), game.getSkin());
-            Label player2Label = new Label("Player2 points: " + map.getPlayer2().getPoints(), game.getSkin());
+
+        if (gameOverMessage.isEmpty()) {
+            Label player1Label = new Label(map.getPlayer1().getName() + "'s points: " + map.getPlayer1().getPoints(), game.getSkin());
             dialog.getContentTable().add(player1Label).pad(20f).row();
-            dialog.getContentTable().add(player2Label).pad(20f).row();
+            if (map.getPlayer2() != null) {
+                Label player2Label = new Label(map.getPlayer2().getName() + "'s points: " + map.getPlayer2().getPoints(), game.getSkin());
+                dialog.getContentTable().add(player2Label).pad(20f).row();
+            }
         }
         else {
-            Label player1Label = new Label("Player points: " + map.getPlayer1().getPoints(), game.getSkin());
-            dialog.getContentTable().add(player1Label).pad(20f).row();
-
+            Label gameOverLabel = new Label(gameOverMessage, game.getSkin());
+            dialog.getContentTable().add(gameOverLabel).pad(20f).row();
         }
-
 
         TextButton restartButton = new TextButton("Restart", game.getSkin(), "mini");
         TextButton menuButton = new TextButton("Go to Menu", game.getSkin(), "mini");

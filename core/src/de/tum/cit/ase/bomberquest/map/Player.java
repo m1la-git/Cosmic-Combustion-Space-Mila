@@ -21,23 +21,23 @@ public class Player extends MobileObject implements Drawable {
      */
     private final Deque<Integer> keyPressOrder = new ArrayDeque<>();
 
-    private final boolean players2;
     private final boolean player1;
     private int points;
+    private String name;
 
 
     public Player(World world, float x, float y, boolean player1) {
         super(world, x, y, 2, 0.3f);
-        players2 = true;
         this.player1 = player1;
         points = 0;
+        name = (player1) ? "Player 1" : "Player 2";
     }
 
     public Player(World world, float x, float y) {
         super(world, x, y, 2, 0.3f);
-        players2 = false;
         this.player1 = true;
         points = 0;
+        name = "Player 1";
     }
 
     /**
@@ -143,6 +143,13 @@ public class Player extends MobileObject implements Drawable {
 
         }
         return Animations.PLAYER_DEATH.getKeyFrame(getElapsedTime(), false);
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
 
 

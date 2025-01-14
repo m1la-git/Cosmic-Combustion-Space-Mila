@@ -64,10 +64,7 @@ public class Hud {
         font.draw(spriteBatch, player.getPoints() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3 * 2) + 57);
         font.draw(spriteBatch, player.getBlastRadius() + "", startX + 16 * SCALE + 15, ((HUD_Y - 9) / 3) + 57);
         font.draw(spriteBatch, player.getConcurrentBombs() + "", startX + 16 * SCALE + 15,  57);
-        String playerText;
-        if (player.isPlayer1()) playerText = "Player 1";
-        else playerText = "Player 2";
-        bold.draw(spriteBatch, playerText, startX,  HUD_Y + 30);
+        bold.draw(spriteBatch, player.getName(), startX,  HUD_Y + 30);
 
     }
 

@@ -2,7 +2,6 @@ package de.tum.cit.ase.bomberquest.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -59,12 +58,13 @@ public class GameMap {
     private final List<Enemy> enemies;
     private final Map<String, Bomb> bombs;
     private final List<Blast> blasts;
+    private static final float TIMER = 200f;
 
     private final Map<String, StationaryObject> walls;
 
     private final int MAX_X;
     private final int MAX_Y;
-    private boolean victory;
+    private boolean gameOver;
     private String gameOverMessage;
     private int numberOfEnemies;
     private float elapsedTime = 0;
@@ -81,13 +81,13 @@ public class GameMap {
     public GameMap(BomberQuestGame game, String mapFile) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
-        this.contactListener = new GameContactListener();
+        this.contactListener = new GameContactListener(this);
         this.world.setContactListener(contactListener);
         this.walls = new HashMap<>();
         this.bombs = new HashMap<>();
         this.blasts = new ArrayList<>();
         this.enemies = new ArrayList<>();
-        this.victory = false;
+        this.gameOver = false;
         this.gameOverMessage = "";
         exitOpen = false;
 
@@ -276,6 +276,13 @@ public class GameMap {
         player1.tick(frameTime);
         if (player2 != null) player2.tick(frameTime);
         elapsedTime += frameTime;
+        if (elapsedTime >= TIMER) {
+            setGameOverMessage("Too slow! The timer hit zero.");
+            gameOver = true;
+        }
+        if (isPlayerDead()) {
+            gameOver = true;
+        }
 
         if (exit != null) exit.tick(frameTime);
 
@@ -368,14 +375,10 @@ public class GameMap {
             }
             //players' death
             if (player1.isAlive()) {
-                if (isBlasted(player1, blast)) {
-                    player1.death(world);
-                }
+                playerBlasted(blast, player1, player2);
             }
-            if (player2 != null) {
-                if (isBlasted(player2, blast)) {
-                    player2.death(world);
-                }
+            if (player2 != null && player2.isAlive()) {
+                playerBlasted(blast, player2, player1);
             }
 
         }
@@ -387,6 +390,15 @@ public class GameMap {
         contactListener.processQueuedDestruction();
         doPhysicsStep(frameTime);
 
+    }
+
+    private void playerBlasted(Blast blast, Player player, Player playerOther) {
+        if (isBlasted(player, blast)) {
+            player.death(world);
+            if (blast.getOwner() instanceof Enemy) setGameOverMessage("BOOM! " + player.getName() + " got caught in Alien's blast!");
+            else if (blast.getOwner().equals(player)) setGameOverMessage("Oops! " + player.getName() + " blew themselves up!");
+            else setGameOverMessage(player.getName() + " got caught in " + playerOther.getName() + "'s explosion!");
+        }
     }
 
     /**
@@ -451,10 +463,10 @@ public class GameMap {
             if (exit.getCellX() == player1CellX && exit.getCellY() == player1CellY && exitOpen) {
                 if (player2 != null) {
                     if (player2.isAlive() && exit.getCellX() == player2.getCellX() && exit.getCellY() == player2.getCellY()) {
-                        victory = true;
+                        gameOver = true;
                     }
                 } else {
-                    victory = true;
+                    gameOver = true;
                 }
             }
         }
@@ -638,8 +650,14 @@ public class GameMap {
         return MAX_Y;
     }
 
-    public boolean isVictory() {
-        return victory;
+    public boolean isGameOver() {
+        return gameOver;
+    }
+    public String getGameOverMessage() {
+        return gameOverMessage;
+    }
+    public void setGameOverMessage(String gameOverMessage) {
+        if (this.gameOverMessage.isEmpty()) this.gameOverMessage = gameOverMessage;
     }
 
     public int getNumberOfEnemies() {
@@ -647,7 +665,7 @@ public class GameMap {
     }
 
     public int getTimer() {
-        return (int) Math.ceil(200f - elapsedTime);
+        return (int) Math.ceil(TIMER - elapsedTime);
     }
 
 }

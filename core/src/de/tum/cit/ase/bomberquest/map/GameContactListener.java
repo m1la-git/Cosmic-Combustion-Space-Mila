@@ -14,6 +14,11 @@ import java.util.Set;
 public class GameContactListener implements ContactListener {
 
     private final List<Body> bodiesToDestroy = new ArrayList<>();
+    private final GameMap map;
+
+    public GameContactListener(GameMap map) {
+        this.map = map;
+    }
 
     @Override
     public void beginContact(Contact contact) {
@@ -84,6 +89,7 @@ public class GameContactListener implements ContactListener {
         Player player = (Player) playerBody.getUserData();
         if (player.isAlive()) {
             player.markForDeath(playerBody.getWorld(), this);
+            map.setGameOverMessage("Too close for comfort! " + player.getName() + " got squished by the Alien.");
         }
     }
 
