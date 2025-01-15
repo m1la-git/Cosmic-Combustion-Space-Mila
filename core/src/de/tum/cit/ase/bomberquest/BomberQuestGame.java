@@ -148,8 +148,12 @@ public class BomberQuestGame extends Game {
         setMap(null);
     }
     public void restartGame() {
+        String player1name = map.getPlayer1().getName();
+        String player2name = (map.getPlayer2() != null) ? map.getPlayer2().getName(): "";
         setMap(null);
         createNewMap();
+        if (player2name.isEmpty()) renamePlayer(player1name);
+        else renamePlayers(player1name, player2name);
         goToGame();
     }
     public void renamePlayers(String player1, String player2) {
