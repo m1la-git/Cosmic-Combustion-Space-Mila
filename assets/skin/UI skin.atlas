@@ -73,4 +73,27 @@ white
   orig: 1, 1
   offset: 0, 0
   index: -1
-
+gray
+  rotate: false
+  xy: 45, 195
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+text-field
+  rotate: false
+  xy: 0, 238
+  size: 268, 55
+  split: 3, 3, 3, 3
+  pad: 4, 4, 4, 4
+  orig: 268, 55
+  offset: 0, 0
+  index: -1
+cursor
+  rotate: false
+  xy: 268, 238
+  size: 18, 6
+  split: 0, 17, 0, 5
+  orig: 18, 6
+  offset: 0, 0
+  index: -1

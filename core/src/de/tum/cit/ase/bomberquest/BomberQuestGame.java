@@ -152,6 +152,28 @@ public class BomberQuestGame extends Game {
         createNewMap();
         goToGame();
     }
+    public void renamePlayers(String player1, String player2) {
+        System.out.println("Player1: " + map.getPlayer1().getName());
+        if (map != null) {
+            map.getPlayer1().setName(player1);
+
+            if (map.getPlayer2() != null) {
+                map.getPlayer2().setName(player2);
+            }
+        }
+        else {
+            System.out.println("map is null");
+        }
+    }
+    public void renamePlayer(String player1) {
+
+        if (map != null) {
+            map.getPlayer1().setName(player1);
+        }
+        else {
+            System.out.println("map is null");
+        }
+    }
 
     /**
      * Cleans up resources when the game is disposed.

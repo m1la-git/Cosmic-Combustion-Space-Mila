@@ -26,6 +26,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 		name: white
 		color: white
 	}
+	gray: {
+		name: gray
+		color: gray
+	}
 }
 
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
@@ -86,6 +90,15 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: {
 		background: window
 		titleFont: bold
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+	default: {
+		font: font
+		fontColor: white
+		background: text-field
+		cursor: cursor
+		selection: gray
 	}
 }
 }

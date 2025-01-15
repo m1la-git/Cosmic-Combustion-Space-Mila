@@ -76,7 +76,7 @@ public class MenuScreen implements Screen {
                 else {
                     BackgroundTrack.BACKGROUND.stop();
                     game.createNewMap();
-                    game.goToGame();
+                    showPlayerNameConfirmationDialog(game);
                 }
             }
         });
@@ -129,6 +129,102 @@ public class MenuScreen implements Screen {
         stage.addActor(overlay);
     }
 
+    private void showPlayerNameConfirmationDialog(BomberQuestGame game) {
+        overlay.setVisible(true);
+        boolean players2 = game.getMap().getPlayer2() != null;
+        final TextField[] playerNameFields = new TextField[2];
+        Label textFieldError = new Label ("", game.getSkin());
+        Dialog dialog = new Dialog("", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object.equals(true)) {
+                    if (players2) {
+                        game.renamePlayers(playerNameFields[0].getText(), playerNameFields[1].getText());
+                    } else {
+                        game.renamePlayer(playerNameFields[0].getText());
+                    }
+                    game.goToGame();
+                }
+                else {
+                    overlay.setVisible(false);
+                    game.setMap(null);
+                }
+            }
+        };
+        Label messageLabel = new Label("Enter your name", game.getSkin(), "bold");
+        messageLabel.setFontScale(1.2f);
+        messageLabel.setAlignment(Align.center);  // Center the text
+        dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+        TextField player1Name = new TextField("Player 1", game.getSkin());
+        player1Name.setAlignment(Align.center);
+        dialog.getContentTable().add(player1Name).size(300f, 60f).pad(1f).row();
+        playerNameFields[0] = player1Name;
+        if (players2) {
+            TextField player2Name = new TextField("Player 2", game.getSkin());
+            player2Name.setAlignment(Align.center);
+            dialog.getContentTable().add(player2Name).size(300f, 60f).pad(1f).row();
+            playerNameFields[1] = player2Name;
+        }
+
+        textFieldError.setColor(Color.RED);
+        textFieldError.setFontScale(0.8f);
+        dialog.getContentTable().add(textFieldError).pad(20f).row();
+
+
+        TextButton startButton = new TextButton("Start", game.getSkin(), "mini");
+        TextButton cancelButton = new TextButton("Cancel", game.getSkin(), "mini");
+        startButton.getLabel().setFontScale(1.1f);  // Scale down the text
+        cancelButton.getLabel().setFontScale(1.1f);
+        startButton.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                for (TextField field : playerNameFields) {
+                    if (field != null) {  //Check for null in case of single player
+                        String name = field.getText();
+                        if (name.isEmpty()) {
+                            textFieldError.setText("Your name is empty!");
+                            break;
+                        } else if (name.length() > 8) {
+                            textFieldError.setText("Your name is too long!");
+                            break;
+                        }
+                    }
+                }
+
+                if (textFieldError.getText().isEmpty()) { // Validate names
+                    dialog.setObject(startButton, true);
+                }
+            }
+        });
+
+        dialog.setObject(cancelButton, false);
+        dialog.getButtonTable().add(cancelButton).pad(10f).size(160f, 55f); // Set size and padding
+        dialog.getButtonTable().add(startButton).pad(10f).size(160f, 55f);  // Set size and padding
+
+        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+        dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
+
+        dialog.show(stage);
+
+    }
+
+    private boolean validatePlayerNames(TextField[] playerNameFields, Label errorLabel) {
+        for (TextField field : playerNameFields) {
+            if (field != null) {  //Check for null in case of single player
+                String name = field.getText();
+                if (name.isEmpty()) {
+                    errorLabel.setText("Player name cannot be empty.");
+                    return false;
+                } else if (name.length() > 8) {
+                    errorLabel.setText("Player name must be 8 characters or less.");
+                    return false;
+                }
+            }
+        }
+        errorLabel.setText(""); // Clear error if valid
+        return true;
+    }
     private void showNewGameConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -137,7 +233,7 @@ public class MenuScreen implements Screen {
                 if (object.equals(true)) {
                     BackgroundTrack.BACKGROUND.stop();
                     game.createNewMap();
-                    game.goToGame();
+                    showPlayerNameConfirmationDialog(game);
                 }
                 else {
                     overlay.setVisible(false);
@@ -145,6 +241,7 @@ public class MenuScreen implements Screen {
             }
         };
         dialogUI(game, dialog, "Are you sure you want to start a new game? Your unsaved progress will be lost.");
+
     }
     private void showLoadMapConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
         overlay.setVisible(true);
@@ -174,6 +271,7 @@ public class MenuScreen implements Screen {
         };
         dialogUI(game, dialog, "Are you sure you want to quit the game?");
     }
+
 
     private void dialogUI(BomberQuestGame game, Dialog dialog, String labelText) {
         Label messageLabel = new Label(labelText, game.getSkin());
