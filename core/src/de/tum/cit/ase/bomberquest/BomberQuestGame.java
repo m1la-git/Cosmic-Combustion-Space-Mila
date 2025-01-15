@@ -153,8 +153,9 @@ public class BomberQuestGame extends Game {
         }
     }
     public void finishGame() {
-        goToMenu();
         createNewMap();
+        goToMenu();
+
     }
     public void restartGame() {
         String player1name = map.getPlayer1().getName();
