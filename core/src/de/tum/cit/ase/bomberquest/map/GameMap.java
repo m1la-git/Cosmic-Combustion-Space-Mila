@@ -136,14 +136,14 @@ public class GameMap {
                 }
                 String[] parts = line.split("=");
                 if (parts.length != 2) {
-                    Gdx.app.error("GameMap", "Invalid line format: " + line);
-                    continue;
+                    game.errorLoadingMap("Invalid line format: " + line);
+                    return new int[]{-1, -1, 0, 0, 0, 0};
                 }
                 String[] coords = parts[0].split(",");
                 int type = Integer.parseInt(parts[1]);
                 if (coords.length != 2) {
-                    Gdx.app.error("GameMap", "Invalid coordinate format: " + parts[0]);
-                    continue;
+                    game.errorLoadingMap("Invalid coordinate format: " + parts[0]);
+                    return new int[]{-1, -1, 0, 0, 0, 0};
                 }
                 int x = Integer.parseInt(coords[0]);
                 int y = Integer.parseInt(coords[1]);
@@ -666,6 +666,9 @@ public class GameMap {
 
     public int getTimer() {
         return (int) Math.ceil(TIMER - elapsedTime);
+    }
+    public boolean isStarted() {
+        return elapsedTime > 0;
     }
 
 }

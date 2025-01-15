@@ -53,7 +53,7 @@ public class BomberQuestGame extends Game {
      */
     public BomberQuestGame(NativeFileChooser fileChooser) {
         this.fileChooser = fileChooser;
-        mapFilePath = "maps/map-2.properties";
+        mapFilePath = "maps/map-1.properties";
     }
 
     /**
@@ -156,6 +156,11 @@ public class BomberQuestGame extends Game {
         else renamePlayers(player1name, player2name);
         goToGame();
     }
+    public void errorLoadingMap(String error) {
+        if (super.getScreen() instanceof MenuScreen menuScreen) {
+            menuScreen.showErrorMapDialog(this, error);
+        }
+    }
     public void renamePlayers(String player1, String player2) {
         System.out.println("Player1: " + map.getPlayer1().getName());
         if (map != null) {
@@ -194,8 +199,13 @@ public class BomberQuestGame extends Game {
         this.map = map;
     }
 
-    public void createNewMap() {
+    public boolean createNewMap() {
         setMap(new GameMap(this, mapFilePath));
+        if (map.getMAX_X() < 0) {
+            setMap(null);
+            return false;
+        }
+        return true;
     }
 
     public String getMapFilePath() {

@@ -34,7 +34,6 @@ public class MenuScreen implements Screen {
     private Actor overlay; // For the darkened background
 
 
-
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
@@ -66,33 +65,37 @@ public class MenuScreen implements Screen {
         logoImage.setSize(400, 340);
         table.add(logoImage).size(600, 510).padBottom(50).row(); // Set cell size
 
+
         // Create and add a button to go to the game screen
         TextButton newGameButton = new TextButton("New Game", game.getSkin());
         table.add(newGameButton).width(500).padBottom(10).row();
+
+        TextButton continueButton;
+        if (game.getMap() == null || !game.getMap().isStarted()) {
+            continueButton = new TextButton("Continue", game.getSkin(), "gray");
+            continueButton.setDisabled(true);
+        } else continueButton = new TextButton("Continue", game.getSkin());
+        table.add(continueButton).width(500).padBottom(10).row();
+
+
         newGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) { // Change to the game screen when button is pressed
-                if (game.getMap() != null) showNewGameConfirmationDialog(game);
+                if (game.getMap() != null) showNewGameConfirmationDialog(game, continueButton);
                 else {
-                    BackgroundTrack.BACKGROUND.stop();
-                    game.createNewMap();
-                    showPlayerNameConfirmationDialog(game);
+                    startNewGame(game, continueButton);
                 }
             }
         });
-        TextButton continueButton;
-        if (game.getMap() == null) {
-            continueButton = new TextButton("Continue", game.getSkin(), "gray");
-            continueButton.setDisabled(true);
-        }
-        else continueButton = new TextButton("Continue", game.getSkin());
-        table.add(continueButton).width(500).padBottom(10).row();
+
         continueButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToGame(); // Change to the game screen when button is pressed
             }
         });
+
+
         TextButton loadMapButton = new TextButton("Load Map", game.getSkin());
         table.add(loadMapButton).width(500).padBottom(10).row();
         loadMapButton.addListener(new ChangeListener() {
@@ -129,11 +132,44 @@ public class MenuScreen implements Screen {
         stage.addActor(overlay);
     }
 
-    private void showPlayerNameConfirmationDialog(BomberQuestGame game) {
+    public void showErrorMapDialog(BomberQuestGame game, String error) {
+        overlay.setVisible(true);
+        Dialog dialog = new Dialog("", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object.equals(true)) overlay.setVisible(false);
+            }
+        };
+        Label messageLabel = new Label("ERROR", game.getSkin(), "bold");
+        messageLabel.setAlignment(Align.center);  // Center the text
+        messageLabel.setColor(Color.RED);
+        messageLabel.setFontScale(2);
+        dialog.getContentTable().add(messageLabel).pad(1f).row(); // Add padding
+
+        Label errorLabel = new Label(error, game.getSkin());
+        errorLabel.setAlignment(Align.center);  // Center the text
+        errorLabel.setFontScale(0.85f);
+        errorLabel.setColor(Color.RED);
+        dialog.getContentTable().add(errorLabel).pad(1f).row(); // Add padding
+
+        Label reloadLabel = new Label("Please reload the map!", game.getSkin());
+        reloadLabel.setAlignment(Align.center);
+        dialog.getContentTable().add(reloadLabel).pad(10f).row();
+
+        TextButton okButton = new TextButton("OK", game.getSkin(), "mini");
+        dialog.setObject(okButton, true);
+        dialog.getButtonTable().add(okButton).pad(10f).size(100f, 50f); // Set size and padding
+        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+
+        dialog.show(stage);
+
+    }
+
+    private void showPlayerNameConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
         overlay.setVisible(true);
         boolean players2 = game.getMap().getPlayer2() != null;
         final TextField[] playerNameFields = new TextField[2];
-        Label textFieldError = new Label ("", game.getSkin());
+        Label textFieldError = new Label("", game.getSkin());
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
@@ -144,10 +180,12 @@ public class MenuScreen implements Screen {
                         game.renamePlayer(playerNameFields[0].getText());
                     }
                     game.goToGame();
-                }
-                else {
+                } else {
                     overlay.setVisible(false);
+                    continueButton.setDisabled(true);
                     game.setMap(null);
+
+
                 }
             }
         };
@@ -209,33 +247,18 @@ public class MenuScreen implements Screen {
 
     }
 
-    private boolean validatePlayerNames(TextField[] playerNameFields, Label errorLabel) {
-        for (TextField field : playerNameFields) {
-            if (field != null) {  //Check for null in case of single player
-                String name = field.getText();
-                if (name.isEmpty()) {
-                    errorLabel.setText("Player name cannot be empty.");
-                    return false;
-                } else if (name.length() > 8) {
-                    errorLabel.setText("Player name must be 8 characters or less.");
-                    return false;
-                }
-            }
-        }
-        errorLabel.setText(""); // Clear error if valid
-        return true;
+    private void startNewGame(BomberQuestGame game, TextButton continueButton) {
+        BackgroundTrack.BACKGROUND.stop();
+        if (game.createNewMap()) showPlayerNameConfirmationDialog(game, continueButton);
     }
-    private void showNewGameConfirmationDialog(BomberQuestGame game) {
+    private void showNewGameConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
                 if (object.equals(true)) {
-                    BackgroundTrack.BACKGROUND.stop();
-                    game.createNewMap();
-                    showPlayerNameConfirmationDialog(game);
-                }
-                else {
+                    startNewGame(game, continueButton);
+                } else {
                     overlay.setVisible(false);
                 }
             }
@@ -243,6 +266,7 @@ public class MenuScreen implements Screen {
         dialogUI(game, dialog, "Are you sure you want to start a new game? Your unsaved progress will be lost.");
 
     }
+
     private void showLoadMapConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -256,6 +280,7 @@ public class MenuScreen implements Screen {
         };
         dialogUI(game, dialog, "Are you sure you want to load a new map? Your unsaved progress will be lost.");
     }
+
     private void showQuitConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -263,8 +288,7 @@ public class MenuScreen implements Screen {
             protected void result(Object object) {
                 if (object.equals(true)) {
                     Gdx.app.exit(); // Or do other cleanup and then exit
-                }
-                else {
+                } else {
                     overlay.setVisible(false);
                 }
             }
@@ -294,6 +318,7 @@ public class MenuScreen implements Screen {
         // Show the dialog
         dialog.show(stage);
     }
+
     /**
      * The render method is called every frame to render the menu screen.
      * It clears the screen and draws the stage.
@@ -320,7 +345,7 @@ public class MenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true); // Update the stage viewport on resize
-        backgroundSprite.setSize(width,height);
+        backgroundSprite.setSize(width, height);
     }
 
     @Override
