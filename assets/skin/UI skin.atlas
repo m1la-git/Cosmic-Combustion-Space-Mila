@@ -73,7 +73,7 @@ white
   orig: 1, 1
   offset: 0, 0
   index: -1
-gray
+selection-color
   rotate: false
   xy: 45, 195
   size: 1, 1

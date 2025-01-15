@@ -33,6 +33,8 @@ public class MenuScreen implements Screen {
 
     private Actor overlay; // For the darkened background
 
+    private TextButton continueButton;
+
 
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
@@ -70,7 +72,6 @@ public class MenuScreen implements Screen {
         TextButton newGameButton = new TextButton("New Game", game.getSkin());
         table.add(newGameButton).width(500).padBottom(10).row();
 
-        TextButton continueButton;
         if (game.getMap() == null || !game.getMap().isStarted()) {
             continueButton = new TextButton("Continue", game.getSkin(), "gray");
             continueButton.setDisabled(true);
@@ -81,9 +82,9 @@ public class MenuScreen implements Screen {
         newGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) { // Change to the game screen when button is pressed
-                if (game.getMap() != null) showNewGameConfirmationDialog(game, continueButton);
+                if (game.getMap().isStarted()) showNewGameConfirmationDialog(game);
                 else {
-                    startNewGame(game, continueButton);
+                    startNewGame(game);
                 }
             }
         });
@@ -101,8 +102,10 @@ public class MenuScreen implements Screen {
         loadMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (game.getMap() != null) showLoadMapConfirmationDialog(game, continueButton);
-                else continueButton.setDisabled(game.chooseMap());
+                if (game.getMap().isStarted()) showLoadMapConfirmationDialog(game);
+                else {
+                    if (game.chooseMap()) continueButton.setDisabled(true);
+                }
 
             }
         });
@@ -137,7 +140,11 @@ public class MenuScreen implements Screen {
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
-                if (object.equals(true)) overlay.setVisible(false);
+                overlay.setVisible(false);
+                if (object.equals(true)) {
+                    if (game.chooseMap()) continueButton.setDisabled(true);
+                }
+
             }
         };
         Label messageLabel = new Label("ERROR", game.getSkin(), "bold");
@@ -152,20 +159,29 @@ public class MenuScreen implements Screen {
         errorLabel.setColor(Color.RED);
         dialog.getContentTable().add(errorLabel).pad(1f).row(); // Add padding
 
-        Label reloadLabel = new Label("Please reload the map!", game.getSkin());
+        Label reloadLabel = new Label("Please reload the map or choose a default one.", game.getSkin());
         reloadLabel.setAlignment(Align.center);
         dialog.getContentTable().add(reloadLabel).pad(10f).row();
 
-        TextButton okButton = new TextButton("OK", game.getSkin(), "mini");
-        dialog.setObject(okButton, true);
-        dialog.getButtonTable().add(okButton).pad(10f).size(100f, 50f); // Set size and padding
-        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+        TextButton reloadButton = new TextButton("Reload", game.getSkin());
+        reloadButton.getLabel().setFontScale(0.9f);  // Scale down the text
+        TextButton useDefaultButton = new TextButton("Use Default", game.getSkin());
+        useDefaultButton.getLabel().setFontScale(0.9f);  // Scale down the text
+
+        // Set button result values
+        dialog.setObject(reloadButton, true);   // "Yes" button sends true
+        dialog.setObject(useDefaultButton, false);   // "No" button sends false
+        // Add buttons with spacing between them
+        dialog.getButtonTable().add(reloadButton).pad(10f).size(200f, 50f); // Set size and padding
+        dialog.getButtonTable().add(useDefaultButton).pad(10f).size(200f, 50f);  // Set size and padding
+        // Show the dialog
+        dialog.show(stage);
 
         dialog.show(stage);
 
     }
 
-    private void showPlayerNameConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
+    private void showPlayerNameConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         boolean players2 = game.getMap().getPlayer2() != null;
         final TextField[] playerNameFields = new TextField[2];
@@ -173,26 +189,23 @@ public class MenuScreen implements Screen {
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
+                overlay.setVisible(false);
                 if (object.equals(true)) {
+                    if (game.getMap().isStarted()) game.createNewMap();
+                    continueButton.setDisabled(true);
                     if (players2) {
                         game.renamePlayers(playerNameFields[0].getText(), playerNameFields[1].getText());
                     } else {
                         game.renamePlayer(playerNameFields[0].getText());
                     }
                     game.goToGame();
-                } else {
-                    overlay.setVisible(false);
-                    continueButton.setDisabled(true);
-                    game.setMap(null);
-
-
                 }
             }
         };
         Label messageLabel = new Label("Enter your name", game.getSkin(), "bold");
         messageLabel.setFontScale(1.2f);
         messageLabel.setAlignment(Align.center);  // Center the text
-        dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+        dialog.getContentTable().add(messageLabel).pad(10f).row(); // Add padding
         TextField player1Name = new TextField("Player 1", game.getSkin());
         player1Name.setAlignment(Align.center);
         dialog.getContentTable().add(player1Name).size(300f, 60f).pad(1f).row();
@@ -206,13 +219,13 @@ public class MenuScreen implements Screen {
 
         textFieldError.setColor(Color.RED);
         textFieldError.setFontScale(0.8f);
-        dialog.getContentTable().add(textFieldError).pad(20f).row();
+        dialog.getContentTable().add(textFieldError).pad(5f).row();
 
 
         TextButton startButton = new TextButton("Start", game.getSkin(), "mini");
         TextButton cancelButton = new TextButton("Cancel", game.getSkin(), "mini");
-        startButton.getLabel().setFontScale(1.1f);  // Scale down the text
-        cancelButton.getLabel().setFontScale(1.1f);
+        startButton.getLabel().setFontScale(0.9f);  // Scale down the text
+        cancelButton.getLabel().setFontScale(0.9f);
         startButton.addListener(new ChangeListener() {
 
             @Override
@@ -247,17 +260,18 @@ public class MenuScreen implements Screen {
 
     }
 
-    private void startNewGame(BomberQuestGame game, TextButton continueButton) {
+    private void startNewGame(BomberQuestGame game) {
         BackgroundTrack.BACKGROUND.stop();
-        if (game.createNewMap()) showPlayerNameConfirmationDialog(game, continueButton);
+
+        showPlayerNameConfirmationDialog(game);
     }
-    private void showNewGameConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
+    private void showNewGameConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
                 if (object.equals(true)) {
-                    startNewGame(game, continueButton);
+                    startNewGame(game);
                 } else {
                     overlay.setVisible(false);
                 }
@@ -267,13 +281,13 @@ public class MenuScreen implements Screen {
 
     }
 
-    private void showLoadMapConfirmationDialog(BomberQuestGame game, TextButton continueButton) {
+    private void showLoadMapConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
                 if (object.equals(true)) {
-                    continueButton.setDisabled(game.chooseMap());
+                    if (game.chooseMap()) continueButton.setDisabled(true);
                 }
                 overlay.setVisible(false);
             }

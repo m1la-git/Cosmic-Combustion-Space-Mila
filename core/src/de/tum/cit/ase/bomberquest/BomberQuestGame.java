@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
@@ -45,6 +46,7 @@ public class BomberQuestGame extends Game {
     private GameMap map;
 
     private String mapFilePath;
+    private final String defaultPath = "maps/map-1.properties";
 
     /**
      * Constructor for BomberQuestGame.
@@ -53,7 +55,7 @@ public class BomberQuestGame extends Game {
      */
     public BomberQuestGame(NativeFileChooser fileChooser) {
         this.fileChooser = fileChooser;
-        mapFilePath = "maps/map-1.properties";
+        mapFilePath = defaultPath;
     }
 
     /**
@@ -66,8 +68,10 @@ public class BomberQuestGame extends Game {
     public void create() {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/UI skin.json")); // Load UI skin
+
          // Play some background music
         goToMenu(); // Navigate to the menu screen
+        createNewMap();
     }
 
     /**
@@ -84,6 +88,7 @@ public class BomberQuestGame extends Game {
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
     }
     public boolean chooseMap() {
+        final boolean[] choseNewMap = {false};
         NativeFileChooserConfiguration config = new NativeFileChooserConfiguration();
         config.mimeFilter = "text/x-java-properties"; // choose only .properties file
         config.title = "Select a Properties File";
@@ -91,8 +96,12 @@ public class BomberQuestGame extends Game {
         fileChooser.chooseFile(config, new NativeFileChooserCallback() {
             @Override
             public void onFileChosen(FileHandle fileHandle) {
+                choseNewMap[0] = true;
                 setMapFilePath(fileHandle.path()); // Store the absolute path
-                setMap(null);
+                if (!createNewMap()) {
+                    setMapFilePath(defaultPath);
+                    createNewMap();
+                }
             }
 
             @Override
@@ -105,7 +114,7 @@ public class BomberQuestGame extends Game {
                 System.out.println("FileChooser Error: " + e.getMessage());
             }
         });
-        return (map == null);
+        return choseNewMap[0];
 
     }
 
@@ -145,12 +154,11 @@ public class BomberQuestGame extends Game {
     }
     public void finishGame() {
         goToMenu();
-        setMap(null);
+        createNewMap();
     }
     public void restartGame() {
         String player1name = map.getPlayer1().getName();
         String player2name = (map.getPlayer2() != null) ? map.getPlayer2().getName(): "";
-        setMap(null);
         createNewMap();
         if (player2name.isEmpty()) renamePlayer(player1name);
         else renamePlayers(player1name, player2name);
@@ -201,11 +209,7 @@ public class BomberQuestGame extends Game {
 
     public boolean createNewMap() {
         setMap(new GameMap(this, mapFilePath));
-        if (map.getMAX_X() < 0) {
-            setMap(null);
-            return false;
-        }
-        return true;
+        return map != null && map.getMAX_X() >= 0;
     }
 
     public String getMapFilePath() {

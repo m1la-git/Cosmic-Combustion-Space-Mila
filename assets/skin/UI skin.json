@@ -20,15 +20,21 @@ com.badlogic.gdx.graphics.Color: {
 		b: 1
 		a: 1
 	}
+	selection-color: {
+		r: 0.502
+		g: 0.059
+		b: 0.396
+		a: 1
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	white: {
 		name: white
 		color: white
 	}
-	gray: {
-		name: gray
-		color: gray
+	selection-color: {
+		name:  selection-color
+		color:  white
 	}
 }
 
@@ -97,8 +103,8 @@ com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 		font: font
 		fontColor: white
 		background: text-field
-		cursor: cursor
-		selection: gray
+		cursor: cursor,
+		selection: selection-color
 	}
 }
 }
