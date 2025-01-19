@@ -233,6 +233,9 @@ public class GameScreen implements Screen {
         for (MobileObject object : entities) {
             draw(spriteBatch, object);
         }
+        for (PlusPoints plusPoints: map.getPlusPoints()) {
+            draw(spriteBatch, plusPoints);
+        }
 
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();

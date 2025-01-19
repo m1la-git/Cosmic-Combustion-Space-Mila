@@ -72,6 +72,7 @@ public class GameMap {
     private Exit exit;
     private final List<String> powerUps;
     private boolean exitOpen;
+    private List<PlusPoints> plusPoints;
 
     /**
      * The accumulated time since the last physics step.
@@ -91,6 +92,7 @@ public class GameMap {
         this.gameOver = false;
         this.gameOverMessage = "";
         exitOpen = false;
+        plusPoints = new ArrayList<>();
 
         powerUps = new ArrayList<>();
 
@@ -309,18 +311,19 @@ public class GameMap {
         }
 
         //enemies ticks
-        for (int i = enemies.size() - 1; i >= 0; i--) {
-            Enemy enemy = enemies.get(i);
+        Iterator<Enemy> iteratorEnemy = enemies.iterator();
+        while (iteratorEnemy.hasNext()) {
+            Enemy enemy = iteratorEnemy.next();
             enemy.tick(frameTime);
             if (enemy.isDead()) {
-                enemies.remove(i);
+                iteratorEnemy.remove(); // Safe removal
             }
         }
 
         // bomb ticks and handling bomb collisions
-        Iterator<Map.Entry<String, Bomb>> iterator = bombs.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Bomb> entry = iterator.next();
+        Iterator<Map.Entry<String, Bomb>> iteratorBombs = bombs.entrySet().iterator();
+        while (iteratorBombs.hasNext()) {
+            Map.Entry<String, Bomb> entry = iteratorBombs.next();
             Bomb bomb = entry.getValue();
             bomb.tick(frameTime);
             handleBombsOverlapping(player1, bomb);
@@ -337,21 +340,22 @@ public class GameMap {
                 releaseBlast(bombX, bombY, -1, 0, bombOwner); // Left
                 blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER, bombOwner));
                 bomb.destroy(world);
-                iterator.remove();
+                iteratorBombs.remove();
                 // Safely remove the current entry
             }
         }
 
         //blasts ticks
-        for (int i = blasts.size() - 1; i >= 0; i--) {
-            Blast blast = blasts.get(i);
+        Iterator<Blast> iteratorBlasts = blasts.iterator();
+        while (iteratorBlasts.hasNext()) {
+            Blast blast = iteratorBlasts.next();
             blast.tick(frameTime);
             if (blast.isFinished()) {
-                blasts.remove(i);
+                iteratorBlasts.remove(); // Safe removal
                 if (blast.getType() == BlastType.WALL) {
                     blast.destroy(world);
                 }
-                continue;
+                continue; // No need to process further if removed
             }
             //explode the bombs under the blast
             if (bombs.containsKey(blast.getCellX() + "," + blast.getCellY())) {
@@ -364,10 +368,14 @@ public class GameMap {
                     continue;
                 }
                 if (isBlasted(enemy, blast)) {
+                    if (blast.getOwner() instanceof Player player) {
+                        player.increasePoints();
+                        plusPoints.add(new PlusPoints(enemy.getX(), enemy.getY() + 1f, player.isPlayer1()));
+                    }
                     enemy.death(world);
                     SoundEffects.ENEMY_DEATH.play();
                     numberOfEnemies--;
-                    if (blast.getOwner() instanceof Player player) player.increasePoints(100);
+
                     if (numberOfEnemies == 0 && player1.isAlive()) {
                         SoundEffects.STAGE_CLEAR.play();
                         exitOpen = true;
@@ -382,10 +390,20 @@ public class GameMap {
             if (player2 != null && player2.isAlive()) {
                 playerBlasted(blast, player2, player1);
             }
-
         }
+
         for (String key : powerUps) {
             if (walls.get(key) instanceof PowerUp powerUp) powerUp.tick(frameTime);
+        }
+
+        //plus points
+        Iterator<PlusPoints> iteratorPoints = plusPoints.iterator();
+        while (iteratorPoints.hasNext()) {
+            PlusPoints plusPoint = iteratorPoints.next();
+            plusPoint.tick(frameTime);
+            if (plusPoint.isFinished()) {
+                iteratorPoints.remove(); // Safe removal
+            }
         }
 
 
@@ -616,6 +634,10 @@ public class GameMap {
 
     public Map<String, StationaryObject> getWalls() {
         return walls;
+    }
+
+    public List<PlusPoints> getPlusPoints() {
+        return plusPoints;
     }
 
     public List<Enemy> getEnemies() {

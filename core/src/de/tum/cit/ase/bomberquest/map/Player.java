@@ -100,8 +100,8 @@ public class Player extends MobileObject implements Drawable {
     public int getPoints() {
         return points;
     }
-    public void increasePoints(int points) {
-        this.points += points;
+    public void increasePoints() {
+        this.points += 100;
     }
 
     @Override

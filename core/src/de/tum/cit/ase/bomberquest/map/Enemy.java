@@ -40,7 +40,7 @@ public class Enemy extends MobileObject implements Drawable {
     /**
      * Radius within which the enemy starts pathfinding to the player.
      */
-    private final float detectionRadius = 5f; // Adjust as needed
+    private final float DETECTION_RADIUS = 5f; // Adjust as needed
     /**
      * The path to the player, calculated by the pathfinder.
      */
@@ -77,7 +77,7 @@ public class Enemy extends MobileObject implements Drawable {
 
             float distanceToPlayer = Vector2.dst(getX(), getY(), map.getPlayer1().getX(), map.getPlayer1().getY());
 
-            if (distanceToPlayer < detectionRadius) {
+            if (distanceToPlayer < DETECTION_RADIUS) {
                 if (reachedCell) { // Only recalculate path or choose new direction if reached the cell
                     if (pathToPlayer == null || pathToPlayer.isEmpty()) {
                         findPathToPlayer();

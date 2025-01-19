@@ -624,5 +624,35 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(12, 8)
     );
 
+    /**
+     * +100 points animation for player 1
+     */
+    public static final Animation<TextureRegion> PLUS_POINTS_P1 = new Animation<>(1f / 8,
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 1),
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 2),
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 3),
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 4),
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 5),
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 6),
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 7),
+            SpriteSheet.STATIONARY_OBJECTS.at(13, 8)
+    );
+
+    /**
+     * +100 points animation for player 2
+     */
+    public static final Animation<TextureRegion> PLUS_POINTS_P2 = new Animation<>(1f / 8,
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 1),
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 2),
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 3),
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 4),
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 5),
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 6),
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 7),
+            SpriteSheet.STATIONARY_OBJECTS.at(14, 8)
+    );
+
+
+
 
 }
