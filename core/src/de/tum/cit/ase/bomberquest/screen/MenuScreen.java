@@ -1,6 +1,7 @@
 package de.tum.cit.ase.bomberquest.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -227,9 +230,9 @@ public class MenuScreen implements Screen {
         startButton.getLabel().setFontScale(0.9f);  // Scale down the text
         cancelButton.getLabel().setFontScale(0.9f);
         startButton.addListener(new ChangeListener() {
-
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                textFieldError.setText("");
                 for (TextField field : playerNameFields) {
                     if (field != null) {  //Check for null in case of single player
                         String name = field.getText();
@@ -253,9 +256,19 @@ public class MenuScreen implements Screen {
         dialog.getButtonTable().add(cancelButton).pad(10f).size(160f, 55f); // Set size and padding
         dialog.getButtonTable().add(startButton).pad(10f).size(160f, 55f);  // Set size and padding
 
-        dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
         dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
 
+        dialog.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ENTER) {
+                    // Trigger the start button's change listener
+                    startButton.getClickListener().clicked(null, 0, 0); // Simulate a click
+                    return true; // Consume the enter key event
+                }
+                return false; // Don't consume other key events
+            }
+        });
         dialog.show(stage);
 
     }
