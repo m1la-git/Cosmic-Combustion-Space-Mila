@@ -72,24 +72,28 @@ public class Enemy extends MobileObject implements Drawable {
         increaseElapsedTime(frameTime);
         if (isAlive()) {
             nothingChangedTime += frameTime;
-            if (reachedCell) nothingChangedTime = 0;
-            if (nothingChangedTime > 1.2f) {
-                reachedCell = true;
+            if (nothingChangedTime > 1.2f && !trapped) { // prevent sticking on 1 place
                 nothingChangedTime = 0;
+                reachedCell = true;
+                pathToPlayer = null;
             }
+            if (!map.isCellFree(targetX, targetY)) reachedCell = true;
 
 
             if (Math.abs(getX() - targetX) < reachedCellThreshold && Math.abs(getY() - targetY) < reachedCellThreshold) {
                 reachedCell = true;
+                nothingChangedTime = 0;
                 getHitbox().setTransform(getCellX(), getCellY(), getHitbox().getAngle());
             }
 
-            float distanceToPlayer = Vector2.dst(getX(), getY(), map.getPlayer1().getX(), map.getPlayer1().getY());
+            float distanceToPlayer1 = Vector2.dst(getX(), getY(), map.getPlayer1().getX(), map.getPlayer1().getY());
+            float distanceToPlayer2 = (map.getPlayer2() != null) ? Vector2.dst(getX(), getY(), map.getPlayer2().getX(), map.getPlayer2().getY()): -1;
 
-            if (distanceToPlayer < DETECTION_RADIUS) {
+            if (distanceToPlayer1 < DETECTION_RADIUS || (distanceToPlayer2 < DETECTION_RADIUS && distanceToPlayer2 >= 0)) {
                 if (reachedCell) { // Only recalculate path or choose new direction if reached the cell
                     if (pathToPlayer == null || pathToPlayer.isEmpty()) {
-                        findPathToPlayer();
+                        if (distanceToPlayer1 < DETECTION_RADIUS) findPathToPlayer(map.getPlayer1());
+                        else findPathToPlayer(map.getPlayer2());
                     }
                     if (pathToPlayer != null && !pathToPlayer.isEmpty()) {
                         followPath();
@@ -107,7 +111,7 @@ public class Enemy extends MobileObject implements Drawable {
                 if (reachedCell) {
                     setDirection(selectFreeDirection());
                     if (!trapped) {
-                        reachedCell = false;
+                        reachedCell = false; // Allow movement in the new random direction
                     }
                 }
                 moveInDirection();
@@ -115,9 +119,9 @@ public class Enemy extends MobileObject implements Drawable {
         } else if (!isAlive() && getElapsedTime() >= 1.05f && !isDead()) setDead();
     }
 
-    private void findPathToPlayer() {
+    private void findPathToPlayer(Player player) {
         Tile startTile = new Tile(getCellX(), getCellY());
-        Tile targetTile = new Tile(map.getPlayer1().getCellX(), map.getPlayer1().getCellY());
+        Tile targetTile = new Tile(player.getCellX(), player.getCellY());
         this.pathToPlayer = Pathfinder.findPath(startTile, targetTile, map);
         this.pathIndex = 0; // Reset path index when a new path is found
     }
