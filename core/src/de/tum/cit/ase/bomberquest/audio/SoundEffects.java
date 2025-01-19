@@ -12,23 +12,25 @@ import com.badlogic.gdx.audio.Sound;
  * Feel free to add your own music tracks and use them in the game!
  */
 public enum SoundEffects {
-    BOMB_EXPLOSION("bomb-explodes.mp3"),
-    POWER_UP("item-get.mp3"),
-    PLACE_BOMB("place-bomb.mp3"),
-    STAGE_CLEAR("stage-clear.mp3"),
-    ENEMY_DEATH("enemy-dies.mp3");
+    BOMB_EXPLOSION("bomb-explodes.mp3", 0.2f),
+    POWER_UP("item-get.mp3", 0.8f),
+    PLACE_BOMB("place-bomb.mp3", 1.2f),
+    STAGE_CLEAR("stage-clear.mp3", 0.8f),
+    ENEMY_DEATH("enemy-dies.mp3", 0.8f);
 
     /** The sound file owned by this variant. */
     private final Sound sound;
+    private final float volume;
 
-    SoundEffects(String fileName) {
+    SoundEffects(String fileName, float volume) {
         this.sound = Gdx.audio.newSound(Gdx.files.internal("audio/" + fileName));
+        this.volume = volume;
     }
 
     /**
      * Play this sound effect.
      */
     public void play() {
-        this.sound.play(1.0f);
+        this.sound.play(volume);
     }
 }

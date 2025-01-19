@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.SoundEffects;
@@ -37,7 +38,7 @@ public class GameMap {
     // A static block is executed once when the class is referenced for the first time.
     static {
         // Initialize the Box2D physics engine.
-        com.badlogic.gdx.physics.box2d.Box2D.init();
+        Box2D.init();
     }
 
     /**
@@ -58,7 +59,7 @@ public class GameMap {
     private final List<Enemy> enemies;
     private final Map<String, Bomb> bombs;
     private final List<Blast> blasts;
-    private static final float TIMER = 200f;
+    private final float TIMER;
 
     private final Map<String, StationaryObject> walls;
 
@@ -109,6 +110,9 @@ public class GameMap {
         if (numberOfEnemies == 0) {
             exitOpen = true;
         }
+
+        if (player2 != null) TIMER = 250f;
+        else TIMER = 400f;
         // Create a player with initial position
     }
 
@@ -292,17 +296,15 @@ public class GameMap {
 
             checkExit();
             // place bomb if space is pressed and limit of bombs isn't reached
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player1.getBombsNow() > 0) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 placeBomb(player1);
             }
         }
-        if (player2 != null) {
-            if (player2.isAlive()) {
-                collectPowerUp(player2);
-                // place bomb if enter is pressed and limit of bombs isn't reached
-                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && player1.getBombsNow() > 0) {
-                    placeBomb(player2);
-                }
+        if (player2 != null && player2.isAlive()) {
+            collectPowerUp(player2);
+            // place bomb if enter is pressed and limit of bombs isn't reached
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                placeBomb(player2);
             }
         }
 
@@ -473,22 +475,24 @@ public class GameMap {
     }
 
     private void placeBomb(MobileObject mobileObject) {
-        int playerCellX = mobileObject.getCellX();
-        int playerCellY = mobileObject.getCellY();
-        boolean spaceEmpty = true;
-        for (String key : bombs.keySet()) {
-            String[] coords = key.split(",");
-            int bombX = Integer.parseInt(coords[0]);
-            int bombY = Integer.parseInt(coords[1]);
-            if (bombX == playerCellX && bombY == playerCellY) {
-                spaceEmpty = false;
-                break;
+        if (mobileObject.getBombsNow() > 0) {
+            int playerCellX = mobileObject.getCellX();
+            int playerCellY = mobileObject.getCellY();
+            boolean spaceEmpty = true;
+            for (String key : bombs.keySet()) {
+                String[] coords = key.split(",");
+                int bombX = Integer.parseInt(coords[0]);
+                int bombY = Integer.parseInt(coords[1]);
+                if (bombX == playerCellX && bombY == playerCellY) {
+                    spaceEmpty = false;
+                    break;
+                }
             }
-        }
-        if (spaceEmpty) {
-            bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, mobileObject));
-            mobileObject.placedBomb();
-            SoundEffects.PLACE_BOMB.play();
+            if (spaceEmpty) {
+                bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, mobileObject));
+                mobileObject.placedBomb();
+                SoundEffects.PLACE_BOMB.play();
+            }
         }
     }
 
