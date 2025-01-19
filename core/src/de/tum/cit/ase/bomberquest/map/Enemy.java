@@ -31,6 +31,7 @@ public class Enemy extends MobileObject implements Drawable {
     private boolean reachedCell;
     private int targetX;
     private int targetY;
+    private float nothingChangedTime = 0;
 
     /**
      * For a proper direction choice when there are no free spaces around
@@ -70,6 +71,14 @@ public class Enemy extends MobileObject implements Drawable {
     public void tick(float frameTime) {
         increaseElapsedTime(frameTime);
         if (isAlive()) {
+            nothingChangedTime += frameTime;
+            if (reachedCell) nothingChangedTime = 0;
+            if (nothingChangedTime > 1.2f) {
+                reachedCell = true;
+                nothingChangedTime = 0;
+            }
+
+
             if (Math.abs(getX() - targetX) < reachedCellThreshold && Math.abs(getY() - targetY) < reachedCellThreshold) {
                 reachedCell = true;
                 getHitbox().setTransform(getCellX(), getCellY(), getHitbox().getAngle());
