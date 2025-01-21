@@ -13,11 +13,13 @@ public class Bomb extends StationaryObject implements Drawable {
     private float elapsedTime;
     private boolean exploded;
     private final MobileObject owner;
+    private final int blastRadius;
 
     public Bomb(World world, int x, int y, MobileObject owner) {
         super(world, x, y, true);
         exploded = false;
         this.owner = owner;
+        blastRadius = owner.getBlastRadius();
     }
 
     public void tick(float frameTime) {
@@ -50,6 +52,9 @@ public class Bomb extends StationaryObject implements Drawable {
 
     public MobileObject getOwner() {
         return owner;
+    }
+    public int getBlastRadius() {
+        return blastRadius;
     }
 
 }

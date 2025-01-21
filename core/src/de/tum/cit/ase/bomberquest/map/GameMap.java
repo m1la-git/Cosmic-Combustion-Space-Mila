@@ -72,7 +72,7 @@ public class GameMap {
     private Exit exit;
     private final List<String> powerUps;
     private boolean exitOpen;
-    private List<PlusPoints> plusPoints;
+    private final List<PlusPoints> plusPoints;
 
     /**
      * The accumulated time since the last physics step.
@@ -333,12 +333,11 @@ public class GameMap {
                 SoundEffects.BOMB_EXPLOSION.play();
                 int bombX = bomb.getCellX();
                 int bombY = bomb.getCellY();
-                MobileObject bombOwner = bomb.getOwner();
-                releaseBlast(bombX, bombY, 0, 1, bombOwner);  // Up
-                releaseBlast(bombX, bombY, 0, -1, bombOwner); // Down
-                releaseBlast(bombX, bombY, 1, 0, bombOwner);  // Right
-                releaseBlast(bombX, bombY, -1, 0, bombOwner); // Left
-                blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER, bombOwner));
+                releaseBlast(bombX, bombY, 0, 1, bomb);  // Up
+                releaseBlast(bombX, bombY, 0, -1, bomb); // Down
+                releaseBlast(bombX, bombY, 1, 0, bomb);  // Right
+                releaseBlast(bombX, bombY, -1, 0, bomb); // Left
+                blasts.add(new Blast(world, bombX, bombY, BlastType.CENTER, bomb.getOwner()));
                 bomb.destroy(world);
                 iteratorBombs.remove();
                 // Safely remove the current entry
@@ -392,6 +391,7 @@ public class GameMap {
             }
         }
 
+        // power-up ticks for animation
         for (String key : powerUps) {
             if (walls.get(key) instanceof PowerUp powerUp) powerUp.tick(frameTime);
         }
@@ -492,24 +492,15 @@ public class GameMap {
         }
     }
 
-    private void placeBomb(MobileObject mobileObject) {
+    public void placeBomb(MobileObject mobileObject) {
         if (mobileObject.getBombsNow() > 0) {
-            int playerCellX = mobileObject.getCellX();
-            int playerCellY = mobileObject.getCellY();
-            boolean spaceEmpty = true;
-            for (String key : bombs.keySet()) {
-                String[] coords = key.split(",");
-                int bombX = Integer.parseInt(coords[0]);
-                int bombY = Integer.parseInt(coords[1]);
-                if (bombX == playerCellX && bombY == playerCellY) {
-                    spaceEmpty = false;
-                    break;
-                }
-            }
+            int cellX = mobileObject.getCellX();
+            int cellY = mobileObject.getCellY();
+            boolean spaceEmpty = !(bombs.containsKey(cellX + "," + cellY));
             if (spaceEmpty) {
-                bombs.put(playerCellX + "," + playerCellY, new Bomb(world, playerCellX, playerCellY, mobileObject));
+                bombs.put(cellX + "," + cellY, new Bomb(world, cellX, cellY, mobileObject));
                 mobileObject.placedBomb();
-                SoundEffects.PLACE_BOMB.play();
+                if (mobileObject instanceof Player) SoundEffects.PLACE_BOMB.play();
             }
         }
     }
@@ -543,16 +534,19 @@ public class GameMap {
     /**
      * Checks whether the bomb and the player are overlapping
      *
-     * @param bodyA: Player's hitbox
-     * @param bodyB: Bomb's hitbox
+     * @param mobileObject: Player or Enemy
+     * @param bomb: Bomb
      */
-    private boolean isOverlapping(Body bodyA, Body bodyB) {
-        return bodyA.getPosition().dst(bodyB.getPosition()) < 0.77f; // Adjust threshold as needed
+    private boolean isOverlapping(MobileObject mobileObject, Bomb bomb) {
+        Body bodyA = mobileObject.getHitbox();
+        Body bodyB = bomb.getHitbox();
+        if (mobileObject instanceof Player) return bodyA.getPosition().dst(bodyB.getPosition()) < 0.77f;
+        return bodyA.getPosition().dst(bodyB.getPosition()) < 0.94f; // Adjust threshold as needed
     }
 
     private void handleBombsOverlapping(MobileObject mobileObject, Bomb bomb) {
         if (mobileObject.isAlive()) {
-            if (isOverlapping(mobileObject.getHitbox(), bomb.getHitbox())) {
+            if (isOverlapping(mobileObject, bomb)) {
                 if (!(mobileObject.getIgnoredBombs().contains(bomb.getHitbox()))) {
                     mobileObject.addIgnoredBomb(bomb.getHitbox());
                 }
@@ -568,8 +562,9 @@ public class GameMap {
      * Releasing the blast in 1 direction in a certain radius
      * Until any stationaryObject is met on the way
      */
-    private void releaseBlast(int x, int y, int dx, int dy, MobileObject owner) {
-        for (int i = 1; i <= player1.getBlastRadius(); i++) {
+    private void releaseBlast(int x, int y, int dx, int dy, Bomb bomb) {
+        MobileObject owner = bomb.getOwner();
+        for (int i = 1; i <= bomb.getBlastRadius(); i++) {
             int currentX = x + i * dx;
             int currentY = y + i * dy;
             if (walls.containsKey(currentX + "," + currentY)) {
@@ -592,7 +587,7 @@ public class GameMap {
                     break;
                 }
             }
-            if (i == player1.getBlastRadius()) {
+            if (i == bomb.getBlastRadius()) {
                 if (dx == 0 && dy < 0) {
                     blasts.add(new Blast(world, currentX, currentY, BlastType.DOWN, owner));
                 } else if (dx == 0 && dy > 0) {

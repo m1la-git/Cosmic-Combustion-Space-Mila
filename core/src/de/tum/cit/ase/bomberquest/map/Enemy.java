@@ -81,11 +81,10 @@ public class Enemy extends MobileObject implements Drawable {
                 previousX = getX();
                 previousY = getY();
             }
-            if (nothingChangedTime >= 0.3f) { // prevent sticking on 1 place
+            if (nothingChangedTime >= 0.2f) { // prevent sticking on 1 place
                 nothingChangedTime = 0;
                 reachedCell = true;
                 pathToPlayer = null;
-                System.out.println("gotta reboot");
             }
             if (!map.isCellFree(targetX, targetY) || !map.isCellFree(getCellX(), getCellY())) {
                 pathToPlayer = null;
@@ -203,10 +202,11 @@ public class Enemy extends MobileObject implements Drawable {
     private DirectionType selectFreeDirection() {
         DirectionType[] directions = {DirectionType.UP, DirectionType.DOWN, DirectionType.LEFT, DirectionType.RIGHT};
         List<DirectionType> freeDirections = new ArrayList<>();
-        trapped = false;
+
+        DirectionType fallbackDirection = DirectionType.getOppositeDirection(getDirection());
 
         for (DirectionType direction : directions) {
-            if (isDirectionFree(direction) && direction != DirectionType.getOppositeDirection(getDirection())) {
+            if (isDirectionFree(direction) && direction != fallbackDirection) {
                 freeDirections.add(direction);
             }
         }
@@ -215,18 +215,20 @@ public class Enemy extends MobileObject implements Drawable {
             DirectionType direction = freeDirections.get(random.nextInt(freeDirections.size()));
             updateTargetCell(direction);
             setDirection(direction);
+            trapped = false;
             return direction;
         }
 
-        DirectionType fallbackDirection = DirectionType.getOppositeDirection(getDirection());
         if (isDirectionFree(fallbackDirection)) {
             updateTargetCell(fallbackDirection);
             setDirection(fallbackDirection);
+            if (!trapped) map.placeBomb(this);
+            trapped = false;
             return fallbackDirection;
         }
 
         trapped = true;
-        return fallbackDirection;
+        return getDirection();
     }
 
     /**
