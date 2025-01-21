@@ -32,6 +32,8 @@ public class Enemy extends MobileObject implements Drawable {
     private int targetX;
     private int targetY;
     private float nothingChangedTime = 0;
+    private float previousX;
+    private float previousY;
 
     /**
      * For a proper direction choice when there are no free spaces around
@@ -53,12 +55,14 @@ public class Enemy extends MobileObject implements Drawable {
     private final float reachedCellThreshold = 0.03f;
 
     public Enemy(World world, float x, float y, GameMap map) {
-        super(world, x, y, 1, 0.4f);
+        super(world, x, y, 1, 0.45f);
         this.map = map;
         reachedCell = true;
         trapped = false;
         this.pathToPlayer = null;
         this.pathIndex = 0;
+        previousX = x;
+        previousY = y;
     }
 
     /**
@@ -72,17 +76,29 @@ public class Enemy extends MobileObject implements Drawable {
         increaseElapsedTime(frameTime);
         if (isAlive()) {
             nothingChangedTime += frameTime;
-            if (nothingChangedTime > 1.2f && !trapped) { // prevent sticking on 1 place
+            if (Math.abs(getX() - previousX) > reachedCellThreshold || Math.abs(getY() - previousY) > reachedCellThreshold) {
+                nothingChangedTime = 0;
+                previousX = getX();
+                previousY = getY();
+            }
+            if (nothingChangedTime >= 0.3f) { // prevent sticking on 1 place
                 nothingChangedTime = 0;
                 reachedCell = true;
                 pathToPlayer = null;
+                System.out.println("gotta reboot");
             }
-            if (!map.isCellFree(targetX, targetY)) reachedCell = true;
+            if (!map.isCellFree(targetX, targetY) || !map.isCellFree(getCellX(), getCellY())) {
+                pathToPlayer = null;
+                reachedCell = true;
+            }
+            if (Math.abs(getX() - targetX) > 1f - reachedCellThreshold && Math.abs(getY() - targetY) > 1f - reachedCellThreshold && nothingChangedTime > 0.3){
+                reachedCell = true;
+                pathToPlayer = null;
+            }
 
 
             if (Math.abs(getX() - targetX) < reachedCellThreshold && Math.abs(getY() - targetY) < reachedCellThreshold) {
                 reachedCell = true;
-                nothingChangedTime = 0;
                 getHitbox().setTransform(getCellX(), getCellY(), getHitbox().getAngle());
             }
 
@@ -107,6 +123,7 @@ public class Enemy extends MobileObject implements Drawable {
                 }
                 moveInDirection();
             } else {
+                pathToPlayer = null;
                 // Player is out of range, resume random movement
                 if (reachedCell) {
                     setDirection(selectFreeDirection());
@@ -152,14 +169,12 @@ public class Enemy extends MobileObject implements Drawable {
 
             // Check if the current target cell for this step is reached
             if (Math.abs(getX() - targetX) < reachedCellThreshold && Math.abs(getY() - targetY) < reachedCellThreshold) {
-                System.out.println("Reached intermediate target: " + targetX + ", " + targetY); // Debugging
                 getHitbox().setTransform(getCellX(), getCellY(), getHitbox().getAngle());
                 reachedCell = true;
                 pathIndex++; // Move to the next step in the path
             }
 
         } else {
-            System.out.println("End of path or invalid path."); // Debugging
             pathToPlayer = null;
         }
     }

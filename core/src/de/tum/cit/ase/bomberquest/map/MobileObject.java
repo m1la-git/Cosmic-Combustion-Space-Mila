@@ -149,7 +149,6 @@ public abstract class MobileObject implements Drawable {
         deathX = getX();
         deathY = getY();
         alive = false;
-        System.out.println("death: " + deathX + "," + deathY);
         destroy(world);
         setElapsedTime(0);
     }

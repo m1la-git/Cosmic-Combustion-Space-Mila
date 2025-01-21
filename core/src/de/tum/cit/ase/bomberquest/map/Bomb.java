@@ -36,6 +36,7 @@ public class Bomb extends StationaryObject implements Drawable {
 
     public void explodeNow() {
         exploded = true;
+        owner.returnBomb();
     }
 
     @Override
