@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
 import de.tum.cit.ase.bomberquest.map.GameMap;
+import de.tum.cit.ase.bomberquest.map.Settings;
 import de.tum.cit.ase.bomberquest.screen.GameScreen;
 import de.tum.cit.ase.bomberquest.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
@@ -47,6 +48,8 @@ public class BomberQuestGame extends Game {
 
     private String mapFilePath;
     private final String defaultPath = "maps/map-1.properties";
+    private Settings settings;
+
 
     /**
      * Constructor for BomberQuestGame.
@@ -56,6 +59,7 @@ public class BomberQuestGame extends Game {
     public BomberQuestGame(NativeFileChooser fileChooser) {
         this.fileChooser = fileChooser;
         mapFilePath = defaultPath;
+        settings = new Settings();
     }
 
     /**
@@ -209,14 +213,19 @@ public class BomberQuestGame extends Game {
     }
 
     public boolean createNewMap() {
-        setMap(new GameMap(this, mapFilePath));
+        setMap(new GameMap(this, mapFilePath, settings));
         return map != null && map.getMAX_X() >= 0;
     }
 
-    public String getMapFilePath() {
-        return mapFilePath;
-    }
     public void setMapFilePath(String mapFilePath) {
         this.mapFilePath = mapFilePath;
     }
+    public Settings getSettings() {
+        return settings;
+    }
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
+
+
 }

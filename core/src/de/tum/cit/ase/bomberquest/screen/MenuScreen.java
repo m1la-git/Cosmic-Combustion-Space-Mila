@@ -21,6 +21,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
+import de.tum.cit.ase.bomberquest.audio.SoundEffects;
+import de.tum.cit.ase.bomberquest.map.Settings;
 import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
@@ -85,6 +87,7 @@ public class MenuScreen implements Screen {
         newGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) { // Change to the game screen when button is pressed
+                SoundEffects.BUTTON_CLICK.play();
                 if (game.getMap().isStarted()) showNewGameConfirmationDialog(game);
                 else {
                     startNewGame(game);
@@ -105,11 +108,22 @@ public class MenuScreen implements Screen {
         loadMapButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (game.getMap().isStarted()) showLoadMapConfirmationDialog(game);
                 else {
                     if (game.chooseMap()) continueButton.setDisabled(true);
                 }
 
+            }
+        });
+
+        TextButton settingsButton = new TextButton("Settings", game.getSkin());
+        table.add(settingsButton).width(500).padBottom(10).row();
+        settingsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (game.getMap().isStarted()) showSettingsConfirmationDialog(game);
+                else showSettingsDialog(game);
             }
         });
 
@@ -119,6 +133,7 @@ public class MenuScreen implements Screen {
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                SoundEffects.BUTTON_CLICK.play();
                 showQuitConfirmationDialog(game);
             }
         });
@@ -278,6 +293,7 @@ public class MenuScreen implements Screen {
 
         showPlayerNameConfirmationDialog(game);
     }
+
     private void showNewGameConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -290,8 +306,99 @@ public class MenuScreen implements Screen {
                 }
             }
         };
-        dialogUI(game, dialog, "Are you sure you want to start a new game? Your unsaved progress will be lost.");
+        dialogUI(game, dialog, "Are you sure you want to start a new game? Your unsaved progress will be lost.", "OK");
 
+    }
+
+    private void showSettingsConfirmationDialog(BomberQuestGame game) {
+        overlay.setVisible(true);
+        Dialog dialog = new Dialog("", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object.equals(true)) {
+                    showSettingsDialog(game);
+                }
+                else overlay.setVisible(false);
+            }
+        };
+        dialogUI(game, dialog, "Are you sure you want to change the settings? Your unsaved progress will be lost.", "OK");
+    }
+
+    private void showSettingsDialog(BomberQuestGame game) {
+        overlay.setVisible(true);
+        Settings settings = game.getSettings();
+        TextButton aliensSmartButton = new TextButton((settings.isAliensSmart() ? "Yes": "No"), game.getSkin(), "mini");
+        TextButton aliensBombsButton = new TextButton((settings.isAliensBombs() ? "Yes": "No"), game.getSkin(), "mini");
+        Slider timerSlider = new Slider(250, 550, 50, false, game.getSkin());
+        timerSlider.setValue(settings.getTimer());
+        Slider powerUpChanceSlider = new Slider(10, 40, 5, false, game.getSkin());
+        powerUpChanceSlider.setValue(settings.getPowerUpChance());
+        Dialog dialog = new Dialog("", game.getSkin()) {
+            @Override
+            protected void result(Object object) {
+                SoundEffects.BUTTON_CLICK.play();
+                if (object.equals(true)) {
+                    settings.setAliensSmart(aliensSmartButton.getText().equals("Yes"));
+                    settings.setAliensBombs(aliensBombsButton.getText().equals("Yes"));
+                    settings.setTimer((int) timerSlider.getValue());
+                    settings.setPowerUpChance((int) powerUpChanceSlider.getValue());
+                    game.createNewMap();
+                }
+                overlay.setVisible(false);
+            }
+        };
+        Label messageLabel = new Label("Settings", game.getSkin(), "bold");
+        messageLabel.setFontScale(1.5f);
+        messageLabel.setAlignment(Align.center);  // Center the text
+        dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+
+        Label aliensSmartLabel = new Label("Aliens are Smart", game.getSkin());
+        dialog.getContentTable().add(aliensSmartLabel).pad(20f);
+        aliensSmartButton.getLabel().setFontScale(0.85f);
+        dialog.getContentTable().add(aliensSmartButton).pad(20f).size(120f, 50f).row();
+        aliensSmartButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (aliensSmartButton.getText().toString().trim().equals("Yes")) {
+                    aliensSmartButton.setText("No");
+                } else {
+                    aliensSmartButton.setText("Yes");
+                }
+            }
+        });
+
+        Label aliensBombsLabel = new Label("Aliens place Bombs", game.getSkin());
+        dialog.getContentTable().add(aliensBombsLabel).pad(20f);
+        aliensBombsButton.getLabel().setFontScale(0.85f);
+        dialog.getContentTable().add(aliensBombsButton).pad(20f).size(120f, 50f).row();
+        aliensBombsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (aliensBombsButton.getText().toString().trim().equals("Yes")) aliensBombsButton.setText("No");
+                else aliensBombsButton.setText("Yes");
+            }
+        });
+
+        Label timerLabel = new Label("Timer: " + settings.getTimer() + "s", game.getSkin());
+        dialog.getContentTable().add(timerLabel).pad(20f);
+        dialog.getContentTable().add(timerSlider).pad(20f).row();
+        timerSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                timerLabel.setText("Timer: " + (int) timerSlider.getValue() + "s");
+            }
+        });
+
+        Label powerUpChanceLabel = new Label("PowerUp Chance: " + settings.getPowerUpChance() + "%", game.getSkin());
+        dialog.getContentTable().add(powerUpChanceLabel).pad(20f);
+        dialog.getContentTable().add(powerUpChanceSlider).pad(20f).row();
+        powerUpChanceSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                powerUpChanceLabel.setText("PowerUp Chance: " + (int) powerUpChanceSlider.getValue() + "%");
+            }
+        });
+        dialogUI(game, dialog, "", "Save");
     }
 
     private void showLoadMapConfirmationDialog(BomberQuestGame game) {
@@ -305,7 +412,7 @@ public class MenuScreen implements Screen {
                 overlay.setVisible(false);
             }
         };
-        dialogUI(game, dialog, "Are you sure you want to load a new map? Your unsaved progress will be lost.");
+        dialogUI(game, dialog, "Are you sure you want to load a new map? Your unsaved progress will be lost.", "OK");
     }
 
     private void showQuitConfirmationDialog(BomberQuestGame game) {
@@ -320,25 +427,27 @@ public class MenuScreen implements Screen {
                 }
             }
         };
-        dialogUI(game, dialog, "Are you sure you want to quit the game?");
+        dialogUI(game, dialog, "Are you sure you want to quit the game?", "OK");
     }
 
+    private void dialogUI(BomberQuestGame game, Dialog dialog, String labelText, String yesText) {
+        if (!labelText.isEmpty()) {
+            Label messageLabel = new Label(labelText, game.getSkin());
+            messageLabel.setAlignment(Align.center);  // Center the text
+            dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+        }
 
-    private void dialogUI(BomberQuestGame game, Dialog dialog, String labelText) {
-        Label messageLabel = new Label(labelText, game.getSkin());
-        messageLabel.setAlignment(Align.center);  // Center the text
-        dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
-        TextButton yesButton = new TextButton("Yes", game.getSkin(), "mini");
-        yesButton.getLabel().setFontScale(0.9f);  // Scale down the text
-        TextButton noButton = new TextButton("No", game.getSkin(), "mini");
-        noButton.getLabel().setFontScale(0.9f);  // Scale down the text
+        TextButton yesButton = new TextButton(yesText, game.getSkin(), "mini");
+        yesButton.getLabel().setFontScale(0.85f);  // Scale down the text
+        TextButton noButton = new TextButton("Cancel", game.getSkin(), "mini");
+        noButton.getLabel().setFontScale(0.85f);  // Scale down the text
 
         // Set button result values
         dialog.setObject(yesButton, true);   // "Yes" button sends true
         dialog.setObject(noButton, false);   // "No" button sends false
         // Add buttons with spacing between them
-        dialog.getButtonTable().add(yesButton).pad(10f).size(100f, 40f); // Set size and padding
-        dialog.getButtonTable().add(noButton).pad(10f).size(100f, 40f);  // Set size and padding
+        dialog.getButtonTable().add(noButton).pad(10f).size(120f, 50f);  // Set size and padding
+        dialog.getButtonTable().add(yesButton).pad(10f).size(120f, 50f); // Set size and padding
         // Allow keyboard shortcuts
         dialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
         dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, false);

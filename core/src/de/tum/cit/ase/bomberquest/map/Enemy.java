@@ -53,8 +53,10 @@ public class Enemy extends MobileObject implements Drawable {
      */
     private int pathIndex;
     private final float reachedCellThreshold = 0.03f;
+    private final boolean canFindPlayer;
+    private final boolean canPlaceBombs;
 
-    public Enemy(World world, float x, float y, GameMap map) {
+    public Enemy(World world, float x, float y, GameMap map, boolean canFindPlayer, boolean canPlaceBombs) {
         super(world, x, y, 1, 0.45f);
         this.map = map;
         reachedCell = true;
@@ -63,6 +65,8 @@ public class Enemy extends MobileObject implements Drawable {
         this.pathIndex = 0;
         previousX = x;
         previousY = y;
+        this.canFindPlayer = canFindPlayer;
+        this.canPlaceBombs = canPlaceBombs;
     }
 
     /**
@@ -104,7 +108,7 @@ public class Enemy extends MobileObject implements Drawable {
             float distanceToPlayer1 = Vector2.dst(getX(), getY(), map.getPlayer1().getX(), map.getPlayer1().getY());
             float distanceToPlayer2 = (map.getPlayer2() != null) ? Vector2.dst(getX(), getY(), map.getPlayer2().getX(), map.getPlayer2().getY()): -1;
 
-            if (distanceToPlayer1 < DETECTION_RADIUS || (distanceToPlayer2 < DETECTION_RADIUS && distanceToPlayer2 >= 0)) {
+            if ((distanceToPlayer1 < DETECTION_RADIUS || distanceToPlayer2 < DETECTION_RADIUS && distanceToPlayer2 >= 0) && canFindPlayer) {
                 if (reachedCell) { // Only recalculate path or choose new direction if reached the cell
                     if (pathToPlayer == null || pathToPlayer.isEmpty()) {
                         if (distanceToPlayer1 < DETECTION_RADIUS) findPathToPlayer(map.getPlayer1());
@@ -222,7 +226,7 @@ public class Enemy extends MobileObject implements Drawable {
         if (isDirectionFree(fallbackDirection)) {
             updateTargetCell(fallbackDirection);
             setDirection(fallbackDirection);
-            if (!trapped) map.placeBomb(this);
+            if (!trapped && canPlaceBombs) map.placeBomb(this);
             trapped = false;
             return fallbackDirection;
         }

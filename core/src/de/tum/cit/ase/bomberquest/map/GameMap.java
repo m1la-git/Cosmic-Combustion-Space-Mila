@@ -59,7 +59,7 @@ public class GameMap {
     private final List<Enemy> enemies;
     private final Map<String, Bomb> bombs;
     private final List<Blast> blasts;
-    private final float TIMER;
+    private float timer;
 
     private final Map<String, StationaryObject> walls;
 
@@ -74,13 +74,15 @@ public class GameMap {
     private boolean exitOpen;
     private final List<PlusPoints> plusPoints;
 
+
+
     /**
      * The accumulated time since the last physics step.
      * We use this to keep the physics simulation at a constant rate even if the frame rate is variable.
      */
     private float physicsTime = 0;
 
-    public GameMap(BomberQuestGame game, String mapFile) {
+    public GameMap(BomberQuestGame game, String mapFile, Settings settings) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         this.contactListener = new GameContactListener(this);
@@ -97,7 +99,7 @@ public class GameMap {
         powerUps = new ArrayList<>();
 
 
-        int[] temp = loadMap(mapFile);
+        int[] temp = loadMap(mapFile, settings);
         this.MAX_X = temp[0];
         this.MAX_Y = temp[1];
         if (temp[4] == -1) {
@@ -113,8 +115,7 @@ public class GameMap {
             exitOpen = true;
         }
 
-        if (player2 != null) TIMER = 250f;
-        else TIMER = 400f;
+        timer = settings.getTimer();
         // Create a player with initial position
     }
 
@@ -125,7 +126,7 @@ public class GameMap {
      *
      * @param filename the name of the file with the map
      */
-    public int[] loadMap(String filename) {
+    public int[] loadMap(String filename, Settings settings) {
         boolean powerUpsWritten = false;
         int maxX = 0;
         int maxY = 0;
@@ -181,7 +182,7 @@ public class GameMap {
                         }
                         break;
                     case 3: // enemy
-                        enemies.add(new Enemy(world, x, y, this));
+                        enemies.add(new Enemy(world, x, y, this, settings.isAliensSmart(), settings.isAliensBombs()));
                         break;
                     case 4: // exit
                         if (!existsExit) {
@@ -248,7 +249,7 @@ public class GameMap {
             if (!powerUpsWritten && !freeDestructibleWalls.isEmpty()) {
                 for (String key : freeDestructibleWalls) {
                     Random random = new Random();
-                    if (random.nextInt(100) < 20) { // 20% chance power-up drop
+                    if (random.nextInt(100) < settings.getPowerUpChance()) { // 20% default chance power-up drop
                         String[] wallCoords = key.split(",");
                         int wallX = Integer.parseInt(wallCoords[0]);
                         int wallY = Integer.parseInt(wallCoords[1]);
@@ -282,7 +283,7 @@ public class GameMap {
         player1.tick(frameTime);
         if (player2 != null) player2.tick(frameTime);
         elapsedTime += frameTime;
-        if (elapsedTime >= TIMER) {
+        if (elapsedTime >= timer) {
             setGameOverMessage("Too slow! The timer hit zero.");
             gameOver = true;
         }
@@ -370,6 +371,7 @@ public class GameMap {
                     if (blast.getOwner() instanceof Player player) {
                         player.increasePoints();
                         plusPoints.add(new PlusPoints(enemy.getX(), enemy.getY() + 1f, player.isPlayer1()));
+                        timer += 20;
                     }
                     enemy.death(world);
                     SoundEffects.ENEMY_DEATH.play();
@@ -686,10 +688,11 @@ public class GameMap {
     }
 
     public int getTimer() {
-        return (int) Math.ceil(TIMER - elapsedTime);
+        return (int) Math.ceil(timer - elapsedTime);
     }
     public boolean isStarted() {
         return elapsedTime > 0;
     }
+
 
 }

@@ -16,7 +16,8 @@ public enum SoundEffects {
     POWER_UP("item-get.mp3", 0.8f),
     PLACE_BOMB("place-bomb.mp3", 1.2f),
     STAGE_CLEAR("stage-clear.mp3", 0.8f),
-    ENEMY_DEATH("enemy-dies.mp3", 0.18f);
+    ENEMY_DEATH("enemy-dies.mp3", 0.18f),
+    BUTTON_CLICK("button-click.mp3", 0.8f);
 
     /** The sound file owned by this variant. */
     private final Sound sound;

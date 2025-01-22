@@ -107,4 +107,14 @@ com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 		selection: selection-color
 	}
 }
+com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+	default-horizontal: {
+		background: slider
+		knob: slider-knob
+	}
+	default-vertical: {
+		background: slider
+		knob: slider-knob
+	}
+}
 }
