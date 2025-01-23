@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import de.tum.cit.ase.bomberquest.BomberQuestGame;
 import de.tum.cit.ase.bomberquest.audio.BackgroundTrack;
+import de.tum.cit.ase.bomberquest.audio.SoundEffects;
 import de.tum.cit.ase.bomberquest.map.*;
 import de.tum.cit.ase.bomberquest.texture.Drawable;
 import de.tum.cit.ase.bomberquest.texture.Textures;
@@ -252,7 +253,15 @@ public class GameScreen implements Screen {
             }
         };
         String gameOverMessage = map.getGameOverMessage();
-        Label messageLabel = new Label(gameOverMessage.isEmpty() ? "VICTORY" : "GAME OVER", game.getSkin(), "bold");
+        Label messageLabel;
+        if (gameOverMessage.isEmpty()) {
+            messageLabel = new Label("VICTORY", game.getSkin(), "bold");
+            SoundEffects.VICTORY.play();
+        }
+        else {
+            messageLabel = new Label("GAME OVER", game.getSkin(), "bold");
+            SoundEffects.GAME_OVER.play();
+        }
         messageLabel.setFontScale(2.5f);
         messageLabel.setAlignment(Align.center);  // Center the text
         dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding

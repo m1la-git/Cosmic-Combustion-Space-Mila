@@ -25,6 +25,11 @@ public class Player extends MobileObject implements Drawable {
     private int points;
     private String name;
 
+    //power-ups
+    private boolean wallpass = false;
+    private boolean bombpass = false;
+    private boolean flamepass = false;
+
 
     public Player(World world, float x, float y, boolean player1) {
         super(world, x, y, 2, 0.3f);
@@ -150,6 +155,24 @@ public class Player extends MobileObject implements Drawable {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public boolean isWallpass() {
+        return wallpass;
+    }
+    public boolean isBombpass() {
+        return bombpass;
+    }
+    public boolean isFlamepass() {
+        return flamepass;
+    }
+    public void gotWallpass() {
+        wallpass = true;
+    }
+    public void gotBombpass() {
+        bombpass = true;
+    }
+    public void gotFlamepass() {
+        flamepass = true;
     }
 
 

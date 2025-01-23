@@ -90,7 +90,7 @@ public class MenuScreen implements Screen {
                 SoundEffects.BUTTON_CLICK.play();
                 if (game.getMap().isStarted()) showNewGameConfirmationDialog(game);
                 else {
-                    startNewGame(game);
+                    showPlayerNameConfirmationDialog(game);
                 }
             }
         });
@@ -122,6 +122,7 @@ public class MenuScreen implements Screen {
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (game.getMap().isStarted()) showSettingsConfirmationDialog(game);
                 else showSettingsDialog(game);
             }
@@ -216,7 +217,11 @@ public class MenuScreen implements Screen {
                     } else {
                         game.renamePlayer(playerNameFields[0].getText());
                     }
+                    BackgroundTrack.BACKGROUND.stop();
                     game.goToGame();
+                }
+                else {
+                    SoundEffects.BUTTON_CLICK.play();
                 }
             }
         };
@@ -247,6 +252,7 @@ public class MenuScreen implements Screen {
         startButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                SoundEffects.BUTTON_CLICK.play();
                 textFieldError.setText("");
                 for (TextField field : playerNameFields) {
                     if (field != null) {  //Check for null in case of single player
@@ -288,19 +294,14 @@ public class MenuScreen implements Screen {
 
     }
 
-    private void startNewGame(BomberQuestGame game) {
-        BackgroundTrack.BACKGROUND.stop();
-
-        showPlayerNameConfirmationDialog(game);
-    }
-
     private void showNewGameConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (object.equals(true)) {
-                    startNewGame(game);
+                    showPlayerNameConfirmationDialog(game);
                 } else {
                     overlay.setVisible(false);
                 }
@@ -315,6 +316,7 @@ public class MenuScreen implements Screen {
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (object.equals(true)) {
                     showSettingsDialog(game);
                 }
@@ -359,6 +361,7 @@ public class MenuScreen implements Screen {
         aliensSmartButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (aliensSmartButton.getText().toString().trim().equals("Yes")) {
                     aliensSmartButton.setText("No");
                 } else {
@@ -374,6 +377,7 @@ public class MenuScreen implements Screen {
         aliensBombsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (aliensBombsButton.getText().toString().trim().equals("Yes")) aliensBombsButton.setText("No");
                 else aliensBombsButton.setText("Yes");
             }
@@ -406,6 +410,7 @@ public class MenuScreen implements Screen {
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (object.equals(true)) {
                     if (game.chooseMap()) continueButton.setDisabled(true);
                 }
@@ -420,6 +425,7 @@ public class MenuScreen implements Screen {
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
             protected void result(Object object) {
+                SoundEffects.BUTTON_CLICK.play();
                 if (object.equals(true)) {
                     Gdx.app.exit(); // Or do other cleanup and then exit
                 } else {

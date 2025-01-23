@@ -36,10 +36,8 @@ public class PowerUp extends StationaryObject implements Drawable {
             case FLAMES_POWER_UP -> Animations.FLAMES_POWER_UP.getKeyFrame(elapsedTime, true);
             case SPEED_POWER_UP -> Animations.SPEED_POWER_UP.getKeyFrame(elapsedTime, true);
             case WALLPASS_POWER_UP -> Animations.WALLPASS_POWER_UP.getKeyFrame(elapsedTime, true);
-            case DETONATOR_POWER_UP -> Animations.DETONATOR_POWER_UP.getKeyFrame(elapsedTime, true);
             case BOMBPASS_POWER_UP -> Animations.BOMBPASS_POWER_UP.getKeyFrame(elapsedTime, true);
             case FLAMEPASS_POWER_UP -> Animations.FLAMEPASS_POWER_UP.getKeyFrame(elapsedTime, true);
-            case MYSTERY_POWER_UP -> Animations.MYSTERY_POWER_UP.getKeyFrame(elapsedTime, true);
             default -> null;
         };
     }

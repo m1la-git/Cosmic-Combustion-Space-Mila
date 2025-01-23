@@ -13,11 +13,13 @@ import com.badlogic.gdx.audio.Sound;
  */
 public enum SoundEffects {
     BOMB_EXPLOSION("bomb-explodes.mp3", 1.2f),
-    POWER_UP("item-get.mp3", 0.8f),
+    POWER_UP("item-get.mp3", 1.5f),
     PLACE_BOMB("place-bomb.mp3", 1.2f),
     STAGE_CLEAR("stage-clear.mp3", 0.8f),
     ENEMY_DEATH("enemy-dies.mp3", 0.15f),
-    BUTTON_CLICK("button-click.mp3", 0.8f);
+    BUTTON_CLICK("button-click.mp3", 1),
+    GAME_OVER("game-over.mp3", 1.5f),
+    VICTORY("victory.mp3", 1.5f);
 
     /** The sound file owned by this variant. */
     private final Sound sound;

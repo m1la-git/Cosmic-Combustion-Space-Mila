@@ -44,13 +44,17 @@ public class GameContactListener implements ContactListener {
             handleBombCollision(contact, bodyA, bodyB);
         } else if (isMobileObject(bodyB) && isBomb(bodyA)) {
             handleBombCollision(contact, bodyB, bodyA);
+        } else if (isPlayer(bodyA) && isWall(bodyB)) {
+            handleWallPlayerCollision(contact, bodyA, bodyB);
+        } else if (isPlayer(bodyB) && isWall(bodyA)) {
+            handleWallPlayerCollision(contact, bodyB, bodyA);
         } else if (isPlayer(bodyA) && isEnemy(bodyB)) {
             handlePlayerEnemyCollision(bodyA);
         } else if (isPlayer(bodyB) && isEnemy(bodyA)) {
             handlePlayerEnemyCollision(bodyB);
         } else if (isEnemy(bodyA) && isEnemy(bodyB)) {
             contact.setEnabled(false);
-        }else if (isPlayer(bodyB) && isPlayer(bodyA)) {
+        } else if (isPlayer(bodyB) && isPlayer(bodyA)) {
             contact.setEnabled(false);
         }
     }
@@ -75,12 +79,26 @@ public class GameContactListener implements ContactListener {
     private boolean isBomb(Body body) {
         return body.getUserData() instanceof Bomb; // Replace with your bomb identification logic
     }
+    private boolean isWall(Body body) {
+        return body.getUserData() instanceof IndestructibleWall || body.getUserData() instanceof DestructibleWall;
+    }
 
     //Actual handling of the collision:
     private void handleBombCollision(Contact contact, Body mobileObjectBody, Body bomb) {
         MobileObject mobileObject = (MobileObject) mobileObjectBody.getUserData();
         if (mobileObject.getIgnoredBombs().contains(bomb)) {
             // Disable collision while ignoring this bomb
+            contact.setEnabled(false);
+        }
+        else {
+            if (mobileObject instanceof Player player && player.isWallpass()) {
+                contact.setEnabled(false);
+            }
+        }
+    }
+
+    private void handleWallPlayerCollision(Contact contact, Body playerBody, Body wallBody) {
+        if (playerBody.getUserData() instanceof Player player && player.isWallpass()) {
             contact.setEnabled(false);
         }
     }

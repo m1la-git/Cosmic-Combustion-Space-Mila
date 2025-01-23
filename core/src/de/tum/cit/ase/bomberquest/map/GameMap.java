@@ -206,21 +206,13 @@ public class GameMap {
                         powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.WALLPASS_POWER_UP));
                         break;
-                    case 9: // powerUp: wallpass
-                        powerUpsWritten = true;
-                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.DETONATOR_POWER_UP));
-                        break;
-                    case 10: // powerUp: bombpass
+                    case 9: // powerUp: bombpass
                         powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.BOMBPASS_POWER_UP));
                         break;
-                    case 11: // powerUp: flamepass
+                    case 10: // powerUp: flamepass
                         powerUpsWritten = true;
                         walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.FLAMEPASS_POWER_UP));
-                        break;
-                    case 12: // powerUp: mystery
-                        powerUpsWritten = true;
-                        walls.put(x + "," + y, new DestructibleWall(world, x, y, WallContentType.MYSTERY_POWER_UP));
                         break;
                 }
 
@@ -415,7 +407,7 @@ public class GameMap {
     }
 
     private void playerBlasted(Blast blast, Player player, Player playerOther) {
-        if (isBlasted(player, blast)) {
+        if (isBlasted(player, blast) && !player.isFlamepass()) {
             player.death(world);
             if (blast.getOwner() instanceof Enemy) setGameOverMessage("BOOM! " + player.getName() + " got caught in Alien's blast!");
             else if (blast.getOwner().equals(player)) setGameOverMessage("Oops! " + player.getName() + " blew themselves up!");
@@ -520,6 +512,18 @@ public class GameMap {
                         break;
                     case FLAMES_POWER_UP:
                         player.increaseBlastRadius();
+                        break;
+                    case SPEED_POWER_UP:
+                        player.increaseSpeed();
+                        break;
+                    case WALLPASS_POWER_UP:
+                        player.gotWallpass();
+                        break;
+                    case BOMBPASS_POWER_UP:
+                        player.gotBombpass();
+                        break;
+                    case FLAMEPASS_POWER_UP:
+                        player.gotFlamepass();
                         break;
                 }
                 walls.remove(playerCellX + "," + playerCellY);
