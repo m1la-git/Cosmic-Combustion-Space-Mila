@@ -99,19 +99,19 @@ cursor
   index: -1
 slider
   rotate: false
-  xy: 650, 958
-  size: 372, 30
+  xy: 0, 293
+  size: 268, 16
   split: 7, 7, 7, 11
   pad: 0, 0, 3, 3
-  orig: 372, 30
+  orig: 268, 16
   offset: 0, 0
   index: -1
 slider-knob
   rotate: false
-  xy: 857, 564
-  size: 27, 40
+  xy: 0, 309
+  size: 13, 35
   split: 7, 7, 7, 11
-  orig: 27, 65
+  orig: 13, 35
   offset: 0, 0
   index: -1
 

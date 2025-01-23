@@ -338,8 +338,8 @@ public class MenuScreen implements Screen {
             protected void result(Object object) {
                 SoundEffects.BUTTON_CLICK.play();
                 if (object.equals(true)) {
-                    settings.setAliensSmart(aliensSmartButton.getText().equals("Yes"));
-                    settings.setAliensBombs(aliensBombsButton.getText().equals("Yes"));
+                    settings.setAliensSmart(aliensSmartButton.getText().toString().trim().equals("Yes"));
+                    settings.setAliensBombs(aliensBombsButton.getText().toString().trim().equals("Yes"));
                     settings.setTimer((int) timerSlider.getValue());
                     settings.setPowerUpChance((int) powerUpChanceSlider.getValue());
                     game.createNewMap();
@@ -350,7 +350,7 @@ public class MenuScreen implements Screen {
         Label messageLabel = new Label("Settings", game.getSkin(), "bold");
         messageLabel.setFontScale(1.5f);
         messageLabel.setAlignment(Align.center);  // Center the text
-        dialog.getContentTable().add(messageLabel).pad(20f).row(); // Add padding
+        dialog.getContentTable().add(messageLabel).colspan(2).row(); // Add padding
 
         Label aliensSmartLabel = new Label("Aliens are Smart", game.getSkin());
         dialog.getContentTable().add(aliensSmartLabel).pad(20f);
