@@ -91,7 +91,7 @@ public class GameContactListener implements ContactListener {
             contact.setEnabled(false);
         }
         else {
-            if (mobileObject instanceof Player player && player.isWallpass()) {
+            if (mobileObject instanceof Player player && player.isBombpass()) {
                 contact.setEnabled(false);
             }
         }

@@ -490,8 +490,7 @@ public class GameMap {
         if (mobileObject.getBombsNow() > 0) {
             int cellX = mobileObject.getCellX();
             int cellY = mobileObject.getCellY();
-            boolean spaceEmpty = !(bombs.containsKey(cellX + "," + cellY));
-            if (spaceEmpty) {
+            if (isCellFree(cellX, cellY)) {
                 bombs.put(cellX + "," + cellY, new Bomb(world, cellX, cellY, mobileObject));
                 mobileObject.placedBomb();
                 if (mobileObject instanceof Player) SoundEffects.PLACE_BOMB.play();

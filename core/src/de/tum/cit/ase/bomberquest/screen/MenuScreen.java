@@ -345,6 +345,7 @@ public class MenuScreen implements Screen {
                     settings.setTimer((int) timerSlider.getValue());
                     settings.setPowerUpChance((int) powerUpChanceSlider.getValue());
                     game.createNewMap();
+                    continueButton.setDisabled(true);
                 }
                 overlay.setVisible(false);
             }
