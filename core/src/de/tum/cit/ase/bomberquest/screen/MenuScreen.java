@@ -28,16 +28,32 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
+ * This screen provides options to start a new game, continue a game, load a map, adjust settings, view rules, and quit the game.
  */
 public class MenuScreen implements Screen {
 
+    /**
+     * The stage handles UI elements and input events for the menu.
+     */
     private final Stage stage;
+    /**
+     * The background sprite for the menu screen.
+     */
     private final Sprite backgroundSprite; // Added sprite for the background
 
+    /**
+     * The SpriteBatch used to draw the background.
+     */
     private final SpriteBatch batch; //Added batch to draw background
 
+    /**
+     * An overlay actor for creating visual effects like dialog backgrounds.
+     */
     private Actor overlay; // For the darkened background
 
+    /**
+     * Button to continue a previously started game.
+     */
     private TextButton continueButton;
 
 
@@ -61,6 +77,14 @@ public class MenuScreen implements Screen {
         addUI(game, camera);
     }
 
+    /**
+     * Adds all UI elements to the menu screen.
+     * This includes buttons for starting a new game, continuing, loading a map, settings, rules, and quitting,
+     * as well as the game logo and an overlay for dialogs.
+     *
+     * @param game   The main game class instance.
+     * @param camera The OrthographicCamera used for the menu screen.
+     */
     private void addUI(BomberQuestGame game, OrthographicCamera camera) {
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
@@ -154,6 +178,13 @@ public class MenuScreen implements Screen {
         stage.addActor(overlay);
     }
 
+    /**
+     * Shows an error dialog for map loading failures.
+     * Provides options to reload the map or use a default map.
+     *
+     * @param game  The main game class instance.
+     * @param error The error message to display in the dialog.
+     */
     public void showErrorMapDialog(BomberQuestGame game, String error) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -200,6 +231,12 @@ public class MenuScreen implements Screen {
 
     }
 
+    /**
+     * Shows a dialog to get player names before starting a new game.
+     * Allows players to enter their names, with validation for empty or too long names.
+     *
+     * @param game The main game class instance.
+     */
     private void showPlayerNameConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         boolean players2 = game.getMap().getPlayer2() != null;
@@ -219,8 +256,7 @@ public class MenuScreen implements Screen {
                     }
                     BackgroundTrack.BACKGROUND.stop();
                     game.goToGame();
-                }
-                else {
+                } else {
                     SoundEffects.BUTTON_CLICK.play();
                 }
             }
@@ -294,6 +330,11 @@ public class MenuScreen implements Screen {
 
     }
 
+    /**
+     * Shows a confirmation dialog for starting a new game, warning about unsaved progress loss.
+     *
+     * @param game The main game class instance.
+     */
     private void showNewGameConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -311,6 +352,11 @@ public class MenuScreen implements Screen {
 
     }
 
+    /**
+     * Shows a confirmation dialog for changing game settings, warning about unsaved progress loss.
+     *
+     * @param game The main game class instance.
+     */
     private void showSettingsConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -319,18 +365,22 @@ public class MenuScreen implements Screen {
                 SoundEffects.BUTTON_CLICK.play();
                 if (object.equals(true)) {
                     showSettingsDialog(game);
-                }
-                else overlay.setVisible(false);
+                } else overlay.setVisible(false);
             }
         };
         dialogUI(game, dialog, "Are you sure you want to change the settings? Your unsaved progress will be lost.", "OK");
     }
 
+    /**
+     * Shows the settings dialog, allowing users to modify game settings like AI, bombs, timer, and power-up chance.
+     *
+     * @param game The main game class instance.
+     */
     private void showSettingsDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Settings settings = game.getSettings();
-        TextButton aliensSmartButton = new TextButton((settings.isAliensSmart() ? "Yes": "No"), game.getSkin(), "mini");
-        TextButton aliensBombsButton = new TextButton((settings.isAliensBombs() ? "Yes": "No"), game.getSkin(), "mini");
+        TextButton aliensSmartButton = new TextButton((settings.isAliensSmart() ? "Yes" : "No"), game.getSkin(), "mini");
+        TextButton aliensBombsButton = new TextButton((settings.isAliensBombs() ? "Yes" : "No"), game.getSkin(), "mini");
         Slider timerSlider = new Slider(250, 550, 50, false, game.getSkin());
         timerSlider.setValue(settings.getTimer());
         Slider powerUpChanceSlider = new Slider(10, 40, 5, false, game.getSkin());
@@ -406,6 +456,11 @@ public class MenuScreen implements Screen {
         dialogUI(game, dialog, "", "Save");
     }
 
+    /**
+     * Shows a confirmation dialog for loading a new map, warning about unsaved progress loss.
+     *
+     * @param game The main game class instance.
+     */
     private void showLoadMapConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -421,6 +476,11 @@ public class MenuScreen implements Screen {
         dialogUI(game, dialog, "Are you sure you want to load a new map? Your unsaved progress will be lost.", "OK");
     }
 
+    /**
+     * Shows a confirmation dialog for quitting the game.
+     *
+     * @param game The main game class instance.
+     */
     private void showQuitConfirmationDialog(BomberQuestGame game) {
         overlay.setVisible(true);
         Dialog dialog = new Dialog("", game.getSkin()) {
@@ -437,6 +497,14 @@ public class MenuScreen implements Screen {
         dialogUI(game, dialog, "Are you sure you want to quit the game?", "OK");
     }
 
+    /**
+     * Helper method to create and display a standardized dialog with yes/no buttons.
+     *
+     * @param game      The main game class instance.
+     * @param dialog    The Dialog object to configure.
+     * @param labelText The message text to display in the dialog.
+     * @param yesText   The text for the 'yes' or confirmation button.
+     */
     private void dialogUI(BomberQuestGame game, Dialog dialog, String labelText, String yesText) {
         if (!labelText.isEmpty()) {
             Label messageLabel = new Label(labelText, game.getSkin());
@@ -464,7 +532,7 @@ public class MenuScreen implements Screen {
 
     /**
      * The render method is called every frame to render the menu screen.
-     * It clears the screen and draws the stage.
+     * It clears the screen, draws the background, updates and draws the stage (UI elements).
      *
      * @param deltaTime The time in seconds since the last render.
      */
@@ -491,27 +559,46 @@ public class MenuScreen implements Screen {
         backgroundSprite.setSize(width, height);
     }
 
+    /**
+     * Disposes of resources when the screen is no longer needed.
+     * Disposes of the stage and its actors, freeing up memory.
+     */
     @Override
     public void dispose() {
         // Dispose of the stage when screen is disposed
         stage.dispose();
     }
 
+    /**
+     * Called when this screen becomes the current screen.
+     * Sets the input processor to the stage so UI elements can receive input.
+     */
     @Override
     public void show() {
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
     }
 
-    // The following methods are part of the Screen interface but are not used in this screen.
+    /**
+     * Called when this screen is no longer the current screen.
+     * Not used in this implementation.
+     */
     @Override
     public void pause() {
     }
 
+    /**
+     * Called when the application is resumed from a paused state.
+     * Not used in this implementation.
+     */
     @Override
     public void resume() {
     }
 
+    /**
+     * Called when this screen is no longer the current screen.
+     * Not used in this implementation.
+     */
     @Override
     public void hide() {
     }

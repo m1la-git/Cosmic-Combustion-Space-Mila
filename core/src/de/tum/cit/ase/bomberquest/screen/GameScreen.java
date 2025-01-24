@@ -30,6 +30,7 @@ import java.util.List;
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
  * It handles the game logic and rendering of the game elements.
+ * This screen displays the game map, players, enemies, bombs, and HUD, and manages game updates, camera controls, and game over conditions.
  */
 public class GameScreen implements Screen {
 
@@ -47,13 +48,37 @@ public class GameScreen implements Screen {
      */
     public static final int SCALE = 4;
 
+    /**
+     * The main game class instance.
+     */
     private final BomberQuestGame game;
+    /**
+     * The stage for UI elements like dialogs.
+     */
     private final Stage stage; // New stage for dialog
+    /**
+     * The SpriteBatch used for drawing game textures.
+     */
     private final SpriteBatch spriteBatch;
+    /**
+     * The game map containing all game objects.
+     */
     private final GameMap map;
+    /**
+     * The Heads-Up Display for showing game information.
+     */
     private final Hud hud;
+    /**
+     * The camera used to view the game map.
+     */
     private final OrthographicCamera mapCamera;
+    /**
+     * An overlay actor for visual effects, like dimming the screen for dialogs.
+     */
     private final Actor overlay; // For the darkened background
+    /**
+     * Flag to track if the game is paused.
+     */
     private boolean isPaused = false; // Flag to track pause state
 
 
@@ -89,11 +114,13 @@ public class GameScreen implements Screen {
     }
 
     /**
-     * Draws this object on the screen.
+     * Draws a {@link Drawable} object on the screen using the provided {@link SpriteBatch}.
      * The texture will be scaled by the game scale and the tile size.
-     * This should only be called between spriteBatch.begin() and spriteBatch.end(), e.g. in the renderMap() method.
+     * This method should only be called between `spriteBatch.begin()` and `spriteBatch.end()`,
+     * for example, within the {@link #renderMap()} method.
      *
      * @param spriteBatch The SpriteBatch to draw with.
+     * @param drawable    The Drawable object to render.
      */
     private static void draw(SpriteBatch spriteBatch, Drawable drawable) {
         TextureRegion texture = drawable.getCurrentAppearance();
@@ -108,6 +135,7 @@ public class GameScreen implements Screen {
 
     /**
      * The render method is called every frame to render the game.
+     *
      * @param deltaTime The time in seconds since the last render.
      */
     @Override
@@ -129,7 +157,6 @@ public class GameScreen implements Screen {
             map.tick(frameTime); // Update the map state
         }
         updateCamera(); // Update the camera
-
 
 
         OrthographicCamera hudCamera = hud.getCamera();
@@ -193,7 +220,8 @@ public class GameScreen implements Screen {
     }
 
     /**
-     * Renders the map with all the objects
+     * Renders the game map and all its elements in layers to the screen.
+     * The rendering order ensures that objects are drawn in the correct order for visual depth.
      */
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
@@ -234,7 +262,7 @@ public class GameScreen implements Screen {
         for (MobileObject object : entities) {
             draw(spriteBatch, object);
         }
-        for (PlusPoints plusPoints: map.getPlusPoints()) {
+        for (PlusPoints plusPoints : map.getPlusPoints()) {
             draw(spriteBatch, plusPoints);
         }
 
@@ -242,6 +270,12 @@ public class GameScreen implements Screen {
         spriteBatch.end();
     }
 
+    /**
+     * Shows the game over dialog when the game ends.
+     * Displays a message indicating victory or game over, player scores, and options to restart or go to the menu.
+     *
+     * @param victory True if the game was won, false if it was lost. Influences the displayed message.
+     */
     private void showGameOverDialog(boolean victory) {
         Dialog dialog = new Dialog("", game.getSkin()) {
             @Override
@@ -257,8 +291,7 @@ public class GameScreen implements Screen {
         if (gameOverMessage.isEmpty()) {
             messageLabel = new Label("VICTORY", game.getSkin(), "bold");
             SoundEffects.VICTORY.play();
-        }
-        else {
+        } else {
             messageLabel = new Label("GAME OVER", game.getSkin(), "bold");
             SoundEffects.GAME_OVER.play();
         }
@@ -273,8 +306,7 @@ public class GameScreen implements Screen {
                 Label player2Label = new Label(map.getPlayer2().getName() + "'s points: " + map.getPlayer2().getPoints(), game.getSkin());
                 dialog.getContentTable().add(player2Label).pad(20f).row();
             }
-        }
-        else {
+        } else {
             Label gameOverLabel = new Label(gameOverMessage, game.getSkin());
             dialog.getContentTable().add(gameOverLabel).pad(20f).row();
         }
@@ -296,7 +328,7 @@ public class GameScreen implements Screen {
 
     /**
      * Called when the window is resized.
-     * This is where the camera is updated to match the new window size.
+     * This method updates the map camera and HUD viewport to adjust to the new window dimensions.
      *
      * @param width  The new window width.
      * @param height The new window height.
@@ -306,30 +338,46 @@ public class GameScreen implements Screen {
         mapCamera.setToOrtho(false);
         hud.resize(width, height);
         stage.getViewport().update(width, height, true);
-
-
-
     }
 
-    // Unused methods from the Screen interface
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
+    /**
+     * Called when this screen becomes the current screen for the game.
+     * Sets the input processor to the stage for UI interactions.
+     */
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage); // Set input processor in show()
         System.out.println(Gdx.input.getInputProcessor());
     }
 
+    /**
+     * Called when this screen is no longer the current screen for the game.
+     * Typically used for pausing resources or saving game state, but not used in this implementation.
+     */
     @Override
     public void hide() {
     }
 
+    /**
+     * Called when the application is paused, usually when it loses focus or is minimized.
+     * Not used in this implementation.
+     */
+    @Override
+    public void pause() {
+    }
+
+    /**
+     * Called when the application is resumed from a paused state, regaining focus.
+     * Not used in this implementation.
+     */
+    @Override
+    public void resume() {
+    }
+
+    /**
+     * Called when this screen should release all resources.
+     * Disposes of the stage, which in turn disposes of its contained actors and resources.
+     */
     @Override
     public void dispose() {
         stage.dispose();

@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * Contains all animation constants used in the game.
  * It is good practice to keep all textures and animations in constants to avoid loading them multiple times.
- * These can be referenced anywhere they are needed.
+ * These constants can be referenced anywhere animations are needed throughout the game.
+ * All animations defined here are loaded from the {@link SpriteSheet} class.
  */
 public class Animations {
     /**
-     * player1 walking down
+     * Animation for player 1 walking downwards.
+     * Consists of frames to create a walking animation when the player moves down.
      */
     public static final Animation<TextureRegion> PLAYER1_WALK_DOWN = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(1, 1),
@@ -19,7 +21,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(1, 3)
     );
     /**
-     * player1 walking up
+     * Animation for player 1 walking upwards.
+     * Consists of frames to create a walking animation when the player moves up.
      */
     public static final Animation<TextureRegion> PLAYER1_WALK_UP = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(1, 4),
@@ -28,7 +31,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(1, 6)
     );
     /**
-     * player1 walking right
+     * Animation for player 1 walking to the right.
+     * Consists of frames to create a walking animation when the player moves right.
      */
     public static final Animation<TextureRegion> PLAYER1_WALK_RIGHT = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(2, 1),
@@ -37,7 +41,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(2, 3)
     );
     /**
-     * player1 walking left
+     * Animation for player 1 walking to the left.
+     * Consists of frames to create a walking animation when the player moves left.
      */
     public static final Animation<TextureRegion> PLAYER1_WALK_LEFT = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(2, 4),
@@ -46,7 +51,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(2, 6)
     );
     /**
-     * player2 walking down
+     * Animation for player 2 walking downwards.
+     * Consists of frames to create a walking animation when player 2 moves down.
      */
     public static final Animation<TextureRegion> PLAYER2_WALK_DOWN = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(1, 7),
@@ -55,7 +61,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(1, 9)
     );
     /**
-     * player2 walking up
+     * Animation for player 2 walking upwards.
+     * Consists of frames to create a walking animation when player 2 moves up.
      */
     public static final Animation<TextureRegion> PLAYER2_WALK_UP = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(1, 10),
@@ -64,7 +71,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(1, 12)
     );
     /**
-     * player2 walking right
+     * Animation for player 2 walking to the right.
+     * Consists of frames to create a walking animation when player 2 moves right.
      */
     public static final Animation<TextureRegion> PLAYER2_WALK_RIGHT = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(2, 7),
@@ -73,7 +81,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(2, 9)
     );
     /**
-     * player2 walking left
+     * Animation for player 2 walking to the left.
+     * Consists of frames to create a walking animation when player 2 moves left.
      */
     public static final Animation<TextureRegion> PLAYER2_WALK_LEFT = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(2, 10),
@@ -83,7 +92,8 @@ public class Animations {
     );
 
     /**
-     * player death animation
+     * Animation for player death.
+     * Displays a sequence of frames showing the player character dying.
      */
     public static final Animation<TextureRegion> PLAYER_DEATH = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(3, 7),
@@ -100,7 +110,8 @@ public class Animations {
 
 
     /**
-     * enemy walking down
+     * Animation for enemy walking downwards.
+     * Consists of frames to create a walking animation when the enemy moves down.
      */
     public static final Animation<TextureRegion> ENEMY_WALK_DOWN = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(3, 1),
@@ -109,7 +120,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(3, 3)
     );
     /**
-     * enemy walking up
+     * Animation for enemy walking upwards.
+     * Consists of frames to create a walking animation when the enemy moves up.
      */
     public static final Animation<TextureRegion> ENEMY_WALK_UP = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(3, 4),
@@ -118,7 +130,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(3, 6)
     );
     /**
-     * enemy walking right
+     * Animation for enemy walking to the right.
+     * Consists of frames to create a walking animation when the enemy moves right.
      */
     public static final Animation<TextureRegion> ENEMY_WALK_RIGHT = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(4, 1),
@@ -127,7 +140,8 @@ public class Animations {
             SpriteSheet.MOBILE_OBJECTS.at(4, 3)
     );
     /**
-     * enemy walking left
+     * Animation for enemy walking to the left.
+     * Consists of frames to create a walking animation when the enemy moves left.
      */
     public static final Animation<TextureRegion> ENEMY_WALK_LEFT = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(4, 4),
@@ -137,7 +151,8 @@ public class Animations {
     );
 
     /**
-     * enemy death animation
+     * Animation for enemy death.
+     * Displays a sequence of frames showing the enemy character dying.
      */
     public static final Animation<TextureRegion> ENEMY_DEATH = new Animation<>(0.1f,
             SpriteSheet.MOBILE_OBJECTS.at(4, 7),
@@ -152,7 +167,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(1, 8)
     );
     /**
-     * enemy's bomb animation
+     * Animation for enemy's bomb.
+     * Displays a sequence of frames animating the enemy bomb.
      */
     public static final Animation<TextureRegion> BOMB_ENEMY = new Animation<>(0.03f,
             SpriteSheet.BOMBS_AND_BLASTS.at(14, 1),
@@ -165,7 +181,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(14, 8)
     );
     /**
-     * player 1's bomb animation
+     * Animation for player 1's bomb.
+     * Displays a sequence of frames animating player 1's bomb.
      */
     public static final Animation<TextureRegion> BOMB_P1 = new Animation<>(0.03f,
             SpriteSheet.BOMBS_AND_BLASTS.at(15, 1),
@@ -178,7 +195,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(15, 8)
     );
     /**
-     * player 2's bomb animation
+     * Animation for player 2's bomb.
+     * Displays a sequence of frames animating player 2's bomb.
      */
     public static final Animation<TextureRegion> BOMB_P2 = new Animation<>(0.03f,
             SpriteSheet.BOMBS_AND_BLASTS.at(16, 1),
@@ -191,7 +209,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(16, 8)
     );
     /**
-     * blast center
+     * Animation for the center of a blast.
+     * Displays a sequence of frames animating the central explosion of a bomb.
      */
     public static final Animation<TextureRegion> BLAST_CENTER = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 3),
@@ -205,7 +224,8 @@ public class Animations {
     );
 
     /**
-     * horizontal blast
+     * Animation for a horizontal blast segment.
+     * Displays a sequence of frames animating a horizontal part of a bomb's explosion.
      */
     public static final Animation<TextureRegion> BLAST_HORIZONTAL = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 2),
@@ -218,7 +238,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 2)
     );
     /**
-     * vertical blast
+     * Animation for a vertical blast segment.
+     * Displays a sequence of frames animating a vertical part of a bomb's explosion.
      */
     public static final Animation<TextureRegion> BLAST_VERTICAL = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 6),
@@ -231,7 +252,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 6)
     );
     /**
-     * last upward blast
+     * Animation for the upward end of a blast.
+     * Displays a sequence of frames animating the tip of a blast going upwards.
      */
     public static final Animation<TextureRegion> BLAST_UP = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 5),
@@ -244,7 +266,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 5)
     );
     /**
-     * last downward blast
+     * Animation for the downward end of a blast.
+     * Displays a sequence of frames animating the tip of a blast going downwards.
      */
     public static final Animation<TextureRegion> BLAST_DOWN = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 7),
@@ -257,7 +280,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 7)
     );
     /**
-     * last left-bound blast
+     * Animation for the leftward end of a blast.
+     * Displays a sequence of frames animating the tip of a blast going leftwards.
      */
     public static final Animation<TextureRegion> BLAST_LEFT = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 1),
@@ -270,7 +294,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 1)
     );
     /**
-     * last right-bound blast
+     * Animation for the rightward end of a blast.
+     * Displays a sequence of frames animating the tip of a blast going rightwards.
      */
     public static final Animation<TextureRegion> BLAST_RIGHT = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(2, 4),
@@ -284,7 +309,8 @@ public class Animations {
     );
 
     /**
-     * blast center player1
+     * Animation for the center of a blast for player 1.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_CENTER_P1 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 3),
@@ -298,7 +324,8 @@ public class Animations {
     );
 
     /**
-     * horizontal blast player1
+     * Animation for a horizontal blast segment for player 1.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_HORIZONTAL_P1 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 2),
@@ -311,7 +338,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 2)
     );
     /**
-     * vertical blast player1
+     * Animation for a vertical blast segment for player 1.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_VERTICAL_P1 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 6),
@@ -324,7 +352,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 6)
     );
     /**
-     * last upward blast player1
+     * Animation for the upward end of a blast for player 1.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_UP_P1 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 5),
@@ -337,7 +366,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 5)
     );
     /**
-     * last downward blast player1
+     * Animation for the downward end of a blast for player 1.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_DOWN_P1 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 7),
@@ -350,7 +380,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 7)
     );
     /**
-     * last left-bound blast player1
+     * Animation for the leftward end of a blast for player 1.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_LEFT_P1 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 1),
@@ -363,7 +394,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 1)
     );
     /**
-     * last right-bound blast player1
+     * Animation for the rightward end of a blast for player 1.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_RIGHT_P1 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(6, 4),
@@ -377,7 +409,8 @@ public class Animations {
     );
 
     /**
-     * blast center player2
+     * Animation for the center of a blast for player 2.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_CENTER_P2 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 3),
@@ -391,7 +424,8 @@ public class Animations {
     );
 
     /**
-     * horizontal blast player2
+     * Animation for a horizontal blast segment for player 2.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_HORIZONTAL_P2 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 2),
@@ -404,7 +438,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 2)
     );
     /**
-     * vertical blast player2
+     * Animation for a vertical blast segment for player 2.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_VERTICAL_P2 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 6),
@@ -417,7 +452,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 6)
     );
     /**
-     * last upward blast player2
+     * Animation for the upward end of a blast for player 2.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_UP_P2 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 5),
@@ -430,7 +466,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 5)
     );
     /**
-     * last downward blast player2
+     * Animation for the downward end of a blast for player 2.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_DOWN_P2 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 7),
@@ -443,7 +480,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 7)
     );
     /**
-     * last left-bound blast player2
+     * Animation for the leftward end of a blast for player 2.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_LEFT_P2 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 1),
@@ -456,7 +494,8 @@ public class Animations {
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 1)
     );
     /**
-     * last right-bound blast player2
+     * Animation for the rightward end of a blast for player 2.
+     * Player-specific colored blast animation.
      */
     public static final Animation<TextureRegion> BLAST_RIGHT_P2 = new Animation<>(0.4f / 8,
             SpriteSheet.BOMBS_AND_BLASTS.at(10, 4),
@@ -471,7 +510,8 @@ public class Animations {
 
 
     /**
-     * wall destruction animation
+     * Animation for wall destruction blast.
+     * Displays a sequence of frames showing a wall being destroyed by a blast.
      */
     public static final Animation<TextureRegion> BLAST_WALL = new Animation<>(0.4f / 7,
             SpriteSheet.BOMBS_AND_BLASTS.at(1, 1),
@@ -484,7 +524,8 @@ public class Animations {
     );
 
     /**
-     * closed exit animation
+     * Animation for a closed exit.
+     * Displays a sequence of frames animating the exit in its closed state.
      */
     public static final Animation<TextureRegion> EXIT_CLOSED = new Animation<>(0.08f,
             SpriteSheet.STATIONARY_OBJECTS.at(3, 1),
@@ -506,7 +547,8 @@ public class Animations {
     );
 
     /**
-     * open exit animation
+     * Animation for an opened exit.
+     * Displays a sequence of frames animating the exit in its opened state.
      */
     public static final Animation<TextureRegion> EXIT_OPENED = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(2, 1),
@@ -520,7 +562,8 @@ public class Animations {
     );
 
     /**
-     * bombs power-up
+     * Animation for bombs power-up item.
+     * Displays a sequence of frames animating the bombs power-up item.
      */
     public static final Animation<TextureRegion> BOMBS_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(5, 1),
@@ -533,7 +576,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(5, 8)
     );
     /**
-     * flames power-up
+     * Animation for flames power-up item.
+     * Displays a sequence of frames animating the flames power-up item.
      */
     public static final Animation<TextureRegion> FLAMES_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(6, 1),
@@ -546,7 +590,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(6, 8)
     );
     /**
-     * speed power-up
+     * Animation for speed power-up item.
+     * Displays a sequence of frames animating the speed power-up item.
      */
     public static final Animation<TextureRegion> SPEED_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(7, 1),
@@ -559,7 +604,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(7, 8)
     );
     /**
-     * wallpass power-up
+     * Animation for wallpass power-up item.
+     * Displays a sequence of frames animating the wallpass power-up item.
      */
     public static final Animation<TextureRegion> WALLPASS_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(8, 1),
@@ -572,7 +618,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(8, 8)
     );
     /**
-     * detonator power-up
+     * Animation for detonator power-up item. //TODO: not used in current version
+     * Displays a sequence of frames animating the detonator power-up item.
      */
     public static final Animation<TextureRegion> DETONATOR_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(9, 1),
@@ -585,7 +632,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(9, 8)
     );
     /**
-     * bombpass power-up
+     * Animation for bombpass power-up item.
+     * Displays a sequence of frames animating the bombpass power-up item.
      */
     public static final Animation<TextureRegion> BOMBPASS_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(10, 1),
@@ -598,7 +646,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(10, 8)
     );
     /**
-     * flamepass power-up
+     * Animation for flamepass power-up item.
+     * Displays a sequence of frames animating the flamepass power-up item.
      */
     public static final Animation<TextureRegion> FLAMEPASS_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(11, 1),
@@ -611,7 +660,8 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(11, 8)
     );
     /**
-     * mystery power-up
+     * Animation for mystery power-up item. //TODO: not used in current version
+     * Displays a sequence of frames animating the mystery power-up item.
      */
     public static final Animation<TextureRegion> MYSTERY_POWER_UP = new Animation<>(0.13f,
             SpriteSheet.STATIONARY_OBJECTS.at(12, 1),
@@ -625,7 +675,8 @@ public class Animations {
     );
 
     /**
-     * +100 points animation for player 1
+     * Animation for +100 points display for player 1.
+     * Displays a sequence of frames animating the "+100" points text in player 1's color.
      */
     public static final Animation<TextureRegion> PLUS_POINTS_P1 = new Animation<>(1f / 8,
             SpriteSheet.STATIONARY_OBJECTS.at(13, 1),
@@ -639,7 +690,8 @@ public class Animations {
     );
 
     /**
-     * +100 points animation for player 2
+     * Animation for +100 points display for player 2.
+     * Displays a sequence of frames animating the "+100" points text in player 2's color.
      */
     public static final Animation<TextureRegion> PLUS_POINTS_P2 = new Animation<>(1f / 8,
             SpriteSheet.STATIONARY_OBJECTS.at(14, 1),
@@ -651,8 +703,6 @@ public class Animations {
             SpriteSheet.STATIONARY_OBJECTS.at(14, 7),
             SpriteSheet.STATIONARY_OBJECTS.at(14, 8)
     );
-
-
 
 
 }
