@@ -6,7 +6,6 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 /**
  * Represents a visual effect for displaying points gained by a player.
- * <p>
  * This class is used to show a "+100" points animation when a player defeats an enemy.
  * It is a short-lived visual element that appears at the enemy's death location and then fades away.
  * This provides visual feedback to the player that they have earned points.
@@ -50,7 +49,6 @@ public class PlusPoints implements Drawable {
 
     /**
      * Updates the state of the PlusPoints effect every frame.
-     * <p>
      * This method increments the elapsed time and checks if the effect's lifespan has exceeded 1 second.
      * If 1 second has passed, it sets the {@code finished} flag to true, indicating that the effect should be removed.
      *
@@ -65,7 +63,6 @@ public class PlusPoints implements Drawable {
 
     /**
      * Gets the current texture region representing the "+100" points effect.
-     * <p>
      * The texture region is determined by the player who earned the points (Player 1 or Player 2)
      * and the current animation frame based on the elapsed time.
      *

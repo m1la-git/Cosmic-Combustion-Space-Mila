@@ -6,11 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Enumerates all spritesheets used in the game and provides helper methods for grabbing texture regions from them.
- * <p>
  * It is assumed that every spritesheet has some standard grid size which can be used for easier coordinate specification.
  * See the assets/texture folder for the actual texture files (plus some more samples which are not enumerated here).
  * Feel free to add your own spritesheets and use them in the game!
- * <p>
  * This enum facilitates the management and access of game textures, making texture handling more organized and efficient.
  *
  * @see Texture A whole image loaded into memory, used as a source for texture regions.
@@ -69,7 +67,6 @@ public enum SpriteSheet {
 
     /**
      * Returns a {@link TextureRegion} representing a single sprite from the spritesheet at the specified row and column.
-     * <p>
      * Coordinates are 1-based, with row 1 being at the top and column 1 at the left of the spritesheet.
      * The size of the returned TextureRegion is determined by the grid cell dimensions ({@code this.width} and {@code this.height}).
      *

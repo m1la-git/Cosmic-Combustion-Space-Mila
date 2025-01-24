@@ -7,7 +7,6 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 /**
  * Represents the exit tile in the game level.
- * <p>
  * The exit is a {@link StationaryObject} that does not have a physical hitbox, meaning it does not block movement or collisions.
  * It can be in either an open or closed state, visually represented by different animations.
  * The exit is typically the goal of each level, which players need to reach to proceed.

@@ -12,7 +12,6 @@ import java.util.Deque;
 
 /**
  * Represents the player character in the game.
- * <p>
  * Players are mobile objects controlled by the user. They can move around the map, place bombs,
  * and collect power-ups. This class extends {@link MobileObject} to inherit basic mobile object
  * functionalities like movement and collision detection. Players are represented as dynamic bodies in the Box2D world.
@@ -87,7 +86,6 @@ public class Player extends MobileObject implements Drawable {
 
     /**
      * Updates the player's state every frame.
-     * <p>
      * This method is called in the game loop and is responsible for handling player input,
      * moving the player based on input, and managing player death state.
      *
@@ -107,7 +105,6 @@ public class Player extends MobileObject implements Drawable {
 
     /**
      * Handles player input to determine the movement direction.
-     * <p>
      * This method checks the {@link #keyPressOrder} queue to determine the most recent movement key pressed by the player.
      * Based on the last key pressed, it sets the player's direction for movement in the {@link #tick(float)} method.
      * If no movement keys are currently pressed, the player's direction is set to {@link DirectionType#NONE}.
@@ -146,7 +143,6 @@ public class Player extends MobileObject implements Drawable {
 
     /**
      * Adds a keycode to the player's key press order queue.
-     * <p>
      * This method is typically called when a movement key is pressed. It ensures that keys are added only once
      * to maintain the correct order of precedence for movement direction.
      *
@@ -161,7 +157,6 @@ public class Player extends MobileObject implements Drawable {
 
     /**
      * Removes a keycode from the player's key press order queue.
-     * <p>
      * This method is called when a movement key is released. It removes the corresponding keycode from the queue,
      * allowing the player to change direction if another key is still pressed.
      *
@@ -190,7 +185,6 @@ public class Player extends MobileObject implements Drawable {
 
     /**
      * Gets the current texture region representing the player's appearance.
-     * <p>
      * The appearance changes based on the player's direction of movement and player type (Player 1 or Player 2).
      * If the player is not moving, a static texture based on the last direction is returned. When moving, animated textures
      * for walking in each direction are used. If the player is not alive, the death animation texture is returned.

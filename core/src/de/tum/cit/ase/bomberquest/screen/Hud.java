@@ -10,7 +10,6 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
  * A Heads-Up Display (HUD) that displays game information on the screen.
- * <p>
  * The HUD is a fixed screen element that overlays the game world and presents
  * essential information to the player, such as score, timer, number of enemies,
  * player stats (like bomb count and blast radius), and game status indicators.
@@ -33,26 +32,22 @@ public class Hud {
     private static final float SCALE = 3.5f;
     /**
      * The SpriteBatch used to draw the HUD elements.
-     * <p>
      * This SpriteBatch is shared with the {@link GameScreen} to ensure efficient rendering
      * and avoid unnecessary resource creation.
      */
     private final SpriteBatch spriteBatch;
     /**
      * The font used to render standard text on the HUD.
-     * <p>
      * This font is used for displaying scores, timers, and other numerical information.
      */
     private final BitmapFont font;
     /**
      * A bold version of the font used for emphasizing text on the HUD.
-     * <p>
      * Typically used for player names or headings to make them stand out.
      */
     private final BitmapFont bold;
     /**
      * The OrthographicCamera dedicated to rendering the HUD.
-     * <p>
      * This camera is configured to cover the entire screen and is not affected by the game world camera,
      * ensuring the HUD stays fixed in place.
      */

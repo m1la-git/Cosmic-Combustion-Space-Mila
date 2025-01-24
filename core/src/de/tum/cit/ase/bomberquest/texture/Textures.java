@@ -6,11 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Contains all texture constants used in the game.
- * <p>
  * It is good practice to keep all textures and animations in constants to avoid loading them multiple times.
  * These constants can be statically referenced from anywhere in the codebase where these textures are needed,
  * improving performance and maintainability.
- * <p>
  * This class centralizes the access to all static textures used in the BomberQuest game,
  * ensuring textures are loaded once and reused throughout the application.
  */

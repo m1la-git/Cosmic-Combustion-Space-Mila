@@ -2,7 +2,6 @@ package de.tum.cit.ase.bomberquest.map;
 
 /**
  * Configuration class for game settings.
- * <p>
  * This class holds various settings that can be adjusted to modify gameplay,
  * such as enemy AI behavior, enemy bomb placement capability, game timer duration,
  * and the probability of power-ups appearing.

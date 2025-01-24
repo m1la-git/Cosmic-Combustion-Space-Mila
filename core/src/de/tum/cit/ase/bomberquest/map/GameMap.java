@@ -14,7 +14,6 @@ import java.util.*;
 
 /**
  * Represents the game map, which is the central component of the game world.
- * <p>
  * The {@code GameMap} class is responsible for managing all game objects and entities,
  * including players, enemies, bombs, blasts, and walls. It also handles game logic,
  * such as loading the map from a file, updating game state, handling player input,
@@ -25,7 +24,6 @@ public class GameMap {
 
     /**
      * The fixed time step used for the Box2D physics simulation.
-     * <p>
      * This ensures consistent physics behavior across different frame rates.
      * It is derived from the monitor's refresh rate to synchronize physics updates with rendering.
      */
@@ -33,14 +31,12 @@ public class GameMap {
 
     /**
      * The number of velocity iterations performed per physics step in Box2D.
-     * <p>
      * More iterations increase accuracy but also increase computational cost.
      * This value is set to balance performance and simulation quality.
      */
     private static final int VELOCITY_ITERATIONS = 6;
     /**
      * The number of position iterations performed per physics step in Box2D.
-     * <p>
      * Similar to velocity iterations, more position iterations improve stability and accuracy,
      * especially for stacked bodies, at the cost of performance.
      */
@@ -54,19 +50,16 @@ public class GameMap {
 
     /**
      * Reference to the main game class, providing access to game-level functionalities and resources.
-     * <p>
      * This allows the map to interact with the broader game context, such as error handling or accessing game settings.
      */
     private final BomberQuestGame game;
     /**
      * The Box2D world that manages the physics simulation for all entities in the game map.
-     * <p>
      * It handles collisions, physics interactions, and movement of dynamic bodies within the game world.
      */
     private final World world;
     /**
      * The contact listener responsible for handling collision events within the Box2D world.
-     * <p>
      * It detects when bodies begin or end contact and allows for custom collision response logic to be implemented.
      */
     private final GameContactListener contactListener;
@@ -85,19 +78,16 @@ public class GameMap {
     private final List<Enemy> enemies;
     /**
      * A map of bombs currently placed on the map, indexed by their cell coordinates (x,y string).
-     * <p>
      * This allows for quick lookup and management of bombs based on their location.
      */
     private final Map<String, Bomb> bombs;
     /**
      * A list of active blast effects currently on the map.
-     * <p>
      * Blasts are visual effects created by bomb explosions, managed separately for rendering and game logic.
      */
     private final List<Blast> blasts;
     /**
      * A map of stationary wall objects (both indestructible and destructible), indexed by their cell coordinates (x,y string).
-     * <p>
      * Used for efficient access and management of walls based on their position in the game grid.
      */
     private final Map<String, StationaryObject> walls;
@@ -119,7 +109,6 @@ public class GameMap {
     private final List<PlusPoints> plusPoints;
     /**
      * The game timer, counting down from an initial value.
-     * <p>
      * When the timer reaches zero, the game may end in a game over state if not configured otherwise.
      */
     private float timer;
@@ -133,7 +122,6 @@ public class GameMap {
     private String gameOverMessage;
     /**
      * The initial number of enemies at the start of the game.
-     * <p>
      * Used to track progress and determine when all enemies have been defeated.
      */
     private int numberOfEnemies;
@@ -156,7 +144,6 @@ public class GameMap {
 
     /**
      * Constructs a new {@code GameMap}.
-     * <p>
      * Initializes the game map, loads map data from a file, sets up the Box2D world,
      * creates players and enemies based on the map configuration, and initializes game settings.
      *
@@ -203,7 +190,6 @@ public class GameMap {
 
     /**
      * Loads the game map from a specified file.
-     * <p>
      * Parses the map file, creates game objects (walls, players, enemies, exit, power-ups) based on the file content,
      * and handles potential errors during file loading or map parsing.
      *
@@ -352,7 +338,6 @@ public class GameMap {
 
     /**
      * Updates the game state for each frame.
-     * <p>
      * This method is called in the game loop and is responsible for handling player input,
      * updating entities (players, enemies, bombs, blasts), processing game logic (collisions, explosions, power-ups),
      * and advancing the physics simulation.
@@ -517,7 +502,6 @@ public class GameMap {
 
     /**
      * Advances the Box2D physics simulation by a fixed time step.
-     * <p>
      * This method ensures that the physics simulation runs at a consistent rate,
      * independent of the frame rate of the game.
      *
@@ -533,7 +517,6 @@ public class GameMap {
 
     /**
      * Handles player input for movement.
-     * <p>
      * Checks for key presses for each player and updates their intended movement direction accordingly.
      * Supports input for single and dual player scenarios, potentially mapping player 1 controls to both WASD and Arrows in single-player mode.
      */
@@ -552,7 +535,6 @@ public class GameMap {
 
     /**
      * Processes input for a specific player based on provided key mappings.
-     * <p>
      * Adds pressed movement keys to the player's input queue and removes keys that are no longer pressed,
      * allowing for smooth and responsive player movement.
      *
@@ -591,7 +573,6 @@ public class GameMap {
 
     /**
      * Checks if any player has reached the exit tile and if the exit is open.
-     * <p>
      * If both conditions are met, the game is set to a game over state, indicating level completion.
      * Handles single and multiplayer scenarios, requiring both players to reach the exit in multiplayer.
      */
@@ -614,7 +595,6 @@ public class GameMap {
 
     /**
      * Places a bomb at the mobile object's current cell location if possible.
-     * <p>
      * Checks if the cell is free of walls and existing bombs before placing a new bomb.
      * Decrements the mobile object's available bomb count and plays a bomb placement sound effect for players.
      *
@@ -635,7 +615,6 @@ public class GameMap {
 
     /**
      * Handles the collection of power-ups by a player.
-     * <p>
      * Checks if the player's current cell contains a power-up. If so, applies the power-up effect to the player,
      * plays a power-up collection sound, and removes the power-up from the map.
      *
@@ -703,7 +682,6 @@ public class GameMap {
 
     /**
      * Handles the overlapping state between a mobile object and a bomb.
-     * <p>
      * Adds the bomb to the mobile object's ignored bombs list if they are overlapping to prevent immediate self-explosion.
      * Removes the bomb from the ignored list when they are no longer overlapping, allowing for collision detection again.
      *
@@ -726,7 +704,6 @@ public class GameMap {
 
     /**
      * Releases a blast effect in a specified direction from a bomb's explosion center.
-     * <p>
      * Creates blast segments outwards from the center, stopping at indestructible walls or destructible walls (destroying them).
      * Manages blast type (CENTER, HORIZONTAL, VERTICAL, directional ends, WALL) and creates blast entities accordingly.
      *
@@ -784,7 +761,6 @@ public class GameMap {
 
     /**
      * Checks if a cell in the game grid is currently free for placing objects like bombs.
-     * <p>
      * A cell is considered free if it does not contain any walls or bombs (except for PowerUp walls, which are passable).
      *
      * @param x The x-coordinate of the cell to check.

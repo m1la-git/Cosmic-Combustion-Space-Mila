@@ -13,7 +13,6 @@ import java.util.Random;
 
 /**
  * Represents an enemy character in the game.
- * <p>
  * Enemies are mobile objects that can navigate the game map, potentially place bombs, and attempt to find and reach players.
  * They extend {@link MobileObject} and thus inherit movement capabilities and collision detection.
  * Enemies can be configured to either actively seek out players or move randomly, and also whether they can place bombs.

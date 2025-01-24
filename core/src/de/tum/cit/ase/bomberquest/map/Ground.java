@@ -6,7 +6,6 @@ import de.tum.cit.ase.bomberquest.texture.Textures;
 
 /**
  * Represents the ground tile in the game map.
- * <p>
  * Ground tiles are the most basic element of the game environment, forming the floor of the game world.
  * They are {@link Drawable} but have no special interactive properties or collision behavior.
  * Essentially, they are the static background on which all gameplay actions occur.
@@ -35,7 +34,6 @@ public class Ground implements Drawable {
 
     /**
      * Gets the current texture region for rendering the ground tile.
-     * <p>
      * This method always returns the standard ground texture from {@link Textures#GROUND}.
      *
      * @return The {@link TextureRegion} representing the ground tile's appearance.

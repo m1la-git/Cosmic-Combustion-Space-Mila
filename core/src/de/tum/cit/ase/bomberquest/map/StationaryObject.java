@@ -9,7 +9,6 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 /**
  * Represents all Stationary Objects in the game.
- * <p>
  * Abstract superclass for all game objects that remain static in the game world, such as walls, power-ups, and bombs.
  * Stationary objects, if they require collision detection, are represented by a Box2D {@link Body} of type {@link BodyDef.BodyType#StaticBody}.
  * This class implements the {@link Drawable} interface, allowing stationary objects to be rendered in the game.
@@ -52,7 +51,6 @@ public abstract class StationaryObject implements Drawable {
 
     /**
      * Creates a Box2D static body as a hitbox for the stationary object.
-     * <p>
      * This method sets up a {@link BodyDef} for a static body, positions it at the object's coordinates,
      * creates the body in the given Box2D world, and attaches a square {@link PolygonShape} as its fixture.
      *
@@ -84,7 +82,6 @@ public abstract class StationaryObject implements Drawable {
 
     /**
      * Destroys the Box2D hitbox of the stationary object.
-     * <p>
      * Removes the associated {@link #hitbox} from the Box2D world and sets the {@link #hitbox} reference to null.
      * This is typically called when the stationary object is no longer needed or is being removed from the game.
      *

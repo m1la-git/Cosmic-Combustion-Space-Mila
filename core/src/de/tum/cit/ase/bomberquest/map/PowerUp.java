@@ -7,7 +7,6 @@ import de.tum.cit.ase.bomberquest.texture.Drawable;
 
 /**
  * Represents Power-up items in the game.
- * <p>
  * Power-ups are {@link StationaryObject}s that players can collect to gain temporary or permanent abilities.
  * Unlike walls or bombs, power-ups do not have a hitbox and are purely interactive items that modify player stats or abilities when collected.
  * Each power-up has a {@link WallContentType} which defines the type of power-up it grants.
@@ -59,7 +58,6 @@ public class PowerUp extends StationaryObject implements Drawable {
 
     /**
      * Gets the current texture region representing the power-up's appearance.
-     * <p>
      * The appearance is determined by the {@link #type} of the power-up and animated based on {@link #elapsedTime}.
      *
      * @return The current {@link TextureRegion} for rendering the power-up.

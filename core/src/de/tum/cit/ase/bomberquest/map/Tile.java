@@ -2,7 +2,6 @@ package de.tum.cit.ase.bomberquest.map;
 
 /**
  * A record representing a tile within the game grid.
- * <p>
  * In BomberQuest, the game map is divided into a grid of tiles.
  * This record is a simple data structure to hold the coordinates of a tile,
  * primarily used for pathfinding.
