@@ -1,74 +1,61 @@
 # Cosmic Combustion: Space Mila
 
-**Author:** Kamila Bekkozhina
+**Developed by:** Kamila Bekkozhina
 
-## About
+## Overview
 
-Cosmic Combustion: Space Mila is a bomber-quest style game developed using the LibGDX game development framework. Navigate through maze-like levels, strategically place bombs to overcome obstacles and enemies, and aim for victory!
+Cosmic Combustion: Space Mila is a 2D top-down bomber-style game developed using LibGDX. Players navigate maze-like maps, strategically placing bombs to defeat enemies and clear paths. The game features single-player and potentially multiplayer modes, power-ups to enhance gameplay, and a timer-based challenge.
 
-This project demonstrates game development concepts including:
+This project is built with a modular structure, separating game logic into distinct packages for audio, map management, screen handling, and texture management, making it easy to understand and extend.
 
-*   **Game Logic:** Implementing gameplay mechanics such as player movement, enemy AI, bomb placement and explosions, power-ups, and level completion.
-*   **Physics Engine:** Utilizing Box2D for realistic physics simulations and collision detection.
-*   **Animation and Textures:** Using sprite sheets and animations to bring the game world to life.
-*   **Audio Integration:** Incorporating background music and sound effects to enhance the gaming experience.
-*   **UI Design:** Creating a user-friendly menu and Heads-Up Display (HUD) using LibGDX Scene2D UI.
-*   **Game Settings:** Allowing players to customize game difficulty and other parameters.
+## Features
+
+*   **Classic Bomber Gameplay:** Engage in strategic bomb placement to destroy obstacles and enemies.
+*   **Single and Multiplayer Modes:**  Enjoy the game solo or with a friend (based on code structure).
+*   **Diverse Enemy Types:** Face off against AI-controlled enemies with varying behaviors (like smart pathfinding and bomb placement, configurable in settings).
+*   **Power-Ups:** Collect various power-ups to enhance your abilities:
+    *   Increased Bomb Capacity
+    *   Extended Blast Radius
+    *   Speed Boost
+    *   Wall Pass, Bomb Pass, and Flame Pass abilities
+*   **Destructible and Indestructible Walls:** Navigate through levels with strategic wall placement.
+*   **Level Exit:** Find and reach the exit to clear levels.
+*   **Timer-Based Challenge:** Race against the clock to complete levels.
+*   **Game Settings:** Customize gameplay experience with settings for enemy AI, bomb placement, timer duration, and power-up drop rates.
+*   **Custom Map Loading:** Load external map files in `.properties` format to play on user-created levels.
+*   **Score System:** Earn points by defeating enemies.
+*   **Engaging Sound Effects and Background Music:** Immerse yourself in the game's atmosphere with custom audio.
+*   **Game Over and Victory Conditions:** Clear win and lose states with clear messaging and options to restart or return to the menu.
 
 ## File Structure
 
-The project follows a standard LibGDX project structure, which is organized as follows:
-content_copy
-download
-Use code with caution.
-Markdown
+The project is organized into key packages within the `core/src/main/java/de/tum/cit/ase.bomberquest/` directory:
 
-Cosmic Combustion: Space Mila/
-├── .gradle/ # Gradle wrapper files and settings
-├── .idea/ # IntelliJ IDEA project files (if using IntelliJ)
-├── assets/ # Game assets (textures, audio, maps, skin)
-│ ├── audio/ # Sound effects and background music files
-│ ├── map/ # Game map files (e.g., properties files)
-│ ├── screen/ # (Potentially unused folder from template, may be empty or deprecated)
-│ └── texture/ # Texture files (spritesheets, background, logo)
-├── core/ # Core game logic and source code
-│ ├── build/ # Build output directory for core module
-│ └── src/ # Source code for the core game logic
-│ └── de/tum/cit/ase/bomberquest/
-│ ├── audio/ # Audio management classes (BackgroundTrack, SoundEffects)
-│ ├── map/ # Game map related classes (GameMap, Tile, Entities, etc.)
-│ ├── screen/ # Screen classes (GameScreen, MenuScreen, Hud)
-│ └── texture/ # Texture and animation management classes (Animations, SpriteSheet, Textures, Drawable interface)
-├── desktop/ # Desktop-specific launcher and build configurations
-│ ├── build/ # Build output directory for desktop launcher
-│ └── out/ # Output directory for executable JAR
-│ └── src/ # Source code for desktop launcher
-│ └── de/tum/cit/ase/bomberquest/
-│ └── DesktopLauncher.java # Main class to launch the game on desktop
-├── gradle/ # Gradle wrapper configuration
-├── gradlew # Gradle wrapper script for Linux/macOS
-├── gradlew.bat # Gradle wrapper script for Windows
-├── itp2425itp2425projectwork-kamilaelief.iml # IntelliJ IDEA module file
-├── itp2425itp2425projectwork-kamilaelief.jar # Executable Jar file of the game
-├── LICENSE # (If any, otherwise remove or specify "No License")
-├── README.md # This file - Project description and instructions
-└── settings.gradle # Gradle settings file
+*   **`audio`**: Manages all game audio, including background music tracks and sound effects.
+*   **`map`**: Contains core game logic related to the map, game objects (players, enemies, walls, bombs, blasts, power-ups), pathfinding, game settings, and collision handling.
+*   **`screen`**: Implements different game screens such as the main menu, gameplay screen, and HUD.
+*   **`texture`**: Handles texture and animation management, including spritesheet loading and animation definitions.
+*   **`BomberQuestGame.java`**: (Located directly in `de.tum.cit.ase.bomberquest`) The main game class, responsible for game initialization, screen management, and global resource handling.
 
-**Key Folders:**
+The `assets` folder (resources root) contains all game assets like audio files, textures, UI skin, and example map files.
 
-*   **`assets/`**: Contains all game resources such as textures, audio files, and map data.
-*   **`core/src/de/tum/cit/ase/bomberquest/`**:  Holds the main game source code, separated into packages for audio, map, screen, and texture management.
-*   **`desktop/src/de/tum/cit/ase/bomberquest/`**: Contains the `DesktopLauncher.java` file, which is the entry point for running the game on desktop platforms.
+The root project folder includes the executable JAR (`Cosmic Combustion Space Mila.exe`), the `README.md` file, project settings, and Gradle build files.
 
-## Executable
+## How to Run
 
-*   `Cosmic Combustion Space Mila.exe`: This is the executable file to run the game on Windows.
-*   `itp2425itp2425projectwork-kamilaelief.jar`:  Executable JAR file, runnable on any platform with Java installed.
+1.  **Executable JAR:**
+    *   Double-click the `Cosmic Combustion Space Mila.exe` file located in the project root directory to run the game directly on Windows.
+
+2.  **From IntelliJ IDEA (or other IDE with Gradle support):**
+    *   Open the project in IntelliJ IDEA.
+    *   Navigate to the `desktop` module.
+    *   Run the `DesktopLauncher` class located in `desktop/src/main/java/de/tum.cit.ase.bomberquest.desktop/`.
+    *   Alternatively, use the Gradle tasks in the IDE to build and run the `desktop` application.
 
 ## License
 
-This project is distributed without a specific license. All rights are reserved by the author, Kamila Bekkozhina.
+No license. All rights reserved by Kamila Bekkozhina.
 
 ---
 
-Thank you for checking out Cosmic Combustion: Space Mila! Enjoy the game!
+Enjoy playing Cosmic Combustion: Space Mila!
