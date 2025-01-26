@@ -31,7 +31,7 @@ public enum BackgroundTrack {
      * @param volume   The volume level of the music, ranging from 0.0 (muted) to 1.0 (full volume).
      */
     BackgroundTrack(String fileName, float volume) {
-        this.music = Gdx.audio.newMusic(Gdx.files.internal("audio/" + fileName));
+        this.music = Gdx.audio.newMusic(Gdx.files.internal("assets/audio/" + fileName));
         this.music.setLooping(true);
         this.music.setVolume(volume);
         this.isPlaying = false;

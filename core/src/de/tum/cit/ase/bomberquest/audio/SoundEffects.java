@@ -61,7 +61,7 @@ public enum SoundEffects {
      * @param volume   The volume level of the sound effect, ranging from 0.0 (muted) to 1.0 (full volume).
      */
     SoundEffects(String fileName, float volume) {
-        this.sound = Gdx.audio.newSound(Gdx.files.internal("audio/" + fileName));
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("assets/audio/" + fileName));
         this.volume = volume;
     }
 

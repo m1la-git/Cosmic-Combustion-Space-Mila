@@ -60,7 +60,7 @@ public enum SpriteSheet {
      * @param height   The height of a single grid cell in pixels within the spritesheet.
      */
     SpriteSheet(String filename, int width, int height) {
-        this.spritesheet = new Texture(Gdx.files.internal("texture/" + filename));
+        this.spritesheet = new Texture(Gdx.files.internal("assets/texture/" + filename));
         this.width = width;
         this.height = height;
     }

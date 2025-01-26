@@ -21,7 +21,7 @@ public class DesktopLauncher {
 		// Configuration for the game window
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Cosmic combustion: Space Mila"); // Set the window title
-		config.setWindowIcon("texture/Icon.png");
+		config.setWindowIcon("assets/texture/Icon.png");
 
 		// Get the display mode of the current monitor
 		Graphics.DisplayMode displayMode = Lwjgl3ApplicationConfiguration.getDisplayMode();

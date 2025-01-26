@@ -99,17 +99,17 @@ public class Textures {
     /**
      * TextureRegion for the entire HUD background panel.
      */
-    public static final TextureRegion HUD = new TextureRegion(new Texture(Gdx.files.internal("texture/Hud.png")), 0, 0, 48, 96);
+    public static final TextureRegion HUD = new TextureRegion(new Texture(Gdx.files.internal("assets/texture/Hud.png")), 0, 0, 48, 96);
 
     /**
      * Texture for the game background image.
      */
-    public static final Texture BACKGROUND = new Texture(Gdx.files.internal("texture/Background.png"));
+    public static final Texture BACKGROUND = new Texture(Gdx.files.internal("assets/texture/Background.png"));
 
     /**
      * Texture for the game logo image, displayed in menus.
      */
-    public static final Texture GAME_LOGO = new Texture(Gdx.files.internal("texture/Game Logo.png"));
+    public static final Texture GAME_LOGO = new Texture(Gdx.files.internal("assets/texture/Game Logo.png"));
 
 
 }

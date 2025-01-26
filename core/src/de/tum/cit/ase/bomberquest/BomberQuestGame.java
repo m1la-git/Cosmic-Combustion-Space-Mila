@@ -16,7 +16,6 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 
 /**
  * The BomberQuestGame class represents the core of the Bomber Quest game.
- * <p>
  * It extends {@link Game} and is responsible for managing game screens,
  * global resources like {@link SpriteBatch} and {@link Skin}, game settings,
  * and map loading functionalities. This class acts as the central orchestrator
@@ -26,7 +25,6 @@ public class BomberQuestGame extends Game {
 
     /**
      * The file chooser for loading map files from the user's computer.
-     * <p>
      * This native file chooser allows users to select custom map files,
      * providing flexibility in game content. It is platform-dependent and
      * typically used in desktop environments.
@@ -42,7 +40,6 @@ public class BomberQuestGame extends Game {
     private final String defaultPath = "maps/map-1.properties";
     /**
      * Sprite Batch for rendering game elements.
-     * <p>
      * A single instance of SpriteBatch is used throughout the game for efficient
      * rendering of 2D sprites and textures. This spriteBatch is passed to screens and HUDs
      * to ensure all rendering operations are batched together for performance.
@@ -50,14 +47,12 @@ public class BomberQuestGame extends Game {
     private SpriteBatch spriteBatch;
     /**
      * The game's UI skin.
-     * <p>
      * This skin defines the visual style of UI components (like buttons, labels, etc.)
      * used in the game menus and dialogs. It is loaded from a JSON file and managed centrally.
      */
     private Skin skin;
     /**
      * The game map.
-     * <p>
      * Holds all the game objects and the current state of the game world.
      * It is managed by {@code BomberQuestGame} to persist map data across screen switches.
      * The GameMap is loaded from a file and updated every frame during gameplay.
@@ -89,7 +84,6 @@ public class BomberQuestGame extends Game {
 
     /**
      * Called when the game is created. Initializes the SpriteBatch and Skin.
-     * <p>
      * This method is part of the LibGDX game lifecycle and is called upon application start.
      * It sets up essential game resources like the SpriteBatch for rendering and the Skin for UI styling.
      * It also navigates the game to the main menu and creates a new game map.
@@ -97,7 +91,7 @@ public class BomberQuestGame extends Game {
     @Override
     public void create() {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
-        this.skin = new Skin(Gdx.files.internal("skin/UI skin.json")); // Load UI skin
+        this.skin = new Skin(Gdx.files.internal("assets/skin/UI skin.json")); // Load UI skin
 
         // Play some background music
         goToMenu(); // Navigate to the menu screen
